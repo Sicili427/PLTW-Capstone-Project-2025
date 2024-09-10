@@ -22,7 +22,6 @@ public class main extends ApplicationAdapter {
 
     Viewport viewport;
 
-
     SpriteBatch batch;
     Texture line;
     ShapeRenderer shapeRenderer;
@@ -43,7 +42,7 @@ public class main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+        ScreenUtils.clear(1f, 1f, 1f, 1f);
 
         renderLine();
 
@@ -60,13 +59,18 @@ public class main extends ApplicationAdapter {
         shapeRenderer.dispose();
     }
 
+    private void drawBoard() {
+
+    }
+
     private void renderLine() {
         int resolution = 100;
 
-        batch.begin();
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+        shapeRenderer.setColor(Color.BLACK);
         for(int i = 0; i < resolution; i++) {
-            batch.draw(line, (float) (i * (1600/resolution)), (float) (10*Math.sqrt(i) + 200));
+            shapeRenderer.line(i * SCREEN_WIDTH/resolution, 0, i * SCREEN_WIDTH/resolution, SCREEN_HEIGHT);
         }
-        batch.end();
+        shapeRenderer.end();
     }
 }
