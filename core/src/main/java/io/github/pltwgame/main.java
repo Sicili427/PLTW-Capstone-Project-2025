@@ -51,8 +51,6 @@ public class main extends ApplicationAdapter {
     public void render() {
         ScreenUtils.clear(1f, 1f, 1f, 1f);
         camera.update();
-
-        renderLine();
         drawBoard();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.RED);
@@ -85,11 +83,11 @@ public class main extends ApplicationAdapter {
     }
 
     private void drawBoard() {
+        GenerateGrid();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BROWN);
         shapeRenderer.circle(circleX, circleY, 50);
         shapeRenderer.end();
-        GenerateGrid();
     }
 
     private void GenerateGrid() {
