@@ -62,11 +62,11 @@ public class main extends ApplicationAdapter {
         if(Gdx.input.isKeyPressed(Input.Keys.A)){
             circleX-=SCREEN_WIDTH/320;
         }
-        if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            circleY-=SCREEN_HEIGHT/320;
-        }
         if(Gdx.input.isKeyPressed(Input.Keys.W)){
             circleY+=SCREEN_HEIGHT/320;
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.S)){
+            circleY-=SCREEN_HEIGHT/320;
         }
             circleX = Gdx.input.getX();
             circleY = SCREEN_HEIGHT-Gdx.input.getY();
