@@ -1,7 +1,9 @@
 package io.github.pltwgame;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -14,8 +16,8 @@ public class main extends ApplicationAdapter {
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
 
-    final int GRID_WIDTH = 64;
-    final int GRID_HEIGHT = 32;
+    final int GRID_WIDTH = 128;
+    final int GRID_HEIGHT = GRID_WIDTH/2;
 
     Viewport viewport;
     OrthographicCamera camera;
@@ -35,6 +37,8 @@ public class main extends ApplicationAdapter {
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
         line = new Texture("pixel.png");
+
+        Gdx.app.setLogLevel(Application.LOG_INFO);
     }
 
     @Override
@@ -68,7 +72,7 @@ public class main extends ApplicationAdapter {
             shapeRenderer.line((float) (i * (SCREEN_WIDTH / GRID_WIDTH)), 0, (float) (i * (SCREEN_WIDTH /GRID_WIDTH)), SCREEN_HEIGHT);
         }
         for (int i = 0; i <= GRID_HEIGHT; i++) {
-            shapeRenderer.line(0, (float) (i * (SCREEN_HEIGHT / GRID_HEIGHT)), SCREEN_WIDTH, (float) (i * (SCREEN_HEIGHT /GRID_HEIGHT)));
+            shapeRenderer.line(0, (i * ((float) SCREEN_HEIGHT / GRID_HEIGHT)), SCREEN_WIDTH, (i * ((float) SCREEN_HEIGHT /GRID_HEIGHT)));
         }
         shapeRenderer.end();
     }
