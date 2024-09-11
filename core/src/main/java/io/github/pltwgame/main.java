@@ -16,8 +16,8 @@ public class main extends ApplicationAdapter {
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
 
-    final int GRID_WIDTH = 128;
-    final int GRID_HEIGHT = 64;
+    final int GRID_WIDTH = 64;
+    final int GRID_HEIGHT = 32;
 
     Viewport viewport;
     OrthographicCamera camera;
@@ -49,12 +49,7 @@ public class main extends ApplicationAdapter {
         ScreenUtils.clear(1f, 1f, 1f, 1f);
         camera.update();
 
-        renderLine();
-
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.rect(0f, 0f, SCREEN_WIDTH, SCREEN_HEIGHT);
-        shapeRenderer.end();
+        drawBoard();
     }
 
     @Override
@@ -65,16 +60,17 @@ public class main extends ApplicationAdapter {
     }
 
     private void drawBoard() {
-
+        GenerateGrid();
     }
 
-    private void renderLine() {
-        int resolution = 100;
-
+    private void GenerateGrid() {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.BLACK);
-        for(int i = 0; i < resolution; i++) {
-            shapeRenderer.line(i * SCREEN_WIDTH/resolution, 0, i * SCREEN_WIDTH/resolution, SCREEN_HEIGHT);
+        for(int i = 0; i <= GRID_WIDTH; i++) {
+            shapeRenderer.line((float) (i * (SCREEN_WIDTH / GRID_WIDTH)), 0, (float) (i * (SCREEN_WIDTH /GRID_WIDTH)), SCREEN_HEIGHT);
+        }
+        for (int i = 0; i <= GRID_HEIGHT; i++) {
+            shapeRenderer.line(0, (float) (i * (SCREEN_HEIGHT / GRID_HEIGHT)), SCREEN_WIDTH, (float) (i * (SCREEN_HEIGHT /GRID_HEIGHT)));
         }
         shapeRenderer.end();
     }
