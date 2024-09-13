@@ -59,7 +59,7 @@ public class main extends ApplicationAdapter {
 
         drawBoard();
 
-        generateLine();
+        generateLine(grid);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class main extends ApplicationAdapter {
         Grid grid = initGrid;
 
         for(int i = 0; i < points.length; i++) {
-            
+
         }
     }
 }
