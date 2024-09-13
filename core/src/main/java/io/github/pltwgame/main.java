@@ -7,17 +7,21 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** {@link ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
+    // 1280x720px
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
 
-    final int GRID_WIDTH = 128;
-    final int GRID_HEIGHT = GRID_WIDTH/2;
+    Grid grid;
+
+    Stage stage;
 
     Viewport viewport;
     OrthographicCamera camera;
@@ -33,6 +37,8 @@ public class main extends ApplicationAdapter {
         viewport = new ScreenViewport(camera);
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
+        stage = new Stage(viewport);
+        grid = new Grid(SCREEN_WIDTH, SCREEN_HEIGHT, 64, 2, 1);
 
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
@@ -43,7 +49,7 @@ public class main extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -52,6 +58,8 @@ public class main extends ApplicationAdapter {
         camera.update();
 
         drawBoard();
+
+        generateLine();
     }
 
     @Override
@@ -62,18 +70,26 @@ public class main extends ApplicationAdapter {
     }
 
     private void drawBoard() {
-        GenerateGrid();
+        grid.generateGrid();
     }
 
-    private void GenerateGrid() {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.BLACK);
-        for(int i = 0; i <= GRID_WIDTH; i++) {
-            shapeRenderer.line((float) (i * (SCREEN_WIDTH / GRID_WIDTH)), 0, (float) (i * (SCREEN_WIDTH /GRID_WIDTH)), SCREEN_HEIGHT);
+    private void generateLine(Grid initGrid) {
+        // finds and puts points in an array
+        int resolution = SCREEN_WIDTH * 10;
+        Vector2[] points = new Vector2[resolution];
+
+        for(int i = 0; i < resolution; i++) {
+            double input = i / 10.0;
+            points[i] = new Vector2((float )input, (float) Math.sin(input));
         }
-        for (int i = 0; i <= GRID_HEIGHT; i++) {
-            shapeRenderer.line(0, (i * ((float) SCREEN_HEIGHT / GRID_HEIGHT)), SCREEN_WIDTH, (i * ((float) SCREEN_HEIGHT /GRID_HEIGHT)));
+        // translates points to grid
+        float x = 0;
+        float y = 0;
+
+        Grid grid = initGrid;
+
+        for(int i = 0; i < points.length; i++) {
+            
         }
-        shapeRenderer.end();
     }
 }
