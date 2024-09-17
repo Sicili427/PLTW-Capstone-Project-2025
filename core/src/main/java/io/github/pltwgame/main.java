@@ -80,16 +80,29 @@ public class main extends ApplicationAdapter {
 
         for(int i = 0; i < resolution; i++) {
             double input = i / 10.0;
-            points[i] = new Vector2((float )input, (float) Math.sin(input));
+            points[i] = new Vector2((float) input, (float) Math.sin(Math.sqrt(input)));
         }
         // translates points to grid
-        float x = 0;
-        float y = 0;
+        float x1 = 0;
+        float y1 = 0;
 
-        Grid grid = initGrid;
+        float x2 = 0;
+        float y2 = 0;
+
+        int offsetX = 0;
+        int offsetY = grid.horzLines.length/2;
 
         for(int i = 0; i < points.length; i++) {
+            x1 = initGrid.vertLines[(int) points[i].x + offsetX].x + (points[i].x - (int) points[i].x) * initGrid.CellX;
+            y1 = initGrid.horzLines[(int) points[i].y + offsetY].y + (points[i].y - (int) points[i].y) * initGrid.CellY;
 
+            x2 = initGrid.vertLines[(int) points[i+1].x + offsetX].x + (points[i+1].x - (int) points[i+1].x) * initGrid.CellX;;
+            y2 = initGrid.horzLines[(int) points[i+1].y + offsetY].y + (points[i+1].y - (int) points[i+1].y) * initGrid.CellY;;
+
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.setColor(Color.RED);
+            shapeRenderer.line(x1,y1,x2,y2);
+            shapeRenderer.end();
         }
     }
 }
