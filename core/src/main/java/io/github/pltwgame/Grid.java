@@ -38,7 +38,7 @@ public class Grid {
         // generates a list for horizontal and vertical lines
         vertLines = new Vector2[GRID_WIDTH];
         horzLines = new Vector2[GRID_HEIGHT];
-        // generates
+        // generates grid
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.GRAY);
         for(int i = 0; i < GRID_WIDTH; i++) {
