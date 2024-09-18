@@ -5,45 +5,60 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 public class Grid {
-    final int GRID_WIDTH;
-    final int GRID_HEIGHT;
-    final int SCREEN_WIDTH;
-    final int SCREEN_HEIGHT;
+    final int gridWidth;
+    final int gridHeight;
+    final int numVertLines;
+    final int numHorzLines;
+    final float CellX;
+    final float CellY;
     ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     Vector2[] vertLines;
     Vector2[] horzLines;
 
-    public Grid(int screenWidth, int screenHeight, int gridWidth, int gridHeight) {
-        SCREEN_WIDTH = screenWidth;
-        SCREEN_HEIGHT = screenHeight;
-        GRID_WIDTH = gridWidth;
-        GRID_HEIGHT = gridHeight;
+    public Grid(int maxWidth, int maxHeight, int initVertLines, int initHorzLines) {
+        gridWidth = maxWidth;
+        gridHeight = maxHeight;
+        numVertLines = initVertLines;
+        numHorzLines = initHorzLines;
+        CellX = (float) maxWidth / initVertLines;
+        CellY = (float) maxHeight / initHorzLines;
     }
 
-    public Grid(int screenWidth, int screenHeight, int gridWidth, int ratioX, int ratioY) {
-        SCREEN_WIDTH = screenWidth;
-        SCREEN_HEIGHT = screenHeight;
-        GRID_WIDTH = gridWidth;
-        GRID_HEIGHT = (gridWidth * ratioY) / ratioX;
+    public Grid(int maxWidth, int maxHeight, int initHorzLines, int ratioX, int ratioY) {
+        gridWidth = maxWidth;
+        gridHeight = maxHeight;
+        numVertLines = initHorzLines;
+        numHorzLines = (int) Math.ceil((double) (initHorzLines * ratioY) / ratioX);
+        CellX = (float) maxWidth / numVertLines;
+        CellY = (float) maxHeight / numHorzLines;
+    }
+
+    public Grid(int maxWidth, int maxHeight, int cellSize) {
+        gridWidth = maxWidth;
+        gridHeight = maxHeight;
+        CellX = (float) cellSize;
+        CellY = (float) cellSize;
+        numVertLines = (int) Math.ceil((double) maxWidth / cellSize);
+        numHorzLines = (int) Math.ceil((double) maxHeight / cellSize);;
     }
 
     public void generateGrid() {
         // generates a list for horizontal and vertical lines
-        vertLines = new Vector2[GRID_WIDTH];
-        horzLines = new Vector2[GRID_HEIGHT];
-        // generates
+        vertLines = new Vector2[numVertLines];
+        horzLines = new Vector2[numHorzLines];
+        // generates grid
         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
         shapeRenderer.setColor(Color.GRAY);
-        for(int i = 0; i < GRID_WIDTH; i++) {
-            float coords = i * ((float) SCREEN_WIDTH / GRID_WIDTH);
-            vertLines[i] = new Vector2(coords, SCREEN_HEIGHT);
-            shapeRenderer.line(coords, 0, coords, SCREEN_HEIGHT);
+        for(int i = 0; i <= numVertLines; i++) {
+            float x = i * CellX;
+            vertLines[i] = new Vector2(x, gridHeight);
+            shapeRenderer.line(x, 0, x, gridHeight);
         }
-        for (int i = 0; i < GRID_HEIGHT; i++) {
-            float coords = i * ((float) SCREEN_HEIGHT / GRID_HEIGHT);
-            horzLines[i] = new Vector2(SCREEN_WIDTH, coords);
-            shapeRenderer.line(0, coords, SCREEN_WIDTH, coords);
+        for (int i = 0; i <= numHorzLines; i++) {
+            float y = i * CellY;
+            horzLines[i] = new Vector2(gridWidth, y);
+            shapeRenderer.line(0, y, gridWidth, y);
         }
         shapeRenderer.end();
     }
