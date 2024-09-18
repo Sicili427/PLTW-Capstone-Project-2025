@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.Arrays;
+
 /** {@link ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
     // 1280x720px
@@ -27,7 +29,6 @@ public class main extends ApplicationAdapter {
     OrthographicCamera camera;
 
     SpriteBatch batch;
-    Texture line;
     ShapeRenderer shapeRenderer;
 
 
@@ -38,11 +39,10 @@ public class main extends ApplicationAdapter {
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
         stage = new Stage(viewport);
-        grid = new Grid(SCREEN_WIDTH, SCREEN_HEIGHT, 64, 2, 1);
+        grid = new Grid(SCREEN_WIDTH, SCREEN_HEIGHT,64,2,1);
 
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
-        line = new Texture("pixel.png");
 
         Gdx.app.setLogLevel(Application.LOG_INFO);
     }
@@ -65,7 +65,7 @@ public class main extends ApplicationAdapter {
     @Override
     public void dispose() {
         batch.dispose();
-        line.dispose();
+        stage.dispose();
         shapeRenderer.dispose();
     }
 
@@ -75,33 +75,31 @@ public class main extends ApplicationAdapter {
 
     private void generateLine(Grid initGrid) {
         // finds and puts points in an array
-        int resolution = SCREEN_WIDTH * 10;
+        int resolution = grid.gridWidth * 10;
         Vector2[] points = new Vector2[resolution];
+
+        int offsetX = 0;
+        int offsetY = initGrid.horzLines.length/2;
 
         for(int i = 0; i < resolution; i++) {
             double input = i / 10.0;
-            points[i] = new Vector2((float) input, (float) Math.sin(Math.sqrt(input)));
+            float y = (float) (Math.pow(input,2));
+            points[i] = new Vector2((float) input, y);
         }
-        // translates points to grid
-        float x1 = 0;
-        float y1 = 0;
-
-        float x2 = 0;
-        float y2 = 0;
-
-        int offsetX = 0;
-        int offsetY = grid.horzLines.length/2;
-
         for(int i = 0; i < points.length; i++) {
-            x1 = initGrid.vertLines[(int) points[i].x + offsetX].x + (points[i].x - (int) points[i].x) * initGrid.CellX;
-            y1 = initGrid.horzLines[(int) points[i].y + offsetY].y + (points[i].y - (int) points[i].y) * initGrid.CellY;
+            float x1 = initGrid.vertLines[(int) points[i].x + offsetX].x + (points[i].x - (int) points[i].x) * initGrid.CellX;
+            float y1 = initGrid.horzLines[(int) points[i].y + offsetY].y + (points[i].y - (int) points[i].y) * initGrid.CellY;
 
-            x2 = initGrid.vertLines[(int) points[i+1].x + offsetX].x + (points[i+1].x - (int) points[i+1].x) * initGrid.CellX;;
-            y2 = initGrid.horzLines[(int) points[i+1].y + offsetY].y + (points[i+1].y - (int) points[i+1].y) * initGrid.CellY;;
+            float x2 = initGrid.vertLines[(int) points[i+1].x + offsetX].x + (points[i+1].x - (int) points[i+1].x) * initGrid.CellX;
+            float y2 = initGrid.horzLines[(int) points[i+1].y + offsetY].y + (points[i+1].y - (int) points[i+1].y) * initGrid.CellY;
+
+            if(y1 > grid.gridWidth && y2 > grid.gridHeight) {
+                continue;
+            }
 
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
             shapeRenderer.setColor(Color.RED);
-            shapeRenderer.line(x1,y1,x2,y2);
+            shapeRenderer.line(x1, y1, x2, y2);
             shapeRenderer.end();
         }
     }
