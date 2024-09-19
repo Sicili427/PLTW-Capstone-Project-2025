@@ -76,7 +76,7 @@ public class main extends ApplicationAdapter {
     private void generateLine(Grid initGrid) {
         // finds and puts points in an array
         int resolution = 1000;
-        int size = grid.numVertLines * 1000;
+        int size = grid.numVertLines * resolution;
         Vector2[] points = new Vector2[size];
 
         int offsetX = 0;
