@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -14,12 +15,16 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 
 /** {@link ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
+    //1280*720
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
     float circleX = 100;
     float circleY = 100;
+
     final int GRID_WIDTH = 64;
     final int GRID_HEIGHT = 32;
+
+    TestAI testAI = new TestAI(0, 0);
 
     Viewport viewport;
     OrthographicCamera camera;
@@ -52,27 +57,21 @@ public class main extends ApplicationAdapter {
         ScreenUtils.clear(1f, 1f, 1f, 1f);
         camera.update();
         drawBoard();
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.RED);
-        shapeRenderer.line(200, 0, 1000, 900);
         shapeRenderer.end();
-        if(Gdx.input.isKeyPressed(Input.Keys.D)){
-            circleX+=SCREEN_WIDTH/320;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.A)){
-            circleX-=SCREEN_WIDTH/320;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.W)){
-            circleY+=SCREEN_HEIGHT/320;
-        }
-        if(Gdx.input.isKeyPressed(Input.Keys.S)){
-            circleY-=SCREEN_HEIGHT/320;
-        }
             circleX = Gdx.input.getX();
             circleY = SCREEN_HEIGHT-Gdx.input.getY();
-            if(Gdx.input.isKeyPressed(Input.Keys.W)){
-                Gdx.input.setCursorPosition(100, 100);
+                testAI.moveToPoint();
+            if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+                float xSpot = (float) Math.random()*SCREEN_WIDTH;
+                float ySpot = (float) Math.random()*SCREEN_HEIGHT;
+                testAI.addPoint(xSpot, ySpot, false);
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                shapeRenderer.setColor(Color.BROWN);
+                shapeRenderer.circle(xSpot, ySpot, 50);
+                shapeRenderer.end();
             }
+                //testAI.moveToPoint(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+        testAI.drawAI(shapeRenderer);
     }
 
     @Override
