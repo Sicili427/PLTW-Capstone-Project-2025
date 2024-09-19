@@ -75,32 +75,38 @@ public class main extends ApplicationAdapter {
 
     private void generateLine(Grid initGrid) {
         // finds and puts points in an array
-        int resolution = grid.gridWidth * 10;
-        Vector2[] points = new Vector2[resolution];
+        int resolution = 1000;
+        int size = grid.numVertLines * 1000;
+        Vector2[] points = new Vector2[size];
 
         int offsetX = 0;
         int offsetY = initGrid.horzLines.length/2;
 
-        for(int i = 0; i < resolution; i++) {
-            double input = i / 10.0;
-            float y = (float) (Math.pow(input,2));
+        for(int i = 0; i < size; i++) {
+            double input = i / (double) resolution;
+            float y = (float) (Math.tan(input));
             points[i] = new Vector2((float) input, y);
         }
+
         for(int i = 0; i < points.length; i++) {
-            float x1 = initGrid.vertLines[(int) points[i].x + offsetX].x + (points[i].x - (int) points[i].x) * initGrid.CellX;
-            float y1 = initGrid.horzLines[(int) points[i].y + offsetY].y + (points[i].y - (int) points[i].y) * initGrid.CellY;
+            if (!Float.isInfinite(points[i].y) || !Float.isNaN(points[i].y)) {
+                if (Math.floor(points[i].y) > initGrid.horzLines.length - offsetY || Math.floor(points[i + 1].y) > initGrid.horzLines.length - offsetY) {
+                    continue;
+                } else if (Math.floor(Math.abs(points[i].y)) > offsetY || Math.floor(Math.abs(points[i + 1].y)) > offsetY) {
+                    continue;
+                }
 
-            float x2 = initGrid.vertLines[(int) points[i+1].x + offsetX].x + (points[i+1].x - (int) points[i+1].x) * initGrid.CellX;
-            float y2 = initGrid.horzLines[(int) points[i+1].y + offsetY].y + (points[i+1].y - (int) points[i+1].y) * initGrid.CellY;
+                float x1 = initGrid.vertLines[(int) points[i].x + offsetX].x + (points[i].x - (int) points[i].x) * initGrid.CellX;
+                float y1 = initGrid.horzLines[(int) points[i].y + offsetY].y + (points[i].y - (int) points[i].y) * initGrid.CellY;
 
-            if(y1 > grid.gridWidth && y2 > grid.gridHeight) {
-                continue;
+                float x2 = initGrid.vertLines[(int) points[i + 1].x + offsetX].x + (points[i + 1].x - (int) points[i + 1].x) * initGrid.CellX;
+                float y2 = initGrid.horzLines[(int) points[i + 1].y + offsetY].y + (points[i + 1].y - (int) points[i + 1].y) * initGrid.CellY;
+
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(Color.RED);
+                shapeRenderer.line(x1, y1, x2, y2);
+                shapeRenderer.end();
             }
-
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-            shapeRenderer.setColor(Color.RED);
-            shapeRenderer.line(x1, y1, x2, y2);
-            shapeRenderer.end();
         }
     }
 }
