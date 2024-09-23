@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Vector;
 
 public class TestAI {
     final int maxBoundX;
@@ -59,44 +57,45 @@ public class TestAI {
         }
     }
 
-    public Vector2 findNextPoint (){
-        float finalX = 0;
-        float finalY = 0;
-        float angleTo = findAngle(stack.get(0));
+    public Vector2 findNextPoint() {
+        if (stack.isEmpty()) return new Vector2(aiX, aiY);
 
-            finalX = (float) (1*Math.cos(angleTo));
+        Vector2 target = stack.get(0);
+        float angleTo = findAngle(target);
 
-            finalY = (float) (1*Math.sin(angleTo));
-            //DOESNT WORK YET NEED TO MAKE ACTUALLY ADJUSTED TO NEW POINT
-            if(xPos < stack.get(0).x + 100 && yPos < stack.get(0).y + 100 && xPos > stack.get(0).x - 100 && yPos > stack.get(0).y - 100){
-                stack.remove(0);
-            }
-            return stack.get(0);
+        float finalX = (float) (aiX + 1 * Math.cos(angleTo));
+        float finalY = (float) (aiY + 1 * Math.sin(angleTo));
+
+        if (aiX < target.x + 1 && aiY < target.y + 1 && aiX > target.x - 1 && aiY > target.y - 1) {
+            stack.remove(0);
+        }
+
+        return new Vector2(finalX, finalY);
     }
 
-    public Vector2 findNextPoint (Vector2 pointToGo){
-        float finalX = 0;
-        float finalY = 0;
+    public Vector2 findNextPoint(Vector2 pointToGo) {
         adjustMouseVector(pointToGo);
         float angleTo = findAngle(pointToGo);
 
-        finalX = (float) (1*Math.cos(angleTo));
+        float finalX = (float) (aiX + 1 * Math.cos(angleTo));
+        float finalY = (float) (aiY + 1 * Math.sin(angleTo));
 
-        finalY = (float) (1*Math.sin(angleTo));
-        return new Vector2(finalX+xPos, finalY+yPos);
+        return new Vector2(finalX, finalY);
     }
 
-    private float findAngle (Vector2 point1){
-        return point1.angleRad();
+    private float findAngle(Vector2 point1) {
+        return (float) Math.atan2(point1.y - aiY, point1.x - aiX);
     }
-    private void adjustMouseVector (Vector2 adjustable){
-        adjustable.x -= xPos;
-        adjustable.y = maxBoundY - adjustable.y;
-        adjustable.y -= yPos;
+
+    private void adjustMouseVector(Vector2 adjustable) {
+        adjustable.x -= aiX;
+        adjustable.y = SCREEN_HEIGHT - adjustable.y;
+        adjustable.y -= aiY;
     }
-    private void deAdjustMouseVector (Vector2 adjustable) {
-        adjustable.x += xPos;
-        adjustable.y = maxBoundY + adjustable.y;
-        adjustable.y += yPos;
+
+    private void deAdjustMouseVector(Vector2 adjustable) {
+        adjustable.x += aiX;
+        adjustable.y = SCREEN_HEIGHT + adjustable.y;
+        adjustable.y += aiY;
     }
 }
