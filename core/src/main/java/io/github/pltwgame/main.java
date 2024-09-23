@@ -21,6 +21,8 @@ public class main extends ApplicationAdapter {
     float circleX = 100;
     float circleY = 100;
 
+    final float xSpot = (float) Math.random()*SCREEN_WIDTH;
+    final float ySpot = (float) Math.random()*SCREEN_HEIGHT;
     final int GRID_WIDTH = 64;
     final int GRID_HEIGHT = 32;
 
@@ -62,8 +64,6 @@ public class main extends ApplicationAdapter {
             circleY = SCREEN_HEIGHT-Gdx.input.getY();
                 testAI.moveToPoint();
             if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-                float xSpot = (float) Math.random()*SCREEN_WIDTH;
-                float ySpot = (float) Math.random()*SCREEN_HEIGHT;
                 testAI.addPoint(xSpot, ySpot, false);
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.setColor(Color.BROWN);
