@@ -9,9 +9,11 @@ import java.util.ArrayList;
 public class TestAI {
     final int maxBoundX;
     final int maxBoundY;
+
     float xPos;
     float yPos;
-    ArrayList<Vector2> stack = new ArrayList<>();
+
+    ArrayList<Vector2> points = new ArrayList<>();
 
     public TestAI (float x, float y, int boundX, int boundY) {
         maxBoundX = boundX;
@@ -42,32 +44,32 @@ public class TestAI {
     public void addPoint (float x, float y, boolean mouse){
         Vector2 vector2 = new Vector2(x, y);
         if (mouse) adjustMouseVector(vector2);
-        stack.add(vector2);
+        points.add(vector2);
     }
 
     public void moveToPoint (){
-        if (!stack.isEmpty()) {
+        if (!points.isEmpty()) {
             setPos(findNextPoint());
         }
     }
 
     public void moveToPoint (Vector2 pointtogo){
-        if (!stack.isEmpty()) {
+        if (!points.isEmpty()) {
             setPos(findNextPoint(pointtogo));
         }
     }
 
     public Vector2 findNextPoint() {
-        if (stack.isEmpty()) return new Vector2(aiX, aiY);
+        if (points.isEmpty()) return new Vector2(xPos, yPos);
 
-        Vector2 target = stack.get(0);
+        Vector2 target = points.get(0);
         float angleTo = findAngle(target);
 
-        float finalX = (float) (aiX + 1 * Math.cos(angleTo));
-        float finalY = (float) (aiY + 1 * Math.sin(angleTo));
+        float finalX = (float) (xPos + 1 * Math.cos(angleTo));
+        float finalY = (float) (yPos + 1 * Math.sin(angleTo));
 
-        if (aiX < target.x + 1 && aiY < target.y + 1 && aiX > target.x - 1 && aiY > target.y - 1) {
-            stack.remove(0);
+        if (xPos < target.x + 1 && yPos < target.y + 1 && xPos > target.x - 1 && yPos > target.y - 1) {
+            points.remove(0);
         }
 
         return new Vector2(finalX, finalY);
@@ -77,25 +79,25 @@ public class TestAI {
         adjustMouseVector(pointToGo);
         float angleTo = findAngle(pointToGo);
 
-        float finalX = (float) (aiX + 1 * Math.cos(angleTo));
-        float finalY = (float) (aiY + 1 * Math.sin(angleTo));
+        float finalX = (float) (xPos + 1 * Math.cos(angleTo));
+        float finalY = (float) (yPos + 1 * Math.sin(angleTo));
 
         return new Vector2(finalX, finalY);
     }
 
     private float findAngle(Vector2 point1) {
-        return (float) Math.atan2(point1.y - aiY, point1.x - aiX);
+        return (float) Math.atan2(point1.y - yPos, point1.x - xPos);
     }
 
     private void adjustMouseVector(Vector2 adjustable) {
-        adjustable.x -= aiX;
-        adjustable.y = SCREEN_HEIGHT - adjustable.y;
-        adjustable.y -= aiY;
+        adjustable.x -= xPos;
+        adjustable.y = maxBoundY - adjustable.y;
+        adjustable.y -= yPos;
     }
 
     private void deAdjustMouseVector(Vector2 adjustable) {
-        adjustable.x += aiX;
-        adjustable.y = SCREEN_HEIGHT + adjustable.y;
-        adjustable.y += aiY;
+        adjustable.x += xPos;
+        adjustable.y = maxBoundY + adjustable.y;
+        adjustable.y += yPos;
     }
 }

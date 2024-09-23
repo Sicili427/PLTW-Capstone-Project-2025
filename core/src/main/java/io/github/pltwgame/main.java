@@ -26,8 +26,6 @@ public class main extends ApplicationAdapter {
 
     final float xSpot = (float) Math.random()*SCREEN_WIDTH;
     final float ySpot = (float) Math.random()*SCREEN_HEIGHT;
-    final int GRID_WIDTH = 64;
-    final int GRID_HEIGHT = 32;
 
     Grid grid;
 
