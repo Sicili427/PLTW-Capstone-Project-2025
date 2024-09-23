@@ -1,3 +1,4 @@
+
 package io.github.pltwgame;
 
 import com.badlogic.gdx.graphics.Color;
@@ -5,8 +6,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.Vector;
 
 public class TestAI {
     final int SCREEN_WIDTH = 1280;
@@ -15,84 +14,85 @@ public class TestAI {
     float aiY;
     ArrayList<Vector2> stack = new ArrayList<>();
 
-    public TestAI (float x, float y) {
+    public TestAI(float x, float y) {
         aiX = x;
         aiY = y;
-        addPoint(0,0, false);
-        addPoint(SCREEN_WIDTH/2, SCREEN_HEIGHT/2, false);
+        addPoint(0, 0, false);
+        addPoint(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2, false);
     }
 
-    public void drawAI (ShapeRenderer renderer){
+    public void drawAI(ShapeRenderer renderer) {
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.setColor(Color.GREEN);
         renderer.circle(aiX, aiY, 50);
         renderer.end();
     }
 
-    public void setPos (float x, float y){
+    public void setPos(float x, float y) {
         aiX = x;
         aiY = y;
     }
 
-    public void setPos (Vector2 vector2) {
+    public void setPos(Vector2 vector2) {
         aiX = vector2.x;
         aiY = vector2.y;
     }
 
-    public void addPoint (float x, float y, boolean mouse){
+    public void addPoint(float x, float y, boolean mouse) {
         Vector2 vector2 = new Vector2(x, y);
         if (mouse) adjustMouseVector(vector2);
         stack.add(vector2);
     }
 
-    public void moveToPoint (){
+    public void moveToPoint() {
         if (!stack.isEmpty()) {
             setPos(findNextPoint());
         }
     }
 
-    public void moveToPoint (Vector2 pointtogo){
+    public void moveToPoint(Vector2 pointToGo) {
         if (!stack.isEmpty()) {
-            setPos(findNextPoint(pointtogo));
+            setPos(findNextPoint(pointToGo));
         }
     }
 
-    public Vector2 findNextPoint (){
-        float finalX = 0;
-        float finalY = 0;
-        float angleTo = findAngle(stack.get(0));
+    public Vector2 findNextPoint() {
+        if (stack.isEmpty()) return new Vector2(aiX, aiY);
 
-            finalX = (float) (1*Math.cos(angleTo));
+        Vector2 target = stack.get(0);
+        float angleTo = findAngle(target);
 
-            finalY = (float) (1*Math.sin(angleTo));
-            //DOESNT WORK YET NEED TO MAKE ACTUALLY ADJUSTED TO NEW POINT
-            if(aiX < stack.get(0).x + 100 && aiY < stack.get(0).y + 100 && aiX > stack.get(0).x - 100 && aiY > stack.get(0).y - 100){
-                stack.remove(0);
-            }
-            return new Vector2(finalX+aiX, finalY+aiY);
+        float finalX = (float) (aiX + 1 * Math.cos(angleTo));
+        float finalY = (float) (aiY + 1 * Math.sin(angleTo));
+
+        if (aiX < target.x + 1 && aiY < target.y + 1 && aiX > target.x - 1 && aiY > target.y - 1) {
+            stack.remove(0);
+        }
+
+        return new Vector2(finalX, finalY);
     }
 
-    public Vector2 findNextPoint (Vector2 pointToGo){
-        float finalX = 0;
-        float finalY = 0;
+    public Vector2 findNextPoint(Vector2 pointToGo) {
         adjustMouseVector(pointToGo);
         float angleTo = findAngle(pointToGo);
 
-        finalX = (float) (1*Math.cos(angleTo));
+        float finalX = (float) (aiX + 1 * Math.cos(angleTo));
+        float finalY = (float) (aiY + 1 * Math.sin(angleTo));
 
-        finalY = (float) (1*Math.sin(angleTo));
-        return new Vector2(finalX+aiX, finalY+aiY);
+        return new Vector2(finalX, finalY);
     }
 
-    private float findAngle (Vector2 point1){
-        return point1.angleRad();
+    private float findAngle(Vector2 point1) {
+        return (float) Math.atan2(point1.y - aiY, point1.x - aiX);
     }
-    private void adjustMouseVector (Vector2 adjustable){
+
+    private void adjustMouseVector(Vector2 adjustable) {
         adjustable.x -= aiX;
         adjustable.y = SCREEN_HEIGHT - adjustable.y;
         adjustable.y -= aiY;
     }
-    private void deAdjustMouseVector (Vector2 adjustable) {
+
+    private void deAdjustMouseVector(Vector2 adjustable) {
         adjustable.x += aiX;
         adjustable.y = SCREEN_HEIGHT + adjustable.y;
         adjustable.y += aiY;
