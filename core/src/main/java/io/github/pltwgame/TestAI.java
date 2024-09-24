@@ -12,6 +12,7 @@ public class TestAI {
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
     float aiX;
     float aiY;
+    float moveSpeed = 5;
     ArrayList<Vector2> stack = new ArrayList<>();
 
     public TestAI(float x, float y) {
@@ -62,10 +63,10 @@ public class TestAI {
         Vector2 target = stack.get(0);
         float angleTo = findAngle(target);
 
-        float finalX = (float) (aiX + 1 * Math.cos(angleTo));
-        float finalY = (float) (aiY + 1 * Math.sin(angleTo));
+        float finalX = (float) (aiX + moveSpeed * Math.cos(angleTo));
+        float finalY = (float) (aiY + moveSpeed * Math.sin(angleTo));
 
-        if (aiX < target.x + 1 && aiY < target.y + 1 && aiX > target.x - 1 && aiY > target.y - 1) {
+        if (aiX < target.x + moveSpeed && aiY < target.y + moveSpeed && aiX > target.x - moveSpeed && aiY > target.y - moveSpeed) {
             stack.remove(0);
         }
 
@@ -76,8 +77,8 @@ public class TestAI {
         adjustMouseVector(pointToGo);
         float angleTo = findAngle(pointToGo);
 
-        float finalX = (float) (aiX + 1 * Math.cos(angleTo));
-        float finalY = (float) (aiY + 1 * Math.sin(angleTo));
+        float finalX = (float) (aiX + moveSpeed * Math.cos(angleTo));
+        float finalY = (float) (aiY + moveSpeed * Math.sin(angleTo));
 
         return new Vector2(finalX, finalY);
     }
