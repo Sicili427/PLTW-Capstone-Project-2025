@@ -1,5 +1,6 @@
 package io.github.pltwgame;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
@@ -8,21 +9,26 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.Arrays;
 
 /** {@link ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
     //1280*720
+    // 1280x720px
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
     float circleX = 100;
     float circleY = 100;
 
-    final int GRID_WIDTH = 64;
-    final int GRID_HEIGHT = 32;
+    Grid grid;
+
+    Stage stage;
 
     TestAI testAI = new TestAI(0, 0);
 
@@ -30,7 +36,6 @@ public class main extends ApplicationAdapter {
     OrthographicCamera camera;
 
     SpriteBatch batch;
-    Texture line;
     ShapeRenderer shapeRenderer;
 
     MyInputProcessor inputProcessor = new MyInputProcessor();
@@ -41,15 +46,18 @@ public class main extends ApplicationAdapter {
         viewport = new ScreenViewport(camera);
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
+        stage = new Stage(viewport);
+        grid = new Grid(SCREEN_WIDTH, SCREEN_HEIGHT,64,2,1);
 
         shapeRenderer = new ShapeRenderer();
         batch = new SpriteBatch();
-        line = new Texture("pixel.png");
+
+        Gdx.app.setLogLevel(Application.LOG_INFO);
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
@@ -72,16 +80,19 @@ public class main extends ApplicationAdapter {
             }
                 //testAI.moveToPoint(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
         testAI.drawAI(shapeRenderer);
+
+        generateLine(grid);
     }
 
     @Override
     public void dispose() {
         batch.dispose();
-        line.dispose();
+        stage.dispose();
         shapeRenderer.dispose();
     }
 
     private void drawBoard() {
+        grid.generateGrid();
         GenerateGrid();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BROWN);
@@ -89,16 +100,41 @@ public class main extends ApplicationAdapter {
         shapeRenderer.end();
     }
 
-    private void GenerateGrid() {
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-        shapeRenderer.setColor(Color.BLACK);
-        for(int i = 0; i <= GRID_WIDTH; i++) {
-            shapeRenderer.line((float) (i * (SCREEN_WIDTH / GRID_WIDTH)), 0, (float) (i * (SCREEN_WIDTH /GRID_WIDTH)), SCREEN_HEIGHT);
+    private void generateLine(Grid initGrid) {
+        // finds and puts points in an array
+        int resolution = 1000;
+        int size = grid.numVertLines * resolution;
+        Vector2[] points = new Vector2[size];
+
+        int offsetX = 0;
+        int offsetY = initGrid.horzLines.length/2;
+
+        for(int i = 0; i < size; i++) {
+            double input = i / (double) resolution;
+            float y = (float) (Math.tan(input));
+            points[i] = new Vector2((float) input, y);
         }
-        for (int i = 0; i <= GRID_HEIGHT; i++) {
-            shapeRenderer.line(0, (float) (i * (SCREEN_HEIGHT / GRID_HEIGHT)), SCREEN_WIDTH, (float) (i * (SCREEN_HEIGHT /GRID_HEIGHT)));
+
+        for(int i = 0; i < points.length; i++) {
+            if (!Float.isInfinite(points[i].y) || !Float.isNaN(points[i].y)) {
+                if (Math.floor(points[i].y) > initGrid.horzLines.length - offsetY || Math.floor(points[i + 1].y) > initGrid.horzLines.length - offsetY) {
+                    continue;
+                } else if (Math.floor(Math.abs(points[i].y)) > offsetY || Math.floor(Math.abs(points[i + 1].y)) > offsetY) {
+                    continue;
+                }
+
+                float x1 = initGrid.vertLines[(int) points[i].x + offsetX].x + (points[i].x - (int) points[i].x) * initGrid.CellX;
+                float y1 = initGrid.horzLines[(int) points[i].y + offsetY].y + (points[i].y - (int) points[i].y) * initGrid.CellY;
+
+                float x2 = initGrid.vertLines[(int) points[i + 1].x + offsetX].x + (points[i + 1].x - (int) points[i + 1].x) * initGrid.CellX;
+                float y2 = initGrid.horzLines[(int) points[i + 1].y + offsetY].y + (points[i + 1].y - (int) points[i + 1].y) * initGrid.CellY;
+
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                shapeRenderer.setColor(Color.RED);
+                shapeRenderer.line(x1, y1, x2, y2);
+                shapeRenderer.end();
+            }
         }
-        shapeRenderer.end();
     }
 
 }
