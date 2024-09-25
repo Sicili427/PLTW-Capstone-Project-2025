@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -20,17 +21,26 @@ public class main extends ApplicationAdapter {
     // 1280x720px
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
+    float circleX = 100;
+    float circleY = 100;
+
+    final float xSpot = (float) Math.random()*SCREEN_WIDTH;
+    final float ySpot = (float) Math.random()*SCREEN_HEIGHT;
 
     Grid grid;
 
     Stage stage;
 
+    TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
+
     Viewport viewport;
     OrthographicCamera camera;
 
     SpriteBatch batch;
+    Texture line;
     ShapeRenderer shapeRenderer;
 
+    MyInputProcessor inputProcessor = new MyInputProcessor();
 
     @Override
     public void create() {
@@ -56,10 +66,23 @@ public class main extends ApplicationAdapter {
     public void render() {
         ScreenUtils.clear(1f, 1f, 1f, 1f);
         camera.update();
-
         drawBoard();
 
         generateLine(grid);
+        circleX = Gdx.input.getX();
+        circleY = SCREEN_HEIGHT-Gdx.input.getY();
+        testAI.moveToPoint();
+        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
+            float xSpot = (float) Math.random()*SCREEN_WIDTH;
+            float ySpot = (float) Math.random()*SCREEN_HEIGHT;
+            testAI.addPoint(xSpot, ySpot, false);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(Color.BROWN);
+            shapeRenderer.circle(xSpot, ySpot, 50);
+            shapeRenderer.end();
+        }
+        testAI.drawAI(shapeRenderer);
+        testAI.moveToPoint(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
     }
 
     @Override
@@ -71,6 +94,11 @@ public class main extends ApplicationAdapter {
 
     private void drawBoard() {
         grid.generateGrid();
+
+        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        shapeRenderer.setColor(Color.BROWN);
+        shapeRenderer.circle(circleX, circleY, 50);
+        shapeRenderer.end();
     }
 
     private void generateLine(Grid initGrid) {
@@ -109,4 +137,5 @@ public class main extends ApplicationAdapter {
             }
         }
     }
+
 }

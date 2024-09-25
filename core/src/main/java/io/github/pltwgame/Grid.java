@@ -62,4 +62,8 @@ public class Grid {
         }
         shapeRenderer.end();
     }
+
+    public void setColor(Color color) {
+
+    }
 }
