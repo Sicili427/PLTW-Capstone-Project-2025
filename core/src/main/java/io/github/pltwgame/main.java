@@ -28,7 +28,7 @@ public class main extends ApplicationAdapter {
     final float ySpot = (float) Math.random()*SCREEN_HEIGHT;
 
     Grid grid;
-
+    Taskbar taskbar;
     Stage stage;
 
     TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
@@ -52,6 +52,7 @@ public class main extends ApplicationAdapter {
         grid = new Grid(SCREEN_WIDTH, SCREEN_HEIGHT,64,2,1);
 
         shapeRenderer = new ShapeRenderer();
+        taskbar = new Taskbar();
         batch = new SpriteBatch();
 
         Gdx.app.setLogLevel(Application.LOG_INFO);
@@ -64,7 +65,7 @@ public class main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        ScreenUtils.clear(1f, 1f, 1f, 1f);
+        ScreenUtils.clear(0.1f, 1f, 0.1f, 0.5f);
         camera.update();
         drawBoard();
 
@@ -94,6 +95,7 @@ public class main extends ApplicationAdapter {
 
     private void drawBoard() {
         grid.generateGrid();
+        taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
 
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BROWN);
