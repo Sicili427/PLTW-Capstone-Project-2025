@@ -24,9 +24,6 @@ public class main extends ApplicationAdapter {
     float circleX = 100;
     float circleY = 100;
 
-    final float xSpot = (float) Math.random()*SCREEN_WIDTH;
-    final float ySpot = (float) Math.random()*SCREEN_HEIGHT;
-
     Grid grid;
     Taskbar taskbar;
     Stage stage;
@@ -37,10 +34,7 @@ public class main extends ApplicationAdapter {
     OrthographicCamera camera;
 
     SpriteBatch batch;
-    Texture line;
     ShapeRenderer shapeRenderer;
-
-    MyInputProcessor inputProcessor = new MyInputProcessor();
 
     @Override
     public void create() {
@@ -49,7 +43,8 @@ public class main extends ApplicationAdapter {
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
         stage = new Stage(viewport);
-        grid = new Grid(SCREEN_WIDTH, SCREEN_HEIGHT,64,2,1);
+        grid = new Grid(SCREEN_WIDTH,(SCREEN_HEIGHT),64,2,1);
+        grid.offsetY = (int)(SCREEN_HEIGHT*0.1);
 
         shapeRenderer = new ShapeRenderer();
         taskbar = new Taskbar();
@@ -69,21 +64,19 @@ public class main extends ApplicationAdapter {
         camera.update();
         drawBoard();
 
-        generateLine(grid);
-        circleX = Gdx.input.getX();
+        grid.generateLine();
+        /* circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
         testAI.moveToPoint();
         if(Gdx.input.isKeyPressed(Input.Keys.S)) {
             float xSpot = (float) Math.random()*SCREEN_WIDTH;
             float ySpot = (float) Math.random()*SCREEN_HEIGHT;
             testAI.addPoint(xSpot, ySpot, false);
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(Color.BROWN);
-            shapeRenderer.circle(xSpot, ySpot, 50);
-            shapeRenderer.end();
         }
         testAI.drawAI(shapeRenderer);
         testAI.moveToPoint(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+
+         */
     }
 
     @Override
