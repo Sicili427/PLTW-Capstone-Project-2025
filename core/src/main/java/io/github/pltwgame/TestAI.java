@@ -44,6 +44,10 @@ public class TestAI {
         if (mouse) adjustMouseVector(vector2);
         stack.add(vector2);
     }
+    public void addPoint(Vector2 vector2, boolean mouse) {
+        if (mouse) adjustMouseVector(vector2);
+        stack.add(vector2);
+    }
 
     public void moveToPoint() {
         if (!stack.isEmpty()) {
@@ -97,5 +101,11 @@ public class TestAI {
         adjustable.x += aiX;
         adjustable.y = SCREEN_HEIGHT + adjustable.y;
         adjustable.y += aiY;
+    }
+
+    public void addPoints(Vector2[] points){
+        for (Vector2 point : points) {
+            addPoint(point, false);
+        }
     }
 }

@@ -1,8 +1,14 @@
 package io.github.pltwgame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.function.Function;
+// import io.github.pltwgame.Line;
 
 public class Grid {
     final int gridWidth;
@@ -11,6 +17,13 @@ public class Grid {
     final int numHorzLines;
     final float CellX;
     final float CellY;
+
+    int offsetX = 0;
+    int offsetY = 0;
+
+    int originOffsetX;
+    int originOffsetY;
+
     ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     Vector2[] vertLines;
@@ -40,7 +53,7 @@ public class Grid {
         CellX = (float) cellSize;
         CellY = (float) cellSize;
         numVertLines = (int) Math.ceil((double) maxWidth / cellSize);
-        numHorzLines = (int) Math.ceil((double) maxHeight / cellSize);;
+        numHorzLines = (int) Math.ceil((double) maxHeight / cellSize);
     }
 
     public void generateGrid() {
@@ -52,14 +65,25 @@ public class Grid {
         shapeRenderer.setColor(Color.GRAY);
         for(int i = 0; i <= numVertLines; i++) {
             float x = i * CellX;
-            vertLines[i] = new Vector2(x, gridHeight);
-            shapeRenderer.line(x, 0, x, gridHeight);
+            vertLines[i] = new Vector2(x + offsetX, gridHeight);
+            shapeRenderer.line(x + offsetX, offsetY, x + offsetX, gridHeight);
         }
         for (int i = 0; i <= numHorzLines; i++) {
             float y = i * CellY;
-            horzLines[i] = new Vector2(gridWidth, y);
-            shapeRenderer.line(0, y, gridWidth, y);
+            horzLines[i] = new Vector2(gridWidth, y + offsetY);
+            shapeRenderer.line(offsetX, y + offsetY, gridWidth, y + offsetY);
         }
         shapeRenderer.end();
+        Gdx.app.log("xLines", Arrays.toString(horzLines));
+    }
+
+    public void drawLines(){
+        for (Line line : lines) {
+            line.generateLine();
+        }
+    }
+
+    public void newLine(Function<Double, Float> equation) {
+        lines.add(new Line(this, equation));
     }
 }

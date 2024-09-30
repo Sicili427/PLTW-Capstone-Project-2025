@@ -16,11 +16,11 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.Arrays;
+import java.util.function.Function;
 
 /** {@link ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
     //1280*720
-    // 1280x720px
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
     float circleX = 100;
@@ -65,23 +65,11 @@ public class main extends ApplicationAdapter {
         ScreenUtils.clear(1f, 1f, 1f, 1f);
         camera.update();
         drawBoard();
-        shapeRenderer.end();
-            circleX = Gdx.input.getX();
-            circleY = SCREEN_HEIGHT-Gdx.input.getY();
-                testAI.moveToPoint();
-            if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-                float xSpot = (float) Math.random()*SCREEN_WIDTH;
-                float ySpot = (float) Math.random()*SCREEN_HEIGHT;
-                testAI.addPoint(xSpot, ySpot, false);
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.setColor(Color.BROWN);
-                shapeRenderer.circle(xSpot, ySpot, 50);
-                shapeRenderer.end();
-            }
-                //testAI.moveToPoint(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
+        circleX = Gdx.input.getX();
+        circleY = SCREEN_HEIGHT-Gdx.input.getY();
+        testAI.moveToPoint();
         testAI.drawAI(shapeRenderer);
-
-        generateLine(grid);
+        grid.drawLines();
     }
 
     @Override
@@ -93,48 +81,10 @@ public class main extends ApplicationAdapter {
 
     private void drawBoard() {
         grid.generateGrid();
-        GenerateGrid();
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BROWN);
         shapeRenderer.circle(circleX, circleY, 50);
         shapeRenderer.end();
-    }
-
-    private void generateLine(Grid initGrid) {
-        // finds and puts points in an array
-        int resolution = 1000;
-        int size = grid.numVertLines * resolution;
-        Vector2[] points = new Vector2[size];
-
-        int offsetX = 0;
-        int offsetY = initGrid.horzLines.length/2;
-
-        for(int i = 0; i < size; i++) {
-            double input = i / (double) resolution;
-            float y = (float) (Math.tan(input));
-            points[i] = new Vector2((float) input, y);
-        }
-
-        for(int i = 0; i < points.length; i++) {
-            if (!Float.isInfinite(points[i].y) || !Float.isNaN(points[i].y)) {
-                if (Math.floor(points[i].y) > initGrid.horzLines.length - offsetY || Math.floor(points[i + 1].y) > initGrid.horzLines.length - offsetY) {
-                    continue;
-                } else if (Math.floor(Math.abs(points[i].y)) > offsetY || Math.floor(Math.abs(points[i + 1].y)) > offsetY) {
-                    continue;
-                }
-
-                float x1 = initGrid.vertLines[(int) points[i].x + offsetX].x + (points[i].x - (int) points[i].x) * initGrid.CellX;
-                float y1 = initGrid.horzLines[(int) points[i].y + offsetY].y + (points[i].y - (int) points[i].y) * initGrid.CellY;
-
-                float x2 = initGrid.vertLines[(int) points[i + 1].x + offsetX].x + (points[i + 1].x - (int) points[i + 1].x) * initGrid.CellX;
-                float y2 = initGrid.horzLines[(int) points[i + 1].y + offsetY].y + (points[i + 1].y - (int) points[i + 1].y) * initGrid.CellY;
-
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-                shapeRenderer.setColor(Color.RED);
-                shapeRenderer.line(x1, y1, x2, y2);
-                shapeRenderer.end();
-            }
-        }
     }
 
 }
