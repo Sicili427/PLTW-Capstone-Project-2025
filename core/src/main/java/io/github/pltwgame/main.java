@@ -4,11 +4,9 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -28,6 +26,8 @@ public class main extends ApplicationAdapter {
 
     Stage stage;
 
+    Line line;
+
     TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
 
     Viewport viewport;
@@ -43,10 +43,10 @@ public class main extends ApplicationAdapter {
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
         stage = new Stage(viewport);
-        grid = new Grid(SCREEN_WIDTH,(SCREEN_HEIGHT),64,2,1);
-        grid.offsetY = (int)(SCREEN_HEIGHT*0.1);
-
         shapeRenderer = new ShapeRenderer();
+
+        grid = new Grid(shapeRenderer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
+        grid.centerOriginY();
 
         Gdx.app.setLogLevel(Application.LOG_INFO);
     }
@@ -62,7 +62,8 @@ public class main extends ApplicationAdapter {
         camera.update();
         drawBoard();
 
-        grid.generateLine();
+
+
         /* circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
         testAI.moveToPoint();
