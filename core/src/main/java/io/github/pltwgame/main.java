@@ -11,16 +11,19 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
+import java.util.Arrays;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
 /** {@link ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
-    //1280*720
+    // 1280x720px
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
     float circleX = 100;
@@ -30,15 +33,14 @@ public class main extends ApplicationAdapter {
 
     Stage stage;
 
-    TestAI testAI = new TestAI(0, 0);
+
+    TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
 
     Viewport viewport;
     OrthographicCamera camera;
 
     SpriteBatch batch;
     ShapeRenderer shapeRenderer;
-
-    MyInputProcessor inputProcessor = new MyInputProcessor();
 
     @Override
     public void create() {
@@ -47,10 +49,10 @@ public class main extends ApplicationAdapter {
         viewport.apply();
         camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
         stage = new Stage(viewport);
-        grid = new Grid(SCREEN_WIDTH, SCREEN_HEIGHT,64,2,1);
+        grid = new Grid(SCREEN_WIDTH,(SCREEN_HEIGHT),64,2,1);
+        grid.offsetY = (int)(SCREEN_HEIGHT*0.1);
 
         shapeRenderer = new ShapeRenderer();
-        batch = new SpriteBatch();
 
         Gdx.app.setLogLevel(Application.LOG_INFO);
     }

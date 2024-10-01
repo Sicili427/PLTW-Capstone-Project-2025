@@ -17,13 +17,8 @@ public class Grid {
     final int numHorzLines;
     final float CellX;
     final float CellY;
-
     int offsetX = 0;
     int offsetY = 0;
-
-    int originOffsetX;
-    int originOffsetY;
-
     ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     Vector2[] vertLines;
@@ -65,13 +60,13 @@ public class Grid {
         shapeRenderer.setColor(Color.GRAY);
         for(int i = 0; i <= numVertLines; i++) {
             float x = i * CellX;
-            vertLines[i] = new Vector2(x + offsetX, gridHeight);
-            shapeRenderer.line(x + offsetX, offsetY, x + offsetX, gridHeight);
+            vertLines[i] = new Vector2(x, gridHeight);
+            shapeRenderer.line(x, offsetY, x, gridHeight);
         }
         for (int i = 0; i <= numHorzLines; i++) {
             float y = i * CellY;
-            horzLines[i] = new Vector2(gridWidth, y + offsetY);
-            shapeRenderer.line(offsetX, y + offsetY, gridWidth, y + offsetY);
+            horzLines[i] = new Vector2(gridWidth, y);
+            shapeRenderer.line(offsetX, y, gridWidth, y);
         }
         shapeRenderer.end();
         Gdx.app.log("xLines", Arrays.toString(horzLines));
