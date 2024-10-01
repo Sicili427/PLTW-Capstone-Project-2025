@@ -13,18 +13,29 @@ import java.util.function.Function;
 public class Grid {
     final int gridWidth;
     final int gridHeight;
+
     final int numVertLines;
     final int numHorzLines;
+
     final float CellX;
     final float CellY;
+
     int offsetX = 0;
     int offsetY = 0;
-    ShapeRenderer shapeRenderer = new ShapeRenderer();
+
+    int originOffsetX = 0;
+    int originOffsetY = 0;
+
+    ShapeRenderer shapeRenderer;
 
     Vector2[] vertLines;
     Vector2[] horzLines;
 
-    public Grid(int maxWidth, int maxHeight, int initVertLines, int initHorzLines) {
+    ArrayList<Line> lines = new ArrayList<>();
+
+
+    public Grid(ShapeRenderer initRenderer, int maxWidth, int maxHeight, int initVertLines, int initHorzLines) {
+        shapeRenderer = initRenderer;
         gridWidth = maxWidth;
         gridHeight = maxHeight;
         numVertLines = initVertLines;
@@ -33,7 +44,8 @@ public class Grid {
         CellY = (float) maxHeight / initHorzLines;
     }
 
-    public Grid(int maxWidth, int maxHeight, int initHorzLines, int ratioX, int ratioY) {
+    public Grid(ShapeRenderer initRenderer, int maxWidth, int maxHeight, int initHorzLines, int ratioX, int ratioY) {
+        shapeRenderer = initRenderer;
         gridWidth = maxWidth;
         gridHeight = maxHeight;
         numVertLines = initHorzLines;
@@ -42,13 +54,22 @@ public class Grid {
         CellY = (float) maxHeight / numHorzLines;
     }
 
-    public Grid(int maxWidth, int maxHeight, int cellSize) {
+    public Grid(ShapeRenderer initRenderer, int maxWidth, int maxHeight, int cellSize) {
+        shapeRenderer = initRenderer;
         gridWidth = maxWidth;
         gridHeight = maxHeight;
         CellX = (float) cellSize;
         CellY = (float) cellSize;
         numVertLines = (int) Math.ceil((double) maxWidth / cellSize);
         numHorzLines = (int) Math.ceil((double) maxHeight / cellSize);
+    }
+
+    public void centerOriginY() {
+        originOffsetY = numHorzLines / 2;
+    }
+
+    public void centerOriginX() {
+        originOffsetX = numVertLines / 2;
     }
 
     public void generateGrid() {
@@ -60,16 +81,22 @@ public class Grid {
         shapeRenderer.setColor(Color.GRAY);
         for(int i = 0; i <= numVertLines; i++) {
             float x = i * CellX;
-            vertLines[i] = new Vector2(x, gridHeight);
-            shapeRenderer.line(x, offsetY, x, gridHeight);
+            vertLines[i] = new Vector2(x + offsetX, gridHeight);
+            shapeRenderer.line(x + offsetX, offsetY, x + offsetX, gridHeight);
         }
         for (int i = 0; i <= numHorzLines; i++) {
             float y = i * CellY;
-            horzLines[i] = new Vector2(gridWidth, y);
-            shapeRenderer.line(offsetX, y, gridWidth, y);
+            horzLines[i] = new Vector2(gridWidth, y + offsetY);
+            shapeRenderer.line(offsetX, y + offsetY, gridWidth, y + offsetY);
         }
         shapeRenderer.end();
         Gdx.app.log("xLines", Arrays.toString(horzLines));
+    }
+
+    public void addLine(Function<Double, Float> equation) {
+        String name = "line" + Line.lineIndex;
+        Line temp = new Line(shapeRenderer, this, name, 100);
+        lines.add(temp);
     }
 
     public void drawLines(){
