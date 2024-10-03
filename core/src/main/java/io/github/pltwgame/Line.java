@@ -44,13 +44,13 @@ public class Line{
         points = new Vector2[size];
         for(int i = 0; i < size; i++) {
             double input = i / (double) resolution;
-            float y = (float) Math.sin(input);
+            float y = (float) Math.tan(input);
             points[i] = new Vector2((float) input, y);
         }
     }
 
-    public static int getLineIndex(){
-        return lineIndex;
+    public String toString() {
+        return id + " | parented to grid" + parentGrid.id + " | with equation ";
     }
 
     public void generateLine() {
@@ -59,9 +59,11 @@ public class Line{
         shapeRenderer.setColor(Color.RED);
         for(int i = 0; i < points.length-1; i++) {
             if (Float.isFinite(points[i].y)) {
-                if (Math.floor(points[i].y) > parentGrid.horzLines.length - parentGrid.originOffsetY || Math.floor(points[i + 1].y) > parentGrid.horzLines.length - parentGrid.originOffsetY) {
+                // checks if point is above grid vertical range
+                if (Math.floor(points[i].y) >= parentGrid.numHorzLines - parentGrid.originOffsetY || Math.floor(points[i + 1].y) >= parentGrid.numHorzLines - parentGrid.originOffsetY) {
                     continue;
-                } else if (Math.floor(Math.abs(points[i].y)) > parentGrid.originOffsetY || Math.floor(Math.abs(points[i + 1].y)) > parentGrid.originOffsetY) {
+                // checks if point is below the grid vertical range
+                } else if (Math.floor(Math.abs(points[i].y)) >= parentGrid.originOffsetY || Math.floor(Math.abs(points[i + 1].y)) >= parentGrid.originOffsetY) {
                     continue;
                 }
 
