@@ -98,8 +98,8 @@ public class Grid {
         CellY = (float) (gridHeight - offsetY) / numHorzLines;
     }
 
-    public void generateGrid(boolean recrusiveRender) {
-        if(!isRendered || recrusiveRender) {
+    public void generateGrid(boolean recursiveRender) {
+        if(!isRendered || recursiveRender) {
             ScreenUtils.clear(1f, 1f, 1f, 1f);
             // generates grid
             shapeDrawer.getBatch().begin();

@@ -47,6 +47,7 @@ public class main extends ApplicationAdapter {
         textureAtlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
         skin = new Skin(Gdx.files.internal("uiskin.json"), textureAtlas);
         textField = new TextField("", skin);
+        textField.setMaxLength(50);
 
         texture = new Texture("pixel.png");
         batch = new SpriteBatch();
@@ -63,19 +64,22 @@ public class main extends ApplicationAdapter {
 
         grid.centerOriginY();
 
+        stage.addActor(textField);
+
         Gdx.app.log("Status", "Create Finished");
     }
 
     @Override
     public void resize(int width, int height) {
-        // Resize your application here. The parameters represent the new window size.
+        stage.getViewport().update(width,height,true);
     }
 
     @Override
     public void render() {
-        grid.generateGrid(false);
+        float delta = Gdx.graphics.getDeltaTime();
+        grid.generateGrid(true);
 
-        stage.act();
+        stage.act(delta);
         stage.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
@@ -99,5 +103,8 @@ public class main extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         texture.dispose();
+        textureAtlas.dispose();
+        skin.dispose();
+        stage.dispose();
     }
 }
