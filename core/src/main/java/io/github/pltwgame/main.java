@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -31,7 +32,7 @@ public class main extends ApplicationAdapter {
     TextField textField;
 
     TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
-    
+
     Texture texture;
     SpriteBatch batch;
     TextureRegion textureRegion;
@@ -40,7 +41,7 @@ public class main extends ApplicationAdapter {
     FPSLogger fpsLogger;
 
     Grid grid;
-  
+
     float circleX = 100;
     float circleY = 100;
 
@@ -85,12 +86,12 @@ public class main extends ApplicationAdapter {
     @Override
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
-      
+
         circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
-      
+
         testAI.moveToPoint();
-        testAI.drawAI(shapeRenderer);
+        testAI.drawAI(shapeDrawer);
 
         stage.act(delta);
         stage.draw();
@@ -106,7 +107,7 @@ public class main extends ApplicationAdapter {
     public void pause() {
         // Invoked when your application is paused.
     }
-  
+
     @Override
     public void resume() {
         // Invoked when your application is resumed after pause.
@@ -120,11 +121,11 @@ public class main extends ApplicationAdapter {
         skin.dispose();
         stage.dispose();
     }
-  
+
     private void drawBoard() {
         grid.generateGrid(true);
         batch.begin();
-        batch.setColor(Color.BROWN);
+        shapeDrawer.setColor(Color.BROWN);
         shapeDrawer.circle(circleX, circleY, 50);
         batch.end();
     }
