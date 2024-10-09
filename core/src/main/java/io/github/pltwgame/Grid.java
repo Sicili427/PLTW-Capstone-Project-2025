@@ -125,4 +125,14 @@ public class Grid {
         temp.generateLine();
         Gdx.app.log("AddLine", "Added " + temp);
     }
+
+    public void drawLines(){
+        for (Line line : lines) {
+            line.generateLine();
+        }
+    }
+
+    public void newLine(Function<Double, Float> equation) {
+        lines.add(new Line(this, equation));
+    }
 }

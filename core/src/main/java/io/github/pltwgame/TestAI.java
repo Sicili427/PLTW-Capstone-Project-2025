@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.ArrayList;
 
 public class TestAI {
+    float moveSpeed = 5;
+    ArrayList<Vector2> stack = new ArrayList<>();
     final int maxBoundX;
     final int maxBoundY;
 
@@ -46,6 +48,10 @@ public class TestAI {
         if (mouse) adjustMouseVector(vector2);
         points.add(vector2);
     }
+    public void addPoint(Vector2 vector2, boolean mouse) {
+        if (mouse) adjustMouseVector(vector2);
+        stack.add(vector2);
+    }
 
     public void moveToPoint (){
         if (!points.isEmpty()) {
@@ -65,10 +71,10 @@ public class TestAI {
         Vector2 target = points.get(0);
         float angleTo = findAngle(target);
 
-        float finalX = (float) (xPos + 1 * Math.cos(angleTo));
-        float finalY = (float) (yPos + 1 * Math.sin(angleTo));
+        float finalX = (float) (xPos + moveSpeed * Math.cos(angleTo));
+        float finalY = (float) (yPos + moveSpeed * Math.sin(angleTo));
 
-        if (xPos < target.x + 1 && yPos < target.y + 1 && xPos > target.x - 1 && yPos > target.y - 1) {
+        if (xPos < target.x + moveSpeed && yPos < target.y + moveSpeed && xPos > target.x - moveSpeed && yPos > target.y - moveSpeed) {
             points.remove(0);
         }
 
@@ -79,8 +85,8 @@ public class TestAI {
         adjustMouseVector(pointToGo);
         float angleTo = findAngle(pointToGo);
 
-        float finalX = (float) (xPos + 1 * Math.cos(angleTo));
-        float finalY = (float) (yPos + 1 * Math.sin(angleTo));
+        float finalX = (float) (xPos + moveSpeed * Math.cos(angleTo));
+        float finalY = (float) (yPos + moveSpeed * Math.sin(angleTo));
 
         return new Vector2(finalX, finalY);
     }
@@ -99,5 +105,11 @@ public class TestAI {
         adjustable.x += xPos;
         adjustable.y = maxBoundY + adjustable.y;
         adjustable.y += yPos;
+    }
+
+    public void addPoints(Vector2[] points){
+        for (Vector2 point : points) {
+            addPoint(point, false);
+        }
     }
 }

@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -27,6 +30,8 @@ public class main extends ApplicationAdapter {
     Skin skin;
     TextField textField;
 
+    TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
+    
     Texture texture;
     SpriteBatch batch;
     TextureRegion textureRegion;
@@ -35,6 +40,9 @@ public class main extends ApplicationAdapter {
     FPSLogger fpsLogger;
 
     Grid grid;
+  
+    float circleX = 100;
+    float circleY = 100;
 
     @Override
     public void create() {
@@ -59,7 +67,7 @@ public class main extends ApplicationAdapter {
         grid = new Grid(shapeDrawer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
 
         textField.setMessageText("Enter text...");
-        textField.setPosition(100, 150);  // Position the text input on the screen
+        textField.setPosition(100, 150);
         textField.setSize(300, 40);
 
         grid.centerOriginY();
@@ -77,7 +85,12 @@ public class main extends ApplicationAdapter {
     @Override
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
-        grid.generateGrid(true);
+      
+        circleX = Gdx.input.getX();
+        circleY = SCREEN_HEIGHT-Gdx.input.getY();
+      
+        testAI.moveToPoint();
+        testAI.drawAI(shapeRenderer);
 
         stage.act(delta);
         stage.draw();
@@ -93,7 +106,7 @@ public class main extends ApplicationAdapter {
     public void pause() {
         // Invoked when your application is paused.
     }
-
+  
     @Override
     public void resume() {
         // Invoked when your application is resumed after pause.
@@ -106,5 +119,13 @@ public class main extends ApplicationAdapter {
         textureAtlas.dispose();
         skin.dispose();
         stage.dispose();
+    }
+  
+    private void drawBoard() {
+        grid.generateGrid(true);
+        batch.begin();
+        batch.setColor(Color.BROWN);
+        shapeDrawer.circle(circleX, circleY, 50);
+        batch.end();
     }
 }
