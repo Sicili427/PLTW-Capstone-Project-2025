@@ -33,6 +33,7 @@ public class main extends ApplicationAdapter {
 
     Line line;
 
+    Taskbar taskbar = new Taskbar();
 
     TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
 
@@ -83,6 +84,7 @@ public class main extends ApplicationAdapter {
 
     private void drawBoard() {
         grid.generateGrid();
+        taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT, stage);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.BROWN);
         shapeRenderer.circle(circleX, circleY, 50);

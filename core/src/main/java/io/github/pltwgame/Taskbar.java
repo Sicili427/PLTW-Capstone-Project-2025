@@ -19,7 +19,7 @@ public class Taskbar {
     public Taskbar() {
         shapeRenderer = new ShapeRenderer();
     }
-    public void generateTaskbar(int screenWidth, int screenHeight) {
+    public void generateTaskbar(int screenWidth, int screenHeight, Stage stage) {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(Color.GRAY);
         //shapeRenderer.rect(70f, 280f, 1280f, 720f, Color.RED, Color.BLUE, Color.GREEN, Color.CYAN);
