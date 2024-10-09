@@ -1,33 +1,66 @@
 package io.github.pltwgame;
 
 import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
-public class main implements ApplicationListener {
+public class main extends ApplicationAdapter {
     // 1280x720px
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
 
+    Stage stage;
+
+    TextureAtlas textureAtlas;
+    Skin skin;
+    TextField textField;
+
+    Texture texture;
     SpriteBatch batch;
-    ShapeRenderer shapeRenderer;
+    TextureRegion textureRegion;
+    ShapeDrawer shapeDrawer;
+
+    FPSLogger fpsLogger;
 
     Grid grid;
 
     @Override
     public void create() {
-        Gdx.app.setLogLevel(Application.LOG_INFO);
+        Gdx.app.setLogLevel(Application.LOG_INFO); // logging not working idk why :/
         Gdx.app.log("Status", "Create Triggered");
-        Gdx.graphics.setContinuousRendering(false);
-        Gdx.app.log("Status", Gdx.graphics.isContinuousRendering() + "");
 
-        shapeRenderer = new ShapeRenderer();
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
 
-        grid = new Grid(shapeRenderer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
+        textureAtlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
+        skin = new Skin(Gdx.files.internal("uiskin.json"), textureAtlas);
+        textField = new TextField("", skin);
+
+        texture = new Texture("pixel.png");
+        batch = new SpriteBatch();
+        textureRegion = new TextureRegion(texture, 0, 0, 1, 1);
+        shapeDrawer = new ShapeDrawer(batch, textureRegion);
+
+        fpsLogger = new FPSLogger();
+
+        grid = new Grid(shapeDrawer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
+
+        textField.setMessageText("Enter text...");
+        textField.setPosition(100, 150);  // Position the text input on the screen
+        textField.setSize(300, 40);
+
         grid.centerOriginY();
 
         Gdx.app.log("Status", "Create Finished");
@@ -40,11 +73,16 @@ public class main implements ApplicationListener {
 
     @Override
     public void render() {
-        Gdx.app.log("Status", "Render Triggered");
-        ScreenUtils.clear(1f, 1f, 1f, 1f);
-        grid.generateGrid();
-        grid.addLine();
-        Gdx.app.log("Status", "Render Finished");
+        grid.generateGrid(false);
+
+        stage.act();
+        stage.draw();
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+            grid.addLine();
+        }
+
+        fpsLogger.log();
     }
 
     @Override
@@ -60,6 +98,6 @@ public class main implements ApplicationListener {
     @Override
     public void dispose() {
         batch.dispose();
-        shapeRenderer.dispose();
+        texture.dispose();
     }
 }
