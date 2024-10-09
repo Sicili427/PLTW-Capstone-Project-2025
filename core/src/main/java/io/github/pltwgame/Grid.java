@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 public class Grid {
     public static int gridIndex = 0;
@@ -124,15 +125,5 @@ public class Grid {
         lines.add(temp);
         temp.generateLine();
         Gdx.app.log("AddLine", "Added " + temp);
-    }
-
-    public void drawLines(){
-        for (Line line : lines) {
-            line.generateLine();
-        }
-    }
-
-    public void newLine(Function<Double, Float> equation) {
-        lines.add(new Line(this, equation));
     }
 }

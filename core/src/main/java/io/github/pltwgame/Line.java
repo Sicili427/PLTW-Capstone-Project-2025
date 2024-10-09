@@ -29,7 +29,7 @@ public class Line{
         id = "line" + lineIndex;
         lineIndex++;
         equation = initEquation;
-        findVirtualPoints(resolution
+        findVirtualPoints(resolution);
     }
 
     public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution) {
