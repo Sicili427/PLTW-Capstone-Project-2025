@@ -2,21 +2,20 @@ package io.github.pltwgame;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
-import java.util.Arrays;
-
-/** {@link ApplicationListener} implementation shared by all platforms. */
+/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
     // 1280x720px
     final int SCREEN_WIDTH = 1280;
@@ -26,64 +25,91 @@ public class main extends ApplicationAdapter {
 
     Grid grid;
     Taskbar taskbar;
+
     Stage stage;
 
-    TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
+    TextureAtlas textureAtlas;
+    Skin skin;
+    TextField textField;
 
-    Viewport viewport;
-    OrthographicCamera camera;
-
+    Texture texture;
     SpriteBatch batch;
-    ShapeRenderer shapeRenderer;
+    TextureRegion textureRegion;
+    ShapeDrawer shapeDrawer;
+
+    FPSLogger fpsLogger;
+
+    Grid grid;
 
     @Override
     public void create() {
-        camera = new OrthographicCamera();
-        viewport = new ScreenViewport(camera);
-        viewport.apply();
-        camera.position.set(camera.viewportWidth / 2f, camera.viewportHeight / 2f, 0);
-        stage = new Stage(viewport);
-        grid = new Grid(SCREEN_WIDTH,(SCREEN_HEIGHT),64,2,1);
-        grid.offsetY = (int)(SCREEN_HEIGHT*0.1);
+        Gdx.app.setLogLevel(Application.LOG_INFO); // logging not working idk why :/
+        Gdx.app.log("Status", "Create Triggered");
 
+        stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+
+        textureAtlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
+        skin = new Skin(Gdx.files.internal("uiskin.json"), textureAtlas);
+        textField = new TextField("", skin);
+
+        texture = new Texture("pixel.png");
+        batch = new SpriteBatch();
+        textureRegion = new TextureRegion(texture, 0, 0, 1, 1);
+        shapeDrawer = new ShapeDrawer(batch, textureRegion);
+
+        fpsLogger = new FPSLogger();
+
+        grid = new Grid(shapeDrawer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
         shapeRenderer = new ShapeRenderer();
         taskbar = new Taskbar();
         batch = new SpriteBatch();
 
-        Gdx.app.setLogLevel(Application.LOG_INFO);
+        textField.setMessageText("Enter text...");
+        textField.setPosition(100, 150);  // Position the text input on the screen
+        textField.setSize(300, 40);
+
+        grid.centerOriginY();
+
+        Gdx.app.log("Status", "Create Finished");
     }
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        // Resize your application here. The parameters represent the new window size.
     }
 
     @Override
     public void render() {
+        grid.generateGrid(false);
+
+        stage.act();
+        stage.draw();
         ScreenUtils.clear(0.1f, 1f, 0.1f, 0.5f);
         camera.update();
         drawBoard();
 
-        grid.generateLine();
-        /* circleX = Gdx.input.getX();
-        circleY = SCREEN_HEIGHT-Gdx.input.getY();
-        testAI.moveToPoint();
-        if(Gdx.input.isKeyPressed(Input.Keys.S)) {
-            float xSpot = (float) Math.random()*SCREEN_WIDTH;
-            float ySpot = (float) Math.random()*SCREEN_HEIGHT;
-            testAI.addPoint(xSpot, ySpot, false);
+        if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+            grid.addLine();
         }
-        testAI.drawAI(shapeRenderer);
-        testAI.moveToPoint(new Vector2(Gdx.input.getX(), Gdx.input.getY()));
 
-         */
+        fpsLogger.log();
+    }
+
+    @Override
+    public void pause() {
+        // Invoked when your application is paused.
+    }
+
+    @Override
+    public void resume() {
+        // Invoked when your application is resumed after pause.
     }
 
     @Override
     public void dispose() {
         batch.dispose();
-        stage.dispose();
-        shapeRenderer.dispose();
+        texture.dispose();
     }
 
     private void drawBoard() {
