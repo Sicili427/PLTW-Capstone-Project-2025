@@ -44,14 +44,14 @@ public class main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        Gdx.app.setLogLevel(Application.LOG_INFO); // logging not working idk why :/
-        Gdx.app.log("Status", "Create Triggered");
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+        Gdx.app.debug("Status", "Create Started");
 
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        textureAtlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
-        skin = new Skin(Gdx.files.internal("uiskin.json"), textureAtlas);
+        textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
         textField = new TextField("", skin);
         textField.setMaxLength(50);
 
@@ -68,11 +68,12 @@ public class main extends ApplicationAdapter {
         textField.setPosition(100, 150);
         textField.setSize(300, 40);
 
+        grid.generateGrid();
         grid.centerOriginY();
 
         stage.addActor(textField);
 
-        Gdx.app.log("Status", "Create Finished");
+        Gdx.app.debug("Status", "Create Finished");
     }
 
     @Override
@@ -87,14 +88,20 @@ public class main extends ApplicationAdapter {
         circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
 
+        drawBoard();
+
         testAI.moveToPoint();
         testAI.drawAI(shapeDrawer);
 
         stage.act(delta);
         stage.draw();
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+        //if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
             grid.addLine();
+        //}
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            EquationInterpreter.stringToEquation(textField.getText());
         }
 
         fpsLogger.log();
@@ -120,7 +127,7 @@ public class main extends ApplicationAdapter {
     }
 
     private void drawBoard() {
-        grid.generateGrid(true);
+        grid.renderGrid(true);
         batch.begin();
         shapeDrawer.setColor(Color.BROWN);
         shapeDrawer.circle(circleX, circleY, 50);
