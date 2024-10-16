@@ -100,7 +100,7 @@ public class main extends ApplicationAdapter {
         stage.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine(input -> (float) Math.tan(input));
+            grid.addLine();
         }
 
         fpsLogger.log();
