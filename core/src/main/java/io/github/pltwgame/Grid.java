@@ -95,7 +95,7 @@ public class Grid {
 
     public void addLine(Function<Double, Float> equation) {
         String name = "line" + Line.lineIndex;
-        Line temp = new Line(shapeRenderer, this, name, 100);
+        Line temp = new Line(shapeRenderer, this, name, 100, equation);
         lines.add(temp);
     }
 
@@ -105,7 +105,8 @@ public class Grid {
         }
     }
 
-    public void newLine(Function<Double, Float> equation) {
-        lines.add(new Line(this, equation));
+    public void throwLinesToAI(TestAI ai){
+
+            lines.get(ai.lineIndex).throwToAI(ai);
     }
 }

@@ -1,9 +1,6 @@
 package io.github.pltwgame;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -14,6 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import java.util.Arrays;
@@ -33,8 +31,10 @@ public class main extends ApplicationAdapter {
 
     Line line;
 
+    int stupid = 0;
+    int stupid2 = 0;
 
-    TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
+    ArrayList<TestAI> testAIS = new ArrayList<>();
 
     Viewport viewport;
     OrthographicCamera camera;
@@ -54,7 +54,10 @@ public class main extends ApplicationAdapter {
         grid = new Grid(shapeRenderer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
         grid.centerOriginY();
 
+        testAIS.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
+
         Gdx.app.setLogLevel(Application.LOG_INFO);
+
     }
 
     @Override
@@ -67,11 +70,26 @@ public class main extends ApplicationAdapter {
         ScreenUtils.clear(1f, 1f, 1f, 1f);
         camera.update();
         drawBoard();
+        if(stupid == 0){
+            stupid++;
+            grid.addLine(input -> (float) Math.sin(1/(input/100)));
+            grid.throwLinesToAI(testAIS.get(0));
+        }
+        if(Gdx.input.isKeyPressed(Input.Keys.S)){
+            if(stupid2 == 0){
+                stupid2++;
+                grid.addLine(input -> (float) Math.cos(input));
+                testAIS.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 1));
+                grid.throwLinesToAI(testAIS.get(1));
+            }
+        }
         circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
-        testAI.moveToPoint();
-        testAI.drawAI(shapeRenderer);
         grid.drawLines();
+        for(TestAI testAI : testAIS) {
+            testAI.moveToPoint();
+            testAI.drawAI(shapeRenderer);
+        }
     }
 
     @Override
