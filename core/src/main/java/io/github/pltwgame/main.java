@@ -1,6 +1,5 @@
 package io.github.pltwgame;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -100,7 +99,7 @@ public class main extends ApplicationAdapter {
         stage.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine();
+            grid.addLine(input -> (float) Math.tan(input));
         }
 
         fpsLogger.log();
@@ -126,7 +125,7 @@ public class main extends ApplicationAdapter {
     }
 
     private void drawBoard() {
-        grid.generateGrid(true);
+        grid.renderGrid(true);
         batch.begin();
         shapeDrawer.setColor(Color.BROWN);
         shapeDrawer.circle(circleX, circleY, 50);
