@@ -7,8 +7,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -16,33 +14,23 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import space.earlygrey.shapedrawer.ShapeDrawer;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
     // 1280x720px
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
-    float circleX = 100;
-    float circleY = 100;
-
-    Grid grid;
 
     Stage stage;
 
     TextureAtlas textureAtlas;
     Skin skin;
     TextField textField;
-    Line line;
 
-    int stupid = 0;
-    int stupid2 = 0;
-
-    ArrayList<TestAI> testAIS = new ArrayList<>();
+    ArrayList<TestAI> testAIs = new ArrayList<>();
 
     Texture texture;
     SpriteBatch batch;
@@ -58,7 +46,7 @@ public class main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        Gdx.app.setLogLevel(Application.LOG_INFO); // logging not working idk why :/
+        Gdx.app.setLogLevel(3); // logging not working idk why :/
         Gdx.app.log("Status", "Create Triggered");
 
         stage = new Stage(new ScreenViewport());
@@ -84,9 +72,7 @@ public class main extends ApplicationAdapter {
 
         grid.centerOriginY();
 
-        testAIS.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
-
-        Gdx.app.setLogLevel(Application.LOG_INFO);
+        testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
 
         stage.addActor(textField);
 
@@ -105,14 +91,16 @@ public class main extends ApplicationAdapter {
         circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
 
-        testAI.moveToPoint();
-        testAI.drawAI(shapeDrawer);
+        for(TestAI testAI : testAIs) {
+            testAI.moveToPoint();
+            testAI.drawAI(shapeDrawer);
+        }
 
         stage.act(delta);
         stage.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine();
+            grid.addLine(input -> (float) Math.tan(input));
         }
 
         fpsLogger.log();

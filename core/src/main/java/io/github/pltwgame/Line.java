@@ -56,34 +56,40 @@ public class Line{
         }
     }
 
+    private void findRealPoints(int resolution) {
+        int size = resolution * parentGrid.numVertLines;
+        realPoints = new Vector2[size];
+        for (int i = 0; i < virtualPoints.length; i++) {
+            if (Float.isFinite(virtualPoints[i].y)) {
+                float x = parentGrid.vertLines[(int) virtualPoints[i].x + parentGrid.originOffsetX].x + (virtualPoints[i].x - (int) virtualPoints[i].x) * parentGrid.CellX;
+                float y = parentGrid.horzLines[(int) virtualPoints[i].y + parentGrid.originOffsetY].y + (virtualPoints[i].y - (int) virtualPoints[i].y) * parentGrid.CellY;
+
+                realPoints[i] = new Vector2(x, y);
+            }
+            else {
+                realPoints[i] = new Vector2(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+            }
+        }
+    }
+
     public void generateLine() {
         if (!isRendered) {
-            parentGrid.generateGrid(true);
+            parentGrid.renderGrid(true);
             // translates virtualPoints to a grid
             shapeDrawer.getBatch().begin();
             shapeDrawer.setColor(Color.RED);
-            for (int i = 0; i < virtualPoints.length - 1; i++) {
-                if (Float.isFinite(virtualPoints[i].y)) {
-                    // checks if point is above grid vertical range
-                    if (Math.floor(virtualPoints[i].y) >= parentGrid.numHorzLines - parentGrid.originOffsetY || Math.floor(virtualPoints[i + 1].y) >= parentGrid.numHorzLines - parentGrid.originOffsetY) {
-                        continue;
-                        // checks if point is below the grid vertical range
-                    } else if (Math.floor(Math.abs(virtualPoints[i].y)) >= parentGrid.originOffsetY || Math.floor(Math.abs(virtualPoints[i + 1].y)) >= parentGrid.originOffsetY) {
-                        continue;
-                    }
-
-                    float x1 = parentGrid.vertLines[(int) virtualPoints[i].x + parentGrid.originOffsetX].x + (virtualPoints[i].x - (int) virtualPoints[i].x) * parentGrid.CellX;
-                    float y1 = parentGrid.horzLines[(int) virtualPoints[i].y + parentGrid.originOffsetY].y + (virtualPoints[i].y - (int) virtualPoints[i].y) * parentGrid.CellY;
-
-                    float x2 = parentGrid.vertLines[(int) virtualPoints[i + 1].x + parentGrid.originOffsetX].x + (virtualPoints[i + 1].x - (int) virtualPoints[i + 1].x) * parentGrid.CellX;
-                    float y2 = parentGrid.horzLines[(int) virtualPoints[i + 1].y + parentGrid.originOffsetY].y + (virtualPoints[i + 1].y - (int) virtualPoints[i + 1].y) * parentGrid.CellY;
-
-                    shapeDrawer.line(x1, y1, x2, y2);
+            for (int i = 0; i < realPoints.length - 1; i++) {
+                if (Float.isFinite(realPoints[i].y)) {
+                    shapeDrawer.line(realPoints[i], realPoints[i + 1]);
                 }
             }
             shapeDrawer.getBatch().end();
         }
         isRendered = true;
+    }
+
+    private double derive(double x) {
+        return (equation.apply(x + 0.0001) - equation.apply(x))*10000;
     }
 
     public void throwToAI(TestAI ai){
