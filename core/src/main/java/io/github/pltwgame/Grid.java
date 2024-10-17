@@ -137,8 +137,8 @@ public class Grid {
         }
     }
 
-    public void addLine() {
-        Line temp = new Line(shapeDrawer, this,100, input -> (float) Math.tan(input));
+    public void addLine(Function<Double, Float> equation) {
+        Line temp = new Line(shapeDrawer, this,100, equation);
         lines.add(temp);
         temp.generateLine();
     }

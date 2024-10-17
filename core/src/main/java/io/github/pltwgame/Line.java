@@ -52,7 +52,7 @@ public class Line{
         // calculates the virtualPoints for the line from a given equation
         int size = resolution * parentGrid.numVertLines;
         virtualPoints = new Vector2[size];
-        double step = (double) 1 /resolution;
+        double step = (double) 1 / resolution;
         for(int i = 0; i < size; i++) {
             double input = i * step;
             float y = equation.apply(input);
@@ -62,16 +62,15 @@ public class Line{
                     // finds x for a given y (the height of the grid) and point with equation x = (y-b-ma)/m
                     float x = (parentGrid.gridYMax - virtualPoints[i - 1].y + (slope * virtualPoints[i - 1].x)) / slope;
                     virtualPoints[i] = new Vector2(x, parentGrid.gridYMax);
+                    continue;
                 } else if (Math.ceil(y) < parentGrid.gridYMin) {
                     // finds x for a given y (the height of the grid) and point with equation x = (y-b-ma)/m
                     float x = (parentGrid.gridYMin - virtualPoints[i - 1].y + (slope * virtualPoints[i - 1].x)) / slope;
                     virtualPoints[i] = new Vector2(x, parentGrid.gridYMin);
-                } else {
-                    virtualPoints[i] = new Vector2((float) input, y);
+                    continue;
                 }
-            } else {
-                virtualPoints[i] = new Vector2((float) input, y);
             }
+            virtualPoints[i] = new Vector2((float) input, y);
         }
     }
 
@@ -93,7 +92,6 @@ public class Line{
 
     public void generateLine() {
         if (!isRendered) {
-            parentGrid.renderGrid(true);
             // translates virtualPoints to a grid
             shapeDrawer.getBatch().begin();
             shapeDrawer.setColor(Color.RED);

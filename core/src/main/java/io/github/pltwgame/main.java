@@ -52,6 +52,7 @@ public class main extends ApplicationAdapter {
 
         textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
+
         textField = new TextField("", skin);
         textField.setMaxLength(50);
 
@@ -97,7 +98,7 @@ public class main extends ApplicationAdapter {
         stage.draw();
 
         //if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine();
+            grid.addLine(input -> (float) Math.sin(input));
         //}
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
