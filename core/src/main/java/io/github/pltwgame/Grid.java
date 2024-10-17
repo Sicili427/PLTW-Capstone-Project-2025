@@ -99,21 +99,28 @@ public class Grid {
         CellY = (float) (gridHeight - offsetY) / numHorzLines;
     }
 
-    public void generateGrid(boolean recursiveRender) {
+    public void generateGrid() {
+        for (int i = 0; i <= numVertLines; i++) {
+            float x = i * CellX;
+            vertLines[i] = new Vector2(x + offsetX, gridHeight);
+        }
+        for (int i = 0; i <= numHorzLines; i++) {
+            float y = i * CellY;
+            horzLines[i] = new Vector2(gridWidth, y + offsetY);
+        }
+    }
+
+    public void renderGrid(boolean recursiveRender) {
         if(!isRendered || recursiveRender) {
             ScreenUtils.clear(1f, 1f, 1f, 1f);
             // generates grid
             shapeDrawer.getBatch().begin();
             shapeDrawer.setColor(Color.GRAY);
-            for (int i = 0; i < numVertLines; i++) {
-                float x = i * CellX;
-                vertLines[i] = new Vector2(x + offsetX, gridHeight);
-                shapeDrawer.line(x + offsetX, offsetY, x + offsetX, gridHeight);
+            for (int i = 0; i <= numVertLines; i++) {
+                shapeDrawer.line(vertLines[i].x, offsetY, vertLines[i].x, gridHeight);
             }
             for (int i = 0; i < numHorzLines; i++) {
-                float y = i * CellY;
-                horzLines[i] = new Vector2(gridWidth, y + offsetY);
-                shapeDrawer.line(offsetX, y + offsetY, gridWidth, y + offsetY);
+                shapeDrawer.line(offsetX, horzLines[i].y, gridWidth, horzLines[i].y);
             }
             shapeDrawer.getBatch().end();
             isRendered = true;
@@ -122,16 +129,10 @@ public class Grid {
 
     public void addLine(Function<Double, Float> equation) {
         String name = "line" + Line.lineIndex;
-        Line temp = new Line(shapeDrawer, this, name, 100, equation);
+        Line temp = new Line(shapeDrawer, this, 100, equation);
         lines.add(temp);
         temp.generateLine();
         Gdx.app.log("AddLine", "Added " + temp);
-    }
-
-    public void drawLines(){
-        for (Line line : lines) {
-            line.generateLine();
-        }
     }
 
     public void throwLinesToAI(TestAI ai){
