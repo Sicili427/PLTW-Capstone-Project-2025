@@ -45,14 +45,15 @@ public class main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        Gdx.app.setLogLevel(3); // logging not working idk why :/
+        Gdx.app.setLogLevel(3);
         Gdx.app.log("Status", "Create Triggered");
 
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        textureAtlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
-        skin = new Skin(Gdx.files.internal("uiskin.json"), textureAtlas);
+        textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
+
         textField = new TextField("", skin);
         textField.setMaxLength(50);
 
@@ -69,13 +70,14 @@ public class main extends ApplicationAdapter {
         textField.setPosition(100, 150);
         textField.setSize(300, 40);
 
+        grid.generateGrid();
         grid.centerOriginY();
 
         testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
 
         stage.addActor(textField);
 
-        Gdx.app.log("Status", "Create Finished");
+        Gdx.app.debug("Status", "Create Finished");
     }
 
     @Override

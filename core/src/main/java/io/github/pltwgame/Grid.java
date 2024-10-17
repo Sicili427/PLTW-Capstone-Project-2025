@@ -23,11 +23,17 @@ public class Grid {
     float CellX;
     float CellY;
 
-    private int offsetX = 0;
-    private int offsetY = 0;
+    int offsetX = 0;
+    int offsetY = 0;
 
     int originOffsetX = 0;
     int originOffsetY = 0;
+
+    int gridXMin = 0;
+    int gridXMax = 0;
+
+    int gridYMin = 0;
+    int gridYMax = 0;
 
     boolean isRendered = false;
 
@@ -45,8 +51,8 @@ public class Grid {
         gridHeight = maxHeight;
         numVertLines = initVertLines;
         numHorzLines = initHorzLines;
-        vertLines = new Vector2[numVertLines];
-        horzLines = new Vector2[numHorzLines];
+        vertLines = new Vector2[numVertLines + 1];
+        horzLines = new Vector2[numHorzLines + 1];
         CellX = (float) maxWidth / initVertLines;
         CellY = (float) maxHeight / initHorzLines;
         id = gridIndex;
@@ -59,8 +65,8 @@ public class Grid {
         gridHeight = maxHeight;
         numVertLines = initVertLines;
         numHorzLines = (int) Math.ceil((double) (initVertLines * ratioY) / ratioX);
-        vertLines = new Vector2[numVertLines];
-        horzLines = new Vector2[numHorzLines];
+        vertLines = new Vector2[numVertLines + 1];
+        horzLines = new Vector2[numHorzLines + 1];
         CellX = (float) maxWidth / numVertLines;
         CellY = (float) maxHeight / numHorzLines;
         id = gridIndex;
@@ -75,18 +81,22 @@ public class Grid {
         CellY = (float) cellSize;
         numVertLines = (int) Math.ceil((double) maxWidth / cellSize);
         numHorzLines = (int) Math.ceil((double) maxHeight / cellSize);
-        vertLines = new Vector2[numVertLines];
-        horzLines = new Vector2[numHorzLines];
+        vertLines = new Vector2[numVertLines + 1];
+        horzLines = new Vector2[numHorzLines + 1];
         id = gridIndex;
         gridIndex++;
     }
 
     public void centerOriginY() {
         originOffsetY = numHorzLines / 2;
+        gridYMax = numHorzLines - originOffsetY;
+        gridYMin = -originOffsetY;
     }
 
     public void centerOriginX() {
         originOffsetX = numVertLines / 2;
+        gridXMax = numVertLines - originOffsetX;
+        gridXMin = -originOffsetX;
     }
 
     public void setOffsetX(int num) {
@@ -128,11 +138,9 @@ public class Grid {
     }
 
     public void addLine(Function<Double, Float> equation) {
-        String name = "line" + Line.lineIndex;
-        Line temp = new Line(shapeDrawer, this, 100, equation);
+        Line temp = new Line(shapeDrawer, this,100, equation);
         lines.add(temp);
         temp.generateLine();
-        Gdx.app.log("AddLine", "Added " + temp);
     }
 
     public void throwLinesToAI(TestAI ai){

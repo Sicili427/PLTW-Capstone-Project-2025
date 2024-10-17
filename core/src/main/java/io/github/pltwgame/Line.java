@@ -1,5 +1,6 @@
 package io.github.pltwgame;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -30,15 +31,17 @@ public class Line{
         lineIndex++;
         equation = initEquation;
         findVirtualPoints(resolution);
+        findRealPoints(resolution);
     }
 
     public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution) {
         shapeDrawer = initRenderer;
         parentGrid = initGrid;
-        id = id = "line" + lineIndex;
+        id = "line" + lineIndex;
         lineIndex++;
         equation = input -> (float) Math.sin(input);
         findVirtualPoints(resolution);
+        findRealPoints(resolution);
     }
 
     public String toString() {
@@ -49,9 +52,24 @@ public class Line{
         // calculates the virtualPoints for the line from a given equation
         int size = resolution * parentGrid.numVertLines;
         virtualPoints = new Vector2[size];
+        double step = (double) 1 / resolution;
         for(int i = 0; i < size; i++) {
-            double input = i / (double) resolution;
+            double input = i * step;
             float y = equation.apply(input);
+            if (Float.isFinite(y) && i > 0) {
+                float slope = (y - virtualPoints[i - 1].y) / ((float) input - virtualPoints[i - 1].x);
+                if (Math.floor(y) > parentGrid.gridYMax) {
+                    // finds x for a given y (the height of the grid) and point with equation x = (y-b-ma)/m
+                    float x = (parentGrid.gridYMax - virtualPoints[i - 1].y + (slope * virtualPoints[i - 1].x)) / slope;
+                    virtualPoints[i] = new Vector2(x, parentGrid.gridYMax);
+                    continue;
+                } else if (Math.ceil(y) < parentGrid.gridYMin) {
+                    // finds x for a given y (the height of the grid) and point with equation x = (y-b-ma)/m
+                    float x = (parentGrid.gridYMin - virtualPoints[i - 1].y + (slope * virtualPoints[i - 1].x)) / slope;
+                    virtualPoints[i] = new Vector2(x, parentGrid.gridYMin);
+                    continue;
+                }
+            }
             virtualPoints[i] = new Vector2((float) input, y);
         }
     }
@@ -74,7 +92,6 @@ public class Line{
 
     public void generateLine() {
         if (!isRendered) {
-            parentGrid.renderGrid(true);
             // translates virtualPoints to a grid
             shapeDrawer.getBatch().begin();
             shapeDrawer.setColor(Color.RED);
@@ -91,7 +108,7 @@ public class Line{
     private double derive(double x) {
         return (equation.apply(x + 0.0001) - equation.apply(x))*10000;
     }
-
+  
     public void throwToAI(TestAI ai){
         ai.addPoints(virtualPoints);
     }
