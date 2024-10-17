@@ -16,14 +16,14 @@ public class TestAI {
     float yPos;
 
     ArrayList<Vector2> points = new ArrayList<>();
+    int lineIndex;
 
-    public TestAI (float x, float y, int boundX, int boundY) {
+    public TestAI (float x, float y, int boundX, int boundY, int lineindex) {
         maxBoundX = boundX;
         maxBoundY = boundY;
         xPos = x;
         yPos = y;
-        addPoint(0,0, false);
-        addPoint(maxBoundX/2, maxBoundY/2, false);
+        lineIndex = lineindex;
     }
 
     public void drawAI (ShapeDrawer renderer){
@@ -50,7 +50,7 @@ public class TestAI {
     }
     public void addPoint(Vector2 vector2, boolean mouse) {
         if (mouse) adjustMouseVector(vector2);
-        stack.add(vector2);
+        points.add(vector2);
     }
 
     public void moveToPoint (){
@@ -69,26 +69,34 @@ public class TestAI {
         if (points.isEmpty()) return new Vector2(xPos, yPos);
 
         Vector2 target = points.get(0);
-        float angleTo = findAngle(target);
+        float distance = target.dst(xPos, yPos);
 
-        float finalX = (float) (xPos + moveSpeed * Math.cos(angleTo));
-        float finalY = (float) (yPos + moveSpeed * Math.sin(angleTo));
-
-        if (xPos < target.x + moveSpeed && yPos < target.y + moveSpeed && xPos > target.x - moveSpeed && yPos > target.y - moveSpeed) {
+        // Skip points that are too close
+        while (distance < moveSpeed && !points.isEmpty()) {
             points.remove(0);
+            if (!points.isEmpty()) {
+                target = points.get(0);
+                distance = target.dst(xPos, yPos);
+            }
         }
 
-        return new Vector2(finalX, finalY);
+        float alpha = Math.min(1, moveSpeed / distance); // Dynamic interpolation factor
+
+        xPos = lerp(xPos, target.x, alpha);
+        yPos = lerp(yPos, target.y, alpha);
+
+        return new Vector2(xPos, yPos);
     }
 
     public Vector2 findNextPoint(Vector2 pointToGo) {
         adjustMouseVector(pointToGo);
-        float angleTo = findAngle(pointToGo);
+        float distance = pointToGo.dst(xPos, yPos);
+        float alpha = Math.min(1, moveSpeed / distance); // Dynamic interpolation factor
 
-        float finalX = (float) (xPos + moveSpeed * Math.cos(angleTo));
-        float finalY = (float) (yPos + moveSpeed * Math.sin(angleTo));
+        xPos = lerp(xPos, pointToGo.x, alpha);
+        yPos = lerp(yPos, pointToGo.y, alpha);
 
-        return new Vector2(finalX, finalY);
+        return new Vector2(xPos, yPos);
     }
 
     private float findAngle(Vector2 point1) {
@@ -107,9 +115,16 @@ public class TestAI {
         adjustable.y += yPos;
     }
 
+    private float lerp(float start, float end, float alpha) {
+        return start + alpha * (end - start);
+    }
+
     public void addPoints(Vector2[] points){
         for (Vector2 point : points) {
-            addPoint(point, false);
+            if(point != null) {
+                addPoint(point, false);
+            }
         }
     }
 }
+

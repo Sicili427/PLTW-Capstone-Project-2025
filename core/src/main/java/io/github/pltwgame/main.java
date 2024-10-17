@@ -1,6 +1,5 @@
 package io.github.pltwgame;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -16,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
+import java.util.ArrayList;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
     // 1280x720px
@@ -28,7 +29,7 @@ public class main extends ApplicationAdapter {
     Skin skin;
     TextField textField;
 
-    TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
+    ArrayList<TestAI> testAIs = new ArrayList<>();
 
     Texture texture;
     SpriteBatch batch;
@@ -44,8 +45,8 @@ public class main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        Gdx.app.debug("Status", "Create Started");
+        Gdx.app.setLogLevel(3);
+        Gdx.app.log("Status", "Create Triggered");
 
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
@@ -72,6 +73,8 @@ public class main extends ApplicationAdapter {
         grid.generateGrid();
         grid.centerOriginY();
 
+        testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
+
         stage.addActor(textField);
 
         Gdx.app.debug("Status", "Create Finished");
@@ -89,20 +92,16 @@ public class main extends ApplicationAdapter {
         circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
 
-        drawBoard();
-
-        testAI.moveToPoint();
-        testAI.drawAI(shapeDrawer);
+        for(TestAI testAI : testAIs) {
+            testAI.moveToPoint();
+            testAI.drawAI(shapeDrawer);
+        }
 
         stage.act(delta);
         stage.draw();
 
-        //if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine(input -> (float) Math.sin(input));
-        //}
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            EquationInterpreter.stringToEquation(textField.getText());
+        if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
+            grid.addLine(input -> (float) Math.tan(input));
         }
 
         fpsLogger.log();
@@ -134,4 +133,5 @@ public class main extends ApplicationAdapter {
         shapeDrawer.circle(circleX, circleY, 50);
         batch.end();
     }
+
 }

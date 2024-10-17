@@ -142,4 +142,9 @@ public class Grid {
         lines.add(temp);
         temp.generateLine();
     }
+
+    public void throwLinesToAI(TestAI ai){
+
+            lines.get(ai.lineIndex).throwToAI(ai);
+    }
 }

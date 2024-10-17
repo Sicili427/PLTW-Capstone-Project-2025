@@ -108,4 +108,8 @@ public class Line{
     private double derive(double x) {
         return (equation.apply(x + 0.0001) - equation.apply(x))*10000;
     }
+  
+    public void throwToAI(TestAI ai){
+        ai.addPoints(virtualPoints);
+    }
 }
