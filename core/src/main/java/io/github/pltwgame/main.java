@@ -51,11 +51,6 @@ public class main extends ApplicationAdapter {
 
     FPSLogger fpsLogger;
 
-    Grid grid;
-
-    float circleX = 100;
-    float circleY = 100;
-
     @Override
     public void create() {
         Gdx.app.setLogLevel(Application.LOG_INFO); // logging not working idk why :/
@@ -104,16 +99,13 @@ public class main extends ApplicationAdapter {
 
         circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
-
-        testAI.moveToPoint();
-        testAI.drawAI(shapeDrawer);
+        for(TestAI testAI : testAIS) {
+            testAI.moveToPoint();
+            testAI.drawAI(shapeDrawer);
+        }
 
         stage.act(delta);
         stage.draw();
-
-        if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine();
-        }
 
         fpsLogger.log();
     }

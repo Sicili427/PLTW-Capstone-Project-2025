@@ -122,7 +122,7 @@ public class Grid {
 
     public void addLine(Function<Double, Float> equation) {
         String name = "line" + Line.lineIndex;
-        Line temp = new Line(shapeRenderer, this, name, 100, equation);
+        Line temp = new Line(shapeDrawer, this, name, 100, equation);
         lines.add(temp);
         temp.generateLine();
         Gdx.app.log("AddLine", "Added " + temp);

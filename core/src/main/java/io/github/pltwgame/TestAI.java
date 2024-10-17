@@ -128,6 +128,7 @@ package io.github.pltwgame;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import space.earlygrey.shapedrawer.ShapeDrawer;
 
 import java.util.ArrayList;
 
@@ -151,8 +152,8 @@ public class TestAI {
         lineIndex = lineindex;
     }
 
-    public void drawAI (ShapeRenderer renderer){
-        renderer.begin(ShapeRenderer.ShapeType.Filled);
+    public void drawAI (ShapeDrawer renderer){
+        renderer.begin(ShapeDrawer.ShapeType.Filled);
         renderer.setColor(Color.GREEN);
         renderer.circle(xPos, yPos, 50);
         renderer.end();
