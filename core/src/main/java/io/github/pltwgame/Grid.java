@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Function;
 
 public class Grid {
@@ -42,7 +43,7 @@ public class Grid {
     Vector2[] vertLines;
     Vector2[] horzLines;
 
-    ArrayList<Line> lines = new ArrayList<>();
+    HashMap<String, Line> lines = new HashMap<String, Line>();
 
 
     public Grid(ShapeDrawer initRenderer, int maxWidth, int maxHeight, int initVertLines, int initHorzLines) {
@@ -137,14 +138,20 @@ public class Grid {
         }
     }
 
+    public void renderLines(){
+        for (String i : lines.keySet()) {
+            Line line = lines.get(i);
+            line.generateLine();
+        }
+    }
+
     public void addLine(Function<Double, Float> equation) {
         Line temp = new Line(shapeDrawer, this,100, equation);
-        lines.add(temp);
-        temp.generateLine();
+        lines.put(temp.id, temp);
+        Gdx.app.debug("AddLine", temp.toString());
     }
 
     public void throwLinesToAI(TestAI ai){
-
-            lines.get(ai.lineIndex).throwToAI(ai);
+        lines.get(ai.lineIndex).throwToAI(ai);
     }
 }

@@ -92,6 +92,10 @@ public class main extends ApplicationAdapter {
         circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
 
+        drawBoard();
+
+        grid.renderLines();
+
         for(TestAI testAI : testAIs) {
             testAI.moveToPoint();
             testAI.drawAI(shapeDrawer);
@@ -101,7 +105,7 @@ public class main extends ApplicationAdapter {
         stage.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine(input -> (float) Math.tan(input));
+            grid.addLine(input -> (float) Math.sin(Math.tan(input)));
         }
 
         fpsLogger.log();
