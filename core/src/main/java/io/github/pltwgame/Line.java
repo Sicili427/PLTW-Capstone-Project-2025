@@ -18,11 +18,23 @@ public class Line{
     String id;
 
     boolean isRendered = false;
+    boolean hidden = false;
 
     Function<Double, Float> equation;
 
     Vector2[] virtualPoints;
     Vector2[] realPoints;
+
+    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, Function<Double, Float> initEquation, boolean isHidden) {
+        shapeDrawer = initRenderer;
+        parentGrid = initGrid;
+        id = "line" + lineIndex;
+        lineIndex++;
+        equation = initEquation;
+        hidden = isHidden;
+        findVirtualPoints(resolution);
+        findRealPoints(resolution);
+    }
 
     public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, Function<Double, Float> initEquation) {
         shapeDrawer = initRenderer;
@@ -30,6 +42,17 @@ public class Line{
         id = "line" + lineIndex;
         lineIndex++;
         equation = initEquation;
+        findVirtualPoints(resolution);
+        findRealPoints(resolution);
+    }
+
+    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, boolean isHidden) {
+        shapeDrawer = initRenderer;
+        parentGrid = initGrid;
+        id = "line" + lineIndex;
+        lineIndex++;
+        equation = input -> (float) Math.sin(input);
+        hidden = isHidden;
         findVirtualPoints(resolution);
         findRealPoints(resolution);
     }
@@ -45,7 +68,7 @@ public class Line{
     }
 
     public String toString() {
-        return id + " | parented to grid" + parentGrid.id + " | with equation " + equation.toString() + " | is rendered? " + isRendered;
+        return "id: " + id + " | parented to grid" + parentGrid.id + " | is rendered? " + isRendered;
     }
 
     private void findVirtualPoints(int resolution) {
@@ -57,7 +80,7 @@ public class Line{
             double input = i * step;
             float y = equation.apply(input);
             if (Float.isFinite(y) && i > 0) {
-                float slope = (y - virtualPoints[i - 1].y) / ((float) input - virtualPoints[i - 1].x);
+                float slope = (y - virtualPoints[i-1].y) / ((float) input - virtualPoints[i-1].x);
                 if (Math.floor(y) > parentGrid.gridYMax) {
                     // finds x for a given y (the height of the grid) and point with equation x = (y-b-ma)/m
                     float x = (parentGrid.gridYMax - virtualPoints[i - 1].y + (slope * virtualPoints[i - 1].x)) / slope;
@@ -91,25 +114,27 @@ public class Line{
     }
 
     public void generateLine() {
-        if (!isRendered) {
+        if(!hidden) {
             // translates virtualPoints to a grid
             shapeDrawer.getBatch().begin();
             shapeDrawer.setColor(Color.RED);
             for (int i = 0; i < realPoints.length - 1; i++) {
-                if (Float.isFinite(realPoints[i].y)) {
+                float slope = (virtualPoints[i + 1].y - virtualPoints[i].y) / (virtualPoints[i + 1].x - virtualPoints[i].x);
+                //Gdx.app.debug("Diff", "" + Math.abs(derive(virtualPoints[i].x) - slope) + " at " + virtualPoints[i].x);
+                if (Float.isFinite(realPoints[i].y) && Math.abs(derive(virtualPoints[i].x) - slope) < 1000) {
                     shapeDrawer.line(realPoints[i], realPoints[i + 1]);
                 }
             }
             shapeDrawer.getBatch().end();
+            isRendered = true;
         }
-        isRendered = true;
     }
 
     private double derive(double x) {
         return (equation.apply(x + 0.0001) - equation.apply(x))*10000;
     }
-  
+
     public void throwToAI(TestAI ai){
-        ai.addPoints(virtualPoints);
+        ai.addPoints(realPoints);
     }
 }
