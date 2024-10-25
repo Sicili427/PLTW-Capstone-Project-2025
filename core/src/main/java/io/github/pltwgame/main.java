@@ -1,6 +1,5 @@
 package io.github.pltwgame;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -16,6 +15,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
+import java.util.ArrayList;
+
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
     // 1280x720px
@@ -29,7 +30,7 @@ public class main extends ApplicationAdapter {
     Skin skin;
     TextField textField;
 
-    TestAI testAI = new TestAI(0, 0, SCREEN_HEIGHT, SCREEN_WIDTH);
+    ArrayList<TestAI> testAIs = new ArrayList<>();
 
     //Taskbar taskbar = new Taskbar();
     Texture texture;
@@ -46,7 +47,7 @@ public class main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        Gdx.app.setLogLevel(Application.LOG_INFO); // logging not working idk why :/
+        Gdx.app.setLogLevel(3);
         Gdx.app.log("Status", "Create Triggered");
 
         ScreenViewport screenViewport = new ScreenViewport();
@@ -59,6 +60,7 @@ public class main extends ApplicationAdapter {
 
         textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
+
         textField = new TextField("", skin);
         textField.setMaxLength(50);
 
@@ -76,11 +78,14 @@ public class main extends ApplicationAdapter {
         textField.setPosition(100, 150);
         textField.setSize(300, 40);
 
+        grid.generateGrid();
         grid.centerOriginY();
+
+        testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
 
         stage.addActor(textField);
 
-        Gdx.app.log("Status", "Create Finished");
+        Gdx.app.debug("Status", "Create Finished");
     }
 
     @Override
@@ -99,6 +104,13 @@ public class main extends ApplicationAdapter {
 
         testAI.moveToPoint();
         testAI.drawAI(shapeDrawer);
+      
+        grid.renderLines();
+
+        for(TestAI testAI : testAIs) {
+            testAI.moveToPoint();
+            testAI.drawAI(shapeDrawer);
+        }
 
         stage.act(delta);
         stage.draw();
@@ -106,7 +118,11 @@ public class main extends ApplicationAdapter {
         taskbarUI.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine();
+            grid.addLine(input ->  1/((float) Math.sin(input)));
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            EquationInterpreter.stringToEquation(textField.getText());
         }
 
         fpsLogger.log();
@@ -140,4 +156,5 @@ public class main extends ApplicationAdapter {
         shapeDrawer.circle(circleX, circleY, 50);
         batch.end();
     }
+
 }
