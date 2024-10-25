@@ -24,6 +24,7 @@ public class main extends ApplicationAdapter {
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
 
     Stage stage;
+    Stage taskbarUI;
 
     TextureAtlas textureAtlas;
     Skin skin;
@@ -31,6 +32,7 @@ public class main extends ApplicationAdapter {
 
     ArrayList<TestAI> testAIs = new ArrayList<>();
 
+    //Taskbar taskbar = new Taskbar();
     Texture texture;
     SpriteBatch batch;
     TextureRegion textureRegion;
@@ -39,7 +41,7 @@ public class main extends ApplicationAdapter {
     FPSLogger fpsLogger;
 
     Grid grid;
-
+    Taskbar taskbar;
     float circleX = 100;
     float circleY = 100;
 
@@ -48,8 +50,13 @@ public class main extends ApplicationAdapter {
         Gdx.app.setLogLevel(3);
         Gdx.app.log("Status", "Create Triggered");
 
-        stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
+        ScreenViewport screenViewport = new ScreenViewport();
+        stage = new Stage(screenViewport);
+        taskbarUI = new Stage(screenViewport);
+
+        //Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(taskbarUI);
+
 
         textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
@@ -65,7 +72,8 @@ public class main extends ApplicationAdapter {
         fpsLogger = new FPSLogger();
 
         grid = new Grid(shapeDrawer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
-
+        taskbar = new Taskbar(shapeDrawer, taskbarUI);
+        //taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
         textField.setMessageText("Enter text...");
         textField.setPosition(100, 150);
         textField.setSize(300, 40);
@@ -94,6 +102,9 @@ public class main extends ApplicationAdapter {
 
         drawBoard();
 
+        testAI.moveToPoint();
+        testAI.drawAI(shapeDrawer);
+      
         grid.renderLines();
 
         for(TestAI testAI : testAIs) {
@@ -103,6 +114,8 @@ public class main extends ApplicationAdapter {
 
         stage.act(delta);
         stage.draw();
+        taskbarUI.act(delta);
+        taskbarUI.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
             grid.addLine(input ->  1/((float) Math.sin(input)));
@@ -132,10 +145,12 @@ public class main extends ApplicationAdapter {
         textureAtlas.dispose();
         skin.dispose();
         stage.dispose();
+        taskbarUI.dispose();
     }
 
     private void drawBoard() {
-        grid.renderGrid(true);
+        grid.generateGrid(true);
+        taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
         batch.begin();
         shapeDrawer.setColor(Color.BROWN);
         shapeDrawer.circle(circleX, circleY, 50);
