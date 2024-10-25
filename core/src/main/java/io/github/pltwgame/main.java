@@ -54,7 +54,6 @@ public class main extends ApplicationAdapter {
         stage = new Stage(screenViewport);
         taskbarUI = new Stage(screenViewport);
 
-        //Gdx.input.setInputProcessor(stage);
         Gdx.input.setInputProcessor(taskbarUI);
 
 
@@ -72,14 +71,14 @@ public class main extends ApplicationAdapter {
         fpsLogger = new FPSLogger();
 
         grid = new Grid(shapeDrawer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
+        grid.generateGrid();
+        grid.centerOriginY();
+
         taskbar = new Taskbar(shapeDrawer, taskbarUI);
         //taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
         textField.setMessageText("Enter text...");
         textField.setPosition(100, 150);
         textField.setSize(300, 40);
-
-        grid.generateGrid();
-        grid.centerOriginY();
 
         testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
 
@@ -91,6 +90,7 @@ public class main extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width,height,true);
+        taskbarUI.getViewport().update(width,height,true);
     }
 
     @Override
@@ -146,7 +146,7 @@ public class main extends ApplicationAdapter {
     }
 
     private void drawBoard() {
-        grid.generateGrid();
+        grid.renderGrid(true);
         taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
         batch.begin();
         shapeDrawer.setColor(Color.BROWN);
