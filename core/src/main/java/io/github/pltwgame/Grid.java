@@ -146,7 +146,7 @@ public class Grid {
     }
 
     public void addLine(Function<Double, Float> equation) {
-        Line temp = new Line(shapeDrawer, this,100, equation);
+        Line temp = new Line(shapeDrawer, this,200, equation);
         lines.put(temp.id, temp);
         Gdx.app.debug("AddLine", temp.toString());
     }

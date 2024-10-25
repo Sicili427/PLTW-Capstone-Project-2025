@@ -105,7 +105,11 @@ public class main extends ApplicationAdapter {
         stage.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine(input -> (float) Math.sin(Math.tan(input)));
+            grid.addLine(input ->  1/((float) Math.sin(input)));
+        }
+
+        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            EquationInterpreter.stringToEquation(textField.getText());
         }
 
         fpsLogger.log();
