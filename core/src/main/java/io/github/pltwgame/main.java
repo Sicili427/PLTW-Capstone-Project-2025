@@ -102,9 +102,6 @@ public class main extends ApplicationAdapter {
 
         drawBoard();
 
-        testAI.moveToPoint();
-        testAI.drawAI(shapeDrawer);
-      
         grid.renderLines();
 
         for(TestAI testAI : testAIs) {
@@ -149,7 +146,7 @@ public class main extends ApplicationAdapter {
     }
 
     private void drawBoard() {
-        grid.generateGrid(true);
+        grid.generateGrid();
         taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
         batch.begin();
         shapeDrawer.setColor(Color.BROWN);
