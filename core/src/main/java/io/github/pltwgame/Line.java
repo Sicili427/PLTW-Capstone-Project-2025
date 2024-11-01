@@ -95,4 +95,8 @@ public class Line{
     public void throwToAI(TestAI ai){
         ai.addPoints(virtualPoints);
     }
+
+    public void throwToAI(TestAI ai){
+        ai.addPoints(realPoints);
+    }
 }

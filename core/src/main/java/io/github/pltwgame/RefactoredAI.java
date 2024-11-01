@@ -1,18 +1,15 @@
 package io.github.pltwgame;
 
-import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import io.github.pltwgame.components.AIInfo;
-import io.github.pltwgame.components.DrawInfo;
 import space.earlygrey.shapedrawer.ShapeDrawer;
+
 import java.util.ArrayList;
 
 
-
-public class TestAI {
-
+public class RefactoredAI {
+    World world;
 
 
     float moveSpeed = 5;
@@ -20,28 +17,24 @@ public class TestAI {
     final int maxBoundX;
     final int maxBoundY;
 
-    public float xPos;
-    public float yPos;
-    public float radius = 10;
+    float xPos;
+    float yPos;
 
     ArrayList<Vector2> points = new ArrayList<>();
     int lineIndex;
-    int entityID;
 
-    public TestAI (float x, float y, int boundX, int boundY, int lineindex, World world) {
+    public RefactoredAI(float x, float y, int boundX, int boundY, int lineindex) {
         maxBoundX = boundX;
         maxBoundY = boundY;
         xPos = x;
         yPos = y;
         lineIndex = lineindex;
-        entityID = world.create();
-        world.edit(entityID).create(AIInfo.class).ai = this;
     }
 
     public void drawAI (ShapeDrawer renderer){
         renderer.getBatch().begin();
         renderer.setColor(Color.BLUE);
-        renderer.circle(xPos, yPos, radius);
+        renderer.circle(xPos, yPos, 10);
         renderer.getBatch().end();
     }
 
@@ -139,7 +132,5 @@ public class TestAI {
             }
         }
     }
-
-
 }
 

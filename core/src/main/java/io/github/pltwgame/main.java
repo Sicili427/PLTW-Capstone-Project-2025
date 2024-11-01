@@ -1,8 +1,10 @@
 package io.github.pltwgame;
 
+import com.artemis.World;
+import com.artemis.WorldConfiguration;
+import com.artemis.WorldConfigurationBuilder;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,8 +15,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import io.github.pltwgame.components.DrawingEditingSystem;
+import io.github.pltwgame.components.DrawingSystem;
+import io.github.pltwgame.components.TestSystem;
 import space.earlygrey.shapedrawer.ShapeDrawer;
-
 import java.util.ArrayList;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
@@ -22,6 +26,10 @@ public class main extends ApplicationAdapter {
     // 1280x720px
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
+
+    WorldConfiguration setup;
+    World world;
+    boolean doOnce = true;
 
     Stage stage;
 
@@ -51,8 +59,8 @@ public class main extends ApplicationAdapter {
         stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
 
-        textureAtlas = new TextureAtlas(Gdx.files.internal("uiskin.atlas"));
-        skin = new Skin(Gdx.files.internal("uiskin.json"), textureAtlas);
+        textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
         textField = new TextField("", skin);
         textField.setMaxLength(50);
 
@@ -64,6 +72,12 @@ public class main extends ApplicationAdapter {
         fpsLogger = new FPSLogger();
 
         grid = new Grid(shapeDrawer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
+        grid.generateGrid();
+
+        setup = new WorldConfigurationBuilder()
+            .with(new TestSystem())
+            .build();
+        world = new World(setup);
 
         textField.setMessageText("Enter text...");
         textField.setPosition(100, 150);
@@ -71,7 +85,7 @@ public class main extends ApplicationAdapter {
 
         grid.centerOriginY();
 
-        testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
+        testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, world));
 
         stage.addActor(textField);
 
@@ -87,20 +101,31 @@ public class main extends ApplicationAdapter {
     public void render() {
         float delta = Gdx.graphics.getDeltaTime();
 
+
+
         circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
 
+        drawBoard();
+
         for(TestAI testAI : testAIs) {
             testAI.moveToPoint();
-            testAI.drawAI(shapeDrawer);
         }
 
         stage.act(delta);
         stage.draw();
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine(input -> (float) Math.tan(input));
+        grid.addLine(input -> (float) Math.sin(input));
+
+        if(doOnce){
+            doOnce = false;
+            for(TestAI testAI : testAIs) {
+                grid.throwLinesToAI(testAI);
+            }
         }
+
+//        world.setDelta(delta);
+//        world.process();
 
         fpsLogger.log();
     }
