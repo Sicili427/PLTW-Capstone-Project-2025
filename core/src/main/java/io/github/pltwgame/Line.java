@@ -111,9 +111,11 @@ public class Line{
                 float y = 0;
 
                 int maxBound = parentGrid.numHorzLines - parentGrid.originOffsetY;
+                int maxIndex = parentGrid.numHorzLines;
 
                 if(currentVector.y < 0) {
                     maxBound = parentGrid.originOffsetY;
+                    maxIndex = 0;
                 }
 
                 if(isPointInGrid(currentVector)) {
@@ -123,19 +125,18 @@ public class Line{
                     Vector2 prevVector = virtualPoints[i-1];
                     Vector2 nextVector = virtualPoints[i+1];
 
-                    if(isPointInGrid(prevVector)){
-                        float slope = findSlope(currentVector, prevVector);
-                        // finds x for a given y (the height of the grid) and point with equation x = (y-b-ma)/m
-                        float tempX = (maxBound - virtualPoints[i-1].y + (slope * virtualPoints[i-1].x)) / slope;
+                    if(isPointInGrid(prevVector) || isPointInGrid(nextVector)){d
+                        float slope = findSlope(currentVector, nextVector);
+                        // finds x for a given y (the height of the grid) and point with equation x = (y-b+ma)/m
+                        float tempX = (maxBound - nextVector.y + (slope * nextVector.x)) / slope;
 
                         x = parentGrid.vertLines[(int) tempX + parentGrid.originOffsetX].x + (tempX - (int) tempX) * parentGrid.CellX;
-                        y = parentGrid.horzLines[maxBound].y;
+                        y = parentGrid.horzLines[maxIndex].y;
                     } else {
                         realPoints[i] = new Vector2(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
                         continue;
                     }
                 }
-
                 realPoints[i] = new Vector2(x, y);
             }
             else {
