@@ -80,21 +80,6 @@ public class Line{
         for(int i = 0; i < size; i++) {
             double input = i * step;
             float y = equation.apply(input);
-            /* if (Float.isFinite(y) && i > 0) {
-                Vector2 prevVector = virtualPoints[i-1];
-                float slope = (y - prevVector.y) / ((float) input - prevVector.x);
-                if (Math.floor(y) > parentGrid.gridYMax) {
-                    // finds x for a given y (the height of the grid) and point with equation x = (y-b-ma)/m
-                    float x = (parentGrid.gridYMax - prevVector.y + (slope * prevVector.x)) / slope;
-                    virtualPoints[i] = new Vector2(x, parentGrid.gridYMax);
-                    continue;
-                } else if (Math.ceil(y) < parentGrid.gridYMin) {
-                    // finds x for a given y (the height of the grid) and point with equation x = (y-b-ma)/m
-                    float x = (parentGrid.gridYMin - prevVector.y + (slope * prevVector.x)) / slope;
-                    virtualPoints[i] = new Vector2(x, parentGrid.gridYMin);
-                    continue;
-                }
-            } */
             virtualPoints[i] = new Vector2((float) input, y);
         }
         Gdx.app.debug("virtualPoints", Arrays.toString(virtualPoints));
@@ -103,47 +88,31 @@ public class Line{
     private void findRealPoints(int resolution) {
         int size = resolution * parentGrid.numVertLines;
         realPoints = new Vector2[size];
+
+        int maxBoundPositive = parentGrid.numHorzLines - parentGrid.originOffsetY;
+        int maxBoundNegative = parentGrid.originOffsetY;
+
         for (int i = 0; i < size; i++) {
-            if (Float.isFinite(virtualPoints[i].y)) {
-                Vector2 currentVector = virtualPoints[i];
+            Vector2 currentVector = virtualPoints[i];
 
-                float x = 0;
-                float y = 0;
-
-                int maxBound = parentGrid.numHorzLines - parentGrid.originOffsetY;
-                int maxIndex = parentGrid.numHorzLines;
-
-                if(currentVector.y < 0) {
-                    maxBound = parentGrid.originOffsetY;
-                    maxIndex = 0;
-                }
-
-                if(isPointInGrid(currentVector)) {
-                    x = parentGrid.vertLines[(int) virtualPoints[i].x + parentGrid.originOffsetX].x + (virtualPoints[i].x - (int) virtualPoints[i].x) * parentGrid.CellX;
-                    y = parentGrid.horzLines[(int) virtualPoints[i].y + parentGrid.originOffsetY].y + (virtualPoints[i].y - (int) virtualPoints[i].y) * parentGrid.CellY;
-                } else if (i > 0 && i < size-1){
-                    Vector2 prevVector = virtualPoints[i-1];
-                    Vector2 nextVector = virtualPoints[i+1];
-
-                    if(isPointInGrid(prevVector) || isPointInGrid(nextVector)){
-                        float slope = findSlope(currentVector, nextVector);
-                        // finds x for a given y (the height of the grid) and point with equation x = (y-b+ma)/m
-                        float tempX = (maxBound - nextVector.y + (slope * nextVector.x)) / slope;
-
-                        x = parentGrid.vertLines[(int) tempX + parentGrid.originOffsetX].x + (tempX - (int) tempX) * parentGrid.CellX;
-                        y = parentGrid.horzLines[maxIndex].y;
-                    } else {
-                        realPoints[i] = new Vector2(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
-                        continue;
-                    }
-                }
-                realPoints[i] = new Vector2(x, y);
+            if (!Float.isFinite(currentVector.y)) {
+                realPoints[i] = currentVector;
+                continue;
             }
-            else {
-                realPoints[i] = virtualPoints[i];
+
+            int maxBound = (currentVector.y < 0) ? maxBoundNegative : maxBoundPositive;
+
+            if(isPointInGrid(currentVector)) {
+                    realPoints[i] = virtualToReal(currentVector);
+            } else if (i > 0 && i < size-1){
+                Vector2 prevVector = virtualPoints[i-1];
+                Vector2 nextVector = virtualPoints[i+1];
+
+                realPoints[i] = calculateRealPointWhenOutOfBounds(currentVector, prevVector, nextVector, maxBound);
+            } else {
+                realPoints[i] = new Vector2(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
             }
         }
-
         Gdx.app.debug("realPoints", Arrays.toString(realPoints));
     }
 
@@ -163,16 +132,47 @@ public class Line{
         }
     }
 
-    public float derive(double x) {
+    private float derive(double x) {
         return (equation.apply(x + 0.0001) - equation.apply(x))*10000;
     }
 
-    public boolean isPointInGrid(Vector2 point){
+    private boolean isPointInGrid(Vector2 point){
         return (int) point.y < parentGrid.gridYMax && (int) point.y > parentGrid.gridYMin;
     }
 
-    public float findSlope(Vector2 point1, Vector2 point2) {
+    private float findSlope(Vector2 point1, Vector2 point2) {
         return (point2.y - point1.y) / (point2.x - point1.x);
+    }
+
+    private Vector2 virtualToReal(float inputX, float inputY) {
+        float x = parentGrid.vertLines[(int) inputX + parentGrid.originOffsetX].x + (inputX - (int) inputX) * parentGrid.CellX;
+        float y = parentGrid.horzLines[(int) inputY + parentGrid.originOffsetY].y + (inputY - (int) inputY) * parentGrid.CellY;
+
+        return new Vector2(x,y);
+    }
+
+    private Vector2 virtualToReal(Vector2 inputVector) {
+        float x = parentGrid.vertLines[(int) inputVector.x + parentGrid.originOffsetX].x + (inputVector.x - (int) inputVector.x) * parentGrid.CellX;
+        float y = parentGrid.horzLines[(int) inputVector.y + parentGrid.originOffsetY].y + (inputVector.y - (int) inputVector.y) * parentGrid.CellY;
+
+        return new Vector2(x,y);
+    }
+
+    private Vector2 calculateRealPointWhenOutOfBounds(Vector2 currentVector, Vector2 prevVector, Vector2 nextVector, int bound){
+        if(isPointInGrid(prevVector)){
+            float slope = findSlope(currentVector, prevVector);
+            // finds x for a given y (the height of the grid) and point with equation x = (y-b+ma)/m
+            float tempX = (bound - prevVector.y + (slope * prevVector.x)) / slope;
+            return virtualToReal(tempX, bound);
+        } else if (isPointInGrid(nextVector)) {
+            float slope = findSlope(currentVector, nextVector);
+            // finds x for a given y (the height of the grid) and point with equation x = (y-b+ma)/m
+            float tempX = (bound + nextVector.y + (slope * nextVector.x)) / slope;
+
+            return virtualToReal(tempX, -bound);
+        } else {
+            return new Vector2(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
+        }
     }
 
     public void throwToAI(TestAI ai){

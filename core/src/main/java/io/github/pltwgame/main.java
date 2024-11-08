@@ -109,7 +109,7 @@ public class main extends ApplicationAdapter {
         taskbarUI.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine(input -> (float) (Math.tan(input)));
+            grid.addLine(input -> (float) (Math.pow(Math.sin(input),2)+Math.sin(input)));
         }
 
         fpsLogger.log();
