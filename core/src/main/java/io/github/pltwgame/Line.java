@@ -125,7 +125,7 @@ public class Line{
                     Vector2 prevVector = virtualPoints[i-1];
                     Vector2 nextVector = virtualPoints[i+1];
 
-                    if(isPointInGrid(prevVector) || isPointInGrid(nextVector)){d
+                    if(isPointInGrid(prevVector) || isPointInGrid(nextVector)){
                         float slope = findSlope(currentVector, nextVector);
                         // finds x for a given y (the height of the grid) and point with equation x = (y-b+ma)/m
                         float tempX = (maxBound - nextVector.y + (slope * nextVector.x)) / slope;
