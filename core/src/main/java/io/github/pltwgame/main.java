@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -31,7 +32,6 @@ public class main extends ApplicationAdapter {
 
     ArrayList<TestAI> testAIs = new ArrayList<>();
 
-    //Taskbar taskbar = new Taskbar();
     Texture texture;
     SpriteBatch batch;
     TextureRegion textureRegion;
@@ -41,6 +41,9 @@ public class main extends ApplicationAdapter {
 
     Grid grid;
     Taskbar taskbar;
+
+    TextField test;
+
     float circleX = 100;
     float circleY = 100;
 
@@ -54,7 +57,6 @@ public class main extends ApplicationAdapter {
         taskbarUI = new Stage(screenViewport);
 
         Gdx.input.setInputProcessor(taskbarUI);
-
 
         textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
@@ -72,7 +74,13 @@ public class main extends ApplicationAdapter {
         grid.centerOriginY();
 
         taskbar = new Taskbar(shapeDrawer, taskbarUI);
-        //taskbar.generateTaskbar(SCREEN_WIDTH,SCREEN_HEIGHT);
+
+        test = new TextField("test", skin);
+        test.setWidth(200);
+        test.setHeight(50);
+        test.setPosition(100,200);
+
+        taskbarUI.addActor(test);
 
         testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
 
@@ -109,7 +117,11 @@ public class main extends ApplicationAdapter {
         taskbarUI.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine(input -> (float) (Math.pow(Math.sin(input),2)+Math.sin(input)));
+            grid.addLine(input -> (float) (Math.tan(input) + Math.pow(Math.sin(input),2)));
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            EquationInterpreter.stringToEquation(test.getText());
         }
 
         fpsLogger.log();
