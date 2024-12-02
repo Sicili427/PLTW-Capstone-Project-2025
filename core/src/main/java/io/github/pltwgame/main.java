@@ -61,8 +61,8 @@ public class main extends ApplicationAdapter {
         textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
 
-        textField = new TextField("", skin);
-        textField.setMaxLength(50);
+        /*textField = new TextField("", skin);
+        textField.setMaxLength(50);*/
 
         texture = new Texture("pixel.png");
         batch = new SpriteBatch();
@@ -74,16 +74,16 @@ public class main extends ApplicationAdapter {
         grid = new Grid(shapeDrawer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
         taskbar = new Taskbar(shapeDrawer, taskbarUI);
         //taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
-        textField.setMessageText("Enter text...");
-        textField.setPosition(100, 150);
-        textField.setSize(300, 40);
+        //textField.setMessageText("Enter text...");
+        //textField.setPosition(100, 150);
+        //textField.setSize(300, 40);
 
         grid.generateGrid();
         grid.centerOriginY();
 
         testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
 
-        stage.addActor(textField);
+        //stage.addActor(textField);
 
         Gdx.app.debug("Status", "Create Finished");
     }
@@ -91,6 +91,7 @@ public class main extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width,height,true);
+        //stage.getViewport().get
     }
 
     @Override
@@ -102,10 +103,9 @@ public class main extends ApplicationAdapter {
 
         drawBoard();
 
-        testAI.moveToPoint();
-        testAI.drawAI(shapeDrawer);
-      
         grid.renderLines();
+        taskbar.draw();
+
 
         for(TestAI testAI : testAIs) {
             testAI.moveToPoint();
@@ -149,8 +149,8 @@ public class main extends ApplicationAdapter {
     }
 
     private void drawBoard() {
-        grid.generateGrid(true);
-        taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
+        grid.renderGrid(true);
+        taskbar.draw();
         batch.begin();
         shapeDrawer.setColor(Color.BROWN);
         shapeDrawer.circle(circleX, circleY, 50);
