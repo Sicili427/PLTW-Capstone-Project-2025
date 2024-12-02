@@ -74,6 +74,10 @@ public class main extends ApplicationAdapter {
         grid.centerOriginY();
 
         taskbar = new Taskbar(shapeDrawer, taskbarUI);
+        //taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
+        //textField.setMessageText("Enter text...");
+        //textField.setPosition(100, 150);
+        //textField.setSize(300, 40);
 
         test = new TextField("test", skin);
         test.setWidth(200);
@@ -81,8 +85,6 @@ public class main extends ApplicationAdapter {
         test.setPosition(100,200);
 
         taskbarUI.addActor(test);
-
-        testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
 
         Gdx.app.debug("Status", "Create Finished");
     }
@@ -105,6 +107,8 @@ public class main extends ApplicationAdapter {
         drawBoard();
 
         grid.renderLines();
+        taskbar.draw();
+
 
         for(TestAI testAI : testAIs) {
             testAI.moveToPoint();
@@ -149,11 +153,7 @@ public class main extends ApplicationAdapter {
 
     private void drawBoard() {
         grid.renderGrid(true);
-        taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
-        batch.begin();
-        shapeDrawer.setColor(Color.BROWN);
-        shapeDrawer.circle(circleX, circleY, 50);
-        batch.end();
+        taskbar.draw();
     }
 
 }
