@@ -3,29 +3,112 @@ package io.github.pltwgame;
 import com.badlogic.gdx.Gdx;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Map;
 
 public class EquationInterpreter {
-    String[] operators = {"(", "[", "{", ")", "]", "}", "+", "-", "*", "/", "^", "!", "|"};
+    static String equationString;
+    static ArrayList<String> equationBits;
 
-    String[] mathFunctions = {"abs", "sqrt", "log", "ln", "sin", "cos", "tan", "csc", "sec", "cot", "arcsin", "arccos", "arctan", "arccsc", "arcsec", "arccot"};
+    static final Map<Character,Character> identifiers = Map.of(
+        '(', '(',
+        ')', ')',
+        '|', '|'
+    );
+
+    static final Map<Character,Character> operators = Map.of(
+        '!', '!',
+        '*', '*',
+        '+', '+',
+        '-', '-',
+        '/', '/',
+        '^', '^'
+    );
+
+    static final Map<String, String> trigFunctions = Map.of(
+        "abs", "abs",
+        "sqrt", "sqrt",
+        "log", "log",
+        "ln", "ln",
+        "sin", "sin",
+        "cos", "cos",
+        "tan", "tan",
+        "csc", "csc",
+        "sec", "sec",
+        "cot", "cot"
+    );
 
     public static void stringToEquation(String input) {
-        String equationString = input.toLowerCase();
-        ArrayList<String> equationBits = new ArrayList<>();
+        equationString = removeWhiteSpace(input.toLowerCase());
+        Gdx.app.debug("equationString", equationString);
 
-        while(!equationString.isEmpty()) {
+        equationBits = stringToBits();
+        Gdx.app.debug("equationBits", String.valueOf(equationBits));
+    }
+
+    public static ArrayList<String> stringToBits() {
+        ArrayList<String> bits = new ArrayList<>();
+
+        while (!equationString.isEmpty()) {
             char character = equationString.charAt(0);
-            if(Character.isLetter(character)) {
 
-            }
-            else if (Character.isDigit(character)){
+            // Handle identifiers and operators
+            if (identifiers.containsValue(character) || operators.containsValue(character)) {
+                bits.add(String.valueOf(character));
+                equationString = equationString.substring(1);
 
-            }
-            else {
-                equationBits.add(Character.toString(character));
+                // Handle numbers
+            } else if (Character.isDigit(character)) {
+                StringBuilder tempNum = new StringBuilder();
+                tempNum.append(character);
+                equationString = equationString.substring(1);
+
+                while (!equationString.isEmpty() && Character.isDigit(equationString.charAt(0))) {
+                    tempNum.append(equationString.charAt(0));
+                    equationString = equationString.substring(1);
+                }
+                bits.add(tempNum.toString());
+
+                // Handle letters (variables or trigonometric functions)
+            } else if (Character.isLetter(character)) {
+                if (character == 'x' || character == 'e') {
+                    bits.add(String.valueOf(character));
+                    equationString = equationString.substring(1);
+                    continue;
+                }
+
+                // Attempt to find a trigonometric function
+                int i = 1;
+                String matchedFunction = null;
+                while (i <= 4 && i <= equationString.length()) { // Limit search length
+                    matchedFunction = trigFunctions.get(equationString.substring(0, i));
+                    if (matchedFunction != null) break;
+                    i++;
+                }
+
+                if (matchedFunction != null) {
+                    bits.add(matchedFunction);
+                    equationString = equationString.substring(i);
+                } else {
+                    throw new IllegalArgumentException("Invalid character or unrecognized function at: " + equationString);
+                }
+
+                // Handle unexpected cases
+            } else {
+                throw new IllegalArgumentException("Invalid character at: " + character);
             }
         }
-        Gdx.app.debug("test", equationBits.toString());
+
+
+        return bits;
+    }
+    /////////////////////////////////////////////////////
+    // NOTE: For actually parsing and calculating the
+    // functions put the stuff that is in parentheses
+    // first in the arraylist like x(x+1) -> {x, +, 1, x}
+    // and maybe add some character to tell parser that
+    // the first part is all multiplied by the next
+    /////////////////////////////////////////////////////
+    public static String removeWhiteSpace(String input) {
+        return input.replaceAll("\\s+", "");
     }
 }

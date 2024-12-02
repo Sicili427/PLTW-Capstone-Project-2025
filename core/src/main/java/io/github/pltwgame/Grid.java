@@ -3,10 +3,8 @@ package io.github.pltwgame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.ScreenUtils;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.Function;
 
@@ -43,7 +41,7 @@ public class Grid {
     Vector2[] vertLines;
     Vector2[] horzLines;
 
-    HashMap<String, Line> lines = new HashMap<String, Line>();
+    HashMap<String, Line> lines = new HashMap<>();
 
 
     public Grid(ShapeDrawer initRenderer, int maxWidth, int maxHeight, int initVertLines, int initHorzLines) {
@@ -72,6 +70,7 @@ public class Grid {
         CellY = (float) maxHeight / numHorzLines;
         id = gridIndex;
         gridIndex++;
+        Gdx.app.debug("cells", "Y: " + CellY + " X: " + CellX);
     }
 
     public Grid(ShapeDrawer initRenderer, int maxWidth, int maxHeight, int cellSize) {
@@ -103,11 +102,15 @@ public class Grid {
     public void setOffsetX(int num) {
         offsetX = num;
         CellX = (float) (gridWidth - offsetX) / numVertLines;
+        generateGrid();
+        Gdx.app.debug("CellX", CellX + "");
     }
 
     public void setOffsetY(int num) {
         offsetY = num;
         CellY = (float) (gridHeight - offsetY) / numHorzLines;
+        generateGrid();
+        Gdx.app.debug("CellY", CellY + "");
     }
 
     public void generateGrid() {
@@ -123,7 +126,6 @@ public class Grid {
 
     public void renderGrid(boolean recursiveRender) {
         if(!isRendered || recursiveRender) {
-            ScreenUtils.clear(1f, 1f, 1f, 1f);
             // generates grid
             shapeDrawer.getBatch().begin();
             shapeDrawer.setColor(Color.GRAY);
@@ -146,7 +148,7 @@ public class Grid {
     }
 
     public void addLine(Function<Double, Float> equation) {
-        Line temp = new Line(shapeDrawer, this,200, equation);
+        Line temp = new Line(shapeDrawer, this,500, equation);
         lines.put(temp.id, temp);
         Gdx.app.debug("AddLine", temp.toString());
     }

@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
@@ -28,11 +29,9 @@ public class main extends ApplicationAdapter {
 
     TextureAtlas textureAtlas;
     Skin skin;
-    TextField textField;
 
     ArrayList<TestAI> testAIs = new ArrayList<>();
 
-    //Taskbar taskbar = new Taskbar();
     Texture texture;
     SpriteBatch batch;
     TextureRegion textureRegion;
@@ -42,6 +41,9 @@ public class main extends ApplicationAdapter {
 
     Grid grid;
     Taskbar taskbar;
+
+    TextField test;
+
     float circleX = 100;
     float circleY = 100;
 
@@ -54,15 +56,10 @@ public class main extends ApplicationAdapter {
         stage = new Stage(screenViewport);
         taskbarUI = new Stage(screenViewport);
 
-        //Gdx.input.setInputProcessor(stage);
         Gdx.input.setInputProcessor(taskbarUI);
-
 
         textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
-
-        /*textField = new TextField("", skin);
-        textField.setMaxLength(50);*/
 
         texture = new Texture("pixel.png");
         batch = new SpriteBatch();
@@ -71,19 +68,23 @@ public class main extends ApplicationAdapter {
 
         fpsLogger = new FPSLogger();
 
-        grid = new Grid(shapeDrawer, SCREEN_WIDTH,SCREEN_HEIGHT,64,2,1);
+        grid = new Grid(shapeDrawer, SCREEN_WIDTH, SCREEN_HEIGHT,64,2,1);
+        grid.setOffsetY((int)(SCREEN_HEIGHT*0.2));
+        grid.generateGrid();
+        grid.centerOriginY();
+
         taskbar = new Taskbar(shapeDrawer, taskbarUI);
         //taskbar.generateTaskbar(SCREEN_WIDTH, SCREEN_HEIGHT);
         //textField.setMessageText("Enter text...");
         //textField.setPosition(100, 150);
         //textField.setSize(300, 40);
 
-        grid.generateGrid();
-        grid.centerOriginY();
+        test = new TextField("test", skin);
+        test.setWidth(200);
+        test.setHeight(50);
+        test.setPosition(100,200);
 
-        testAIs.add(new TestAI(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0));
-
-        //stage.addActor(textField);
+        taskbarUI.addActor(test);
 
         Gdx.app.debug("Status", "Create Finished");
     }
@@ -91,7 +92,7 @@ public class main extends ApplicationAdapter {
     @Override
     public void resize(int width, int height) {
         stage.getViewport().update(width,height,true);
-        //stage.getViewport().get
+        taskbarUI.getViewport().update(width,height,true);
     }
 
     @Override
@@ -100,6 +101,8 @@ public class main extends ApplicationAdapter {
 
         circleX = Gdx.input.getX();
         circleY = SCREEN_HEIGHT-Gdx.input.getY();
+
+        ScreenUtils.clear(1,1,1,1);
 
         drawBoard();
 
@@ -118,11 +121,11 @@ public class main extends ApplicationAdapter {
         taskbarUI.draw();
 
         if(Gdx.input.isKeyJustPressed(Input.Keys.L)) {
-            grid.addLine(input ->  1/((float) Math.sin(input)));
+            grid.addLine(input -> (float) (Math.tan(input) + Math.pow(Math.sin(input),2)));
         }
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            EquationInterpreter.stringToEquation(textField.getText());
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            EquationInterpreter.stringToEquation(test.getText());
         }
 
         fpsLogger.log();
@@ -151,10 +154,6 @@ public class main extends ApplicationAdapter {
     private void drawBoard() {
         grid.renderGrid(true);
         taskbar.draw();
-        batch.begin();
-        shapeDrawer.setColor(Color.BROWN);
-        shapeDrawer.circle(circleX, circleY, 50);
-        batch.end();
     }
 
 }
