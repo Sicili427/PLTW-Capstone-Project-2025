@@ -43,6 +43,8 @@ public class EquationInterpreter {
 
         equationBits = stringToBits();
         Gdx.app.debug("equationBits", String.valueOf(equationBits));
+
+        Gdx.app.debug("validIdentifiers", "" + checkParentheses(equationBits));
     }
 
     public static ArrayList<String> stringToBits() {
@@ -89,25 +91,57 @@ public class EquationInterpreter {
                     bits.add(matchedFunction);
                     equationString = equationString.substring(i);
                 } else {
-                    throw new IllegalArgumentException("Invalid character or unrecognized function at: " + equationString);
+                    return null;
                 }
 
                 // Handle unexpected cases
             } else {
-                throw new IllegalArgumentException("Invalid character at: " + character);
+                return null;
             }
         }
 
 
         return bits;
     }
-    /////////////////////////////////////////////////////
+
+    //////////////////////////////////////////////////////
     // NOTE: For actually parsing and calculating the
     // functions put the stuff that is in parentheses
     // first in the arraylist like x(x+1) -> {x, +, 1, x}
     // and maybe add some character to tell parser that
     // the first part is all multiplied by the next
-    /////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+
+    public static ArrayList<String> parseBits(ArrayList<String> input) {
+        ArrayList<String> output = new ArrayList<>();
+        if(checkParentheses(input)) {
+            return null;
+        }
+        return output;
+    }
+
+    public static boolean checkParentheses(ArrayList<String> input) {
+        int count = 0;
+        int absCount = 0;
+        for (String target : input) {
+            switch (target) {
+                case "(":
+                    count++;
+                    break;
+                case ")":
+                    count--;
+                    if (count < 0) {
+                        return false;
+                    }
+                    break;
+                case "|":
+                    absCount++;
+                    break;
+            }
+        }
+        return count == 0 && absCount % 2 == 0;
+    }
+
     public static String removeWhiteSpace(String input) {
         return input.replaceAll("\\s+", "");
     }
