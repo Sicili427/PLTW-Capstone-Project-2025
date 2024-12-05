@@ -38,6 +38,10 @@ public class EquationInterpreter {
     );
 
     public static void stringToEquation(String input) {
+        if(input.isEmpty()) {
+            return;
+        }
+
         equationString = removeWhiteSpace(input.toLowerCase());
         Gdx.app.debug("equationString", equationString);
 

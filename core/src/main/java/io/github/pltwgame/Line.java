@@ -117,19 +117,20 @@ public class Line{
     }
 
     public void generateLine() {
-        if(!hidden) {
-            // renders realPoints to a grid
-            shapeDrawer.getBatch().begin();
-            shapeDrawer.setColor(Color.RED);
-            for (int i = 0; i < realPoints.length - 1; i++) {
-                float slope = findSlope(realPoints[i], realPoints[i+1]);
-                if (Float.isFinite(realPoints[i].y) && Float.isFinite(realPoints[i+1].y) && Math.abs(derive(virtualPoints[i].x) - slope) < 1000) {
-                    shapeDrawer.line(realPoints[i], realPoints[i + 1]);
-                }
-            }
-            shapeDrawer.getBatch().end();
-            isRendered = true;
+        if(hidden) {
+            return;
         }
+        // renders realPoints to a grid
+        shapeDrawer.getBatch().begin();
+        shapeDrawer.setColor(Color.RED);
+        for (int i = 0; i < realPoints.length - 1; i++) {
+            float slope = findSlope(realPoints[i], realPoints[i+1]);
+            if (Float.isFinite(realPoints[i].y) && Float.isFinite(realPoints[i+1].y) && Math.abs(derive(virtualPoints[i].x) - slope) < 1000) {
+                shapeDrawer.line(realPoints[i], realPoints[i + 1]);
+            }
+        }
+        shapeDrawer.getBatch().end();
+        isRendered = true;
     }
 
     private float derive(double x) {
