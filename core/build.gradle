@@ -9,4 +9,5 @@ dependencies {
   api "com.badlogicgames.gdx:gdx:$gdxVersion"
   api "net.onedaybeard.artemis:artemis-odb:$artemisOdbVersion"
   api "space.earlygrey:shapedrawer:$shapeDrawerVersion"
+  api "org.mariuszgromada.math:MathParser.org-mXparser:$mxParser"
 }

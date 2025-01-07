@@ -8,16 +8,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import space.earlygrey.shapedrawer.ShapeDrawer;
+import org.mariuszgromada.math.mxparser.*;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
     // 1280x720px
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
+
+
 
     Stage taskbarUI;
 
@@ -35,6 +37,8 @@ public class main extends ApplicationAdapter {
     public void create() {
         Gdx.app.setLogLevel(3);
         Gdx.app.log("Status", "Create Triggered");
+
+        License.iConfirmNonCommercialUse("Team 7");
 
         ScreenViewport screenViewport = new ScreenViewport();
         taskbarUI = new Stage(screenViewport);
@@ -72,7 +76,6 @@ public class main extends ApplicationAdapter {
         drawBoard();
 
         grid.renderLines();
-        //taskbar.draw();
 
         taskbarUI.act(delta);
         taskbarUI.draw();
@@ -82,7 +85,8 @@ public class main extends ApplicationAdapter {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            EquationInterpreter.stringToEquation(taskbar.function1.getText());
+            Expression e = new Expression(taskbar.function1.getText());
+            Gdx.app.debug("Value", e.calculate() + "");
         }
 
         fpsLogger.log();

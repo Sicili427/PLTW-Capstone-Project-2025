@@ -146,6 +146,31 @@ public class EquationInterpreter {
         return count == 0 && absCount % 2 == 0;
     }
 
+    ////////////////////////////////////////////
+    //
+    //
+    //
+    //
+    ////////////////////////////////////////////
+
+    public static ArrayList<String> reorderBits(ArrayList<String> input){
+        ArrayList<String> output = new ArrayList<>();
+
+        int startIndex = 0;
+        int endIndex = 0;
+        for(int i = 0; i < input.size(); i++) {
+            String target = input.get(i);
+            if(target.equals("(")) {
+                startIndex = i;
+            } else if (target.equals(")")) {
+                endIndex = i;
+                break;
+            }
+        }
+
+        return output;
+    }
+
     public static String removeWhiteSpace(String input) {
         return input.replaceAll("\\s+", "");
     }
