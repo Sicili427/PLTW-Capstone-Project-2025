@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import space.earlygrey.shapedrawer.ShapeDrawer;
+import org.mariuszgromada.math.mxparser.*;
 
 import java.util.Arrays;
-import java.util.function.Function;
 
 public class Line{
 
@@ -21,28 +21,28 @@ public class Line{
     boolean isRendered = false;
     boolean hidden = false;
 
-    Function<Double, Float> equation;
+    Function function;
 
     Vector2[] virtualPoints;
     Vector2[] realPoints;
 
-    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, Function<Double, Float> initEquation, boolean isHidden) {
+    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, String expression, boolean isHidden) {
         shapeDrawer = initRenderer;
         parentGrid = initGrid;
         id = "line" + lineIndex;
         lineIndex++;
-        equation = initEquation;
+        function = new Function("f", expression, "x");
         hidden = isHidden;
         findVirtualPoints(resolution);
         findRealPoints(resolution);
     }
 
-    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, Function<Double, Float> initEquation) {
+    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, String expression) {
         shapeDrawer = initRenderer;
         parentGrid = initGrid;
         id = "line" + lineIndex;
         lineIndex++;
-        equation = initEquation;
+        function = new Function("f", expression, "x");
         findVirtualPoints(resolution);
         findRealPoints(resolution);
     }
@@ -52,7 +52,7 @@ public class Line{
         parentGrid = initGrid;
         id = "line" + lineIndex;
         lineIndex++;
-        equation = input -> (float) Math.sin(input);
+        function = new Function("f", "sin(x)", "x");
         hidden = isHidden;
         findVirtualPoints(resolution);
         findRealPoints(resolution);
@@ -63,7 +63,7 @@ public class Line{
         parentGrid = initGrid;
         id = "line" + lineIndex;
         lineIndex++;
-        equation = input -> (float) Math.sin(input);
+        function = new Function("f", "sin(x)", "x");
         findVirtualPoints(resolution);
         findRealPoints(resolution);
     }
@@ -79,7 +79,7 @@ public class Line{
         double step = (double) 1 / resolution;
         for(int i = 0; i < size; i++) {
             double input = i * step;
-            float y = equation.apply(input);
+            float y = (float) function.calculate(input);
             virtualPoints[i] = new Vector2((float) input, y);
         }
         Gdx.app.debug("virtualPoints", Arrays.toString(virtualPoints));
@@ -134,7 +134,7 @@ public class Line{
     }
 
     private float derive(double x) {
-        return (equation.apply(x + 0.0001) - equation.apply(x))*10000;
+        return (float) (function.calculate(x + 0.0001) - function.calculate(x))*10000;
     }
 
     private boolean isPointInGrid(Vector2 point){

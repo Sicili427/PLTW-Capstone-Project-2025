@@ -80,13 +80,8 @@ public class main extends ApplicationAdapter {
         taskbarUI.act(delta);
         taskbarUI.draw();
 
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            grid.addLine(input -> (float) (Math.tan(input) + Math.pow(Math.sin(input),2)));
-        }
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            Expression e = new Expression(taskbar.function1.getText());
-            Gdx.app.debug("Value", e.calculate() + "");
+            grid.addLine(taskbar.function1.getText());
         }
 
         fpsLogger.log();
