@@ -3,10 +3,10 @@ package io.github.pltwgame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import org.mariuszgromada.math.mxparser.Function;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 import java.util.HashMap;
-import java.util.function.Function;
 
 public class Grid {
     public static int gridIndex = 0;
@@ -148,9 +148,16 @@ public class Grid {
     }
 
     public void addLine(String expression) {
-        Line temp = new Line(shapeDrawer, this,100, expression);
-        lines.put(temp.id, temp);
-        Gdx.app.debug("AddLine", temp.toString());
+        Function function = new Function("f", expression, "x");
+        if(function.checkSyntax()) {
+            Line temp = new Line(shapeDrawer, this,100, function);
+            lines.put(temp.id, temp);
+            Gdx.app.debug("AddLine", temp.toString());
+        }
+    }
+
+    public void removeLine (String id) {
+        lines.remove(id);
     }
 
     public void throwLinesToAI(TestAI ai){

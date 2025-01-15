@@ -19,8 +19,6 @@ public class main extends ApplicationAdapter {
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
 
-
-
     Stage taskbarUI;
 
     Texture texture;

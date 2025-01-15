@@ -26,23 +26,23 @@ public class Line{
     Vector2[] virtualPoints;
     Vector2[] realPoints;
 
-    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, String expression, boolean isHidden) {
+    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, Function initFunction, boolean isHidden) {
         shapeDrawer = initRenderer;
         parentGrid = initGrid;
         id = "line" + lineIndex;
         lineIndex++;
-        function = new Function("f", expression, "x");
+        function = initFunction;
         hidden = isHidden;
         findVirtualPoints(resolution);
         findRealPoints(resolution);
     }
 
-    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, String expression) {
+    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, Function initFunction ) {
         shapeDrawer = initRenderer;
         parentGrid = initGrid;
         id = "line" + lineIndex;
         lineIndex++;
-        function = new Function("f", expression, "x");
+        function = initFunction;
         findVirtualPoints(resolution);
         findRealPoints(resolution);
     }
