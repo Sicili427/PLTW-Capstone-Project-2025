@@ -80,9 +80,10 @@ public class main extends ApplicationAdapter {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             grid.addLine(taskbar.function1.getText());
+            taskbar.function1.setText("");
         }
 
-        fpsLogger.log();
+        //fpsLogger.log();
     }
 
     @Override
