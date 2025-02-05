@@ -1,7 +1,9 @@
 package io.github.pltwgame;
 
-import io.github.pltwgame.Systems.*;
-import io.github.pltwgame.Components.*;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import io.github.pltwgame.systems.*;
+import io.github.pltwgame.components.*;
 
 import com.artemis.*;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -18,6 +20,8 @@ import org.mariuszgromada.math.mxparser.*;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
+    JsonReader json = new JsonReader();
+    JsonValue config = json.parse(Gdx.files.internal("../configs/gameConfig.json"));
     // 1280x720px
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);

@@ -1,4 +1,4 @@
-package io.github.pltwgame.Components;
+package io.github.pltwgame.components;
 
 import com.artemis.Component;
 
