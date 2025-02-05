@@ -131,7 +131,8 @@ public class Line{
 
     public void findLines() {
         linePoints = new ArrayList<>();
-        // finds and stores pairs of points to draw lines
+
+        // finds and stores pairs of points to draw line
         for(int i = 0; i < realPoints.length-1; i++) {
             if(!Float.isFinite(realPoints[i].y)) {
                 continue;

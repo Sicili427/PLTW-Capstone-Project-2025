@@ -1,9 +1,12 @@
 package io.github.pltwgame;
 
+import io.github.pltwgame.Systems.*;
+import io.github.pltwgame.Components.*;
+
+import com.artemis.*;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -19,6 +22,8 @@ public class main extends ApplicationAdapter {
     final int SCREEN_WIDTH = 1280;
     final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
 
+    World world;
+
     Stage taskbarUI;
 
     Texture texture;
@@ -26,7 +31,7 @@ public class main extends ApplicationAdapter {
     TextureRegion textureRegion;
     ShapeDrawer shapeDrawer;
 
-    FPSLogger fpsLogger;
+    //FPSLogger fpsLogger;
 
     Grid grid;
     Taskbar taskbar;
@@ -48,7 +53,12 @@ public class main extends ApplicationAdapter {
         textureRegion = new TextureRegion(texture, 0, 0, 1, 1);
         shapeDrawer = new ShapeDrawer(batch, textureRegion);
 
-        fpsLogger = new FPSLogger();
+        WorldConfiguration config = new WorldConfigurationBuilder()
+            .with(new HealthSystem())
+            .build();
+        world = new World(config);
+
+        //fpsLogger = new FPSLogger();
 
         grid = new Grid(shapeDrawer, SCREEN_WIDTH, SCREEN_HEIGHT,64,2,1);
         grid.setOffsetY((int)(SCREEN_HEIGHT*0.225));
@@ -71,6 +81,9 @@ public class main extends ApplicationAdapter {
 
         ScreenUtils.clear(1,1,1,1);
 
+        world.setDelta(delta);
+        world.process();
+
         drawBoard();
 
         grid.renderLines();
@@ -81,6 +94,12 @@ public class main extends ApplicationAdapter {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             grid.addLine(taskbar.function1.getText());
             taskbar.function1.setText("");
+
+            int entityId = world.create();
+
+            HealthComponent health = world.edit(entityId).create(HealthComponent.class);
+
+            health.health = 1000;
         }
 
         //fpsLogger.log();
