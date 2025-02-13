@@ -189,9 +189,9 @@ public class Taskbar {
         Gdx.app.debug("Screen height: "+screenHeight , "Rect height: "+rectHeight);
         Gdx.app.debug("Screen width: "+screenWidth , "Rect width: "+rectWidth);
 */
-        shapeDrawer.filledRectangle(0,0-offsetShapes,1280, 160, new Color(1,1,1,1));
+        shapeDrawer.filledRectangle(0,0-offsetShapes,screenWidth, (float) 2 /9 * screenHeight, new Color(1,1,1,1));
         //shapeDrawer.filledRectangle(0,100, 640, 30);
-        shapeDrawer.rectangle(0,0-offsetShapes,1280, 160, new Color(0.5f,0.5f,0.5f,1), outline);
+        shapeDrawer.rectangle(0,0-offsetShapes,screenWidth, (float) 2 /9 * screenHeight, new Color(0.5f,0.5f,0.5f,1), outline);
         buttonsX = (14*screenWidth/20);
         //Gdx.app.debug(""+ screenWidth, ""+screenWidth);
         buttonsY = (screenHeight/7)-offset;

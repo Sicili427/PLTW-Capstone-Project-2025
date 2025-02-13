@@ -1,7 +1,5 @@
 package io.github.pltwgame;
 
-import com.badlogic.gdx.utils.JsonReader;
-import com.badlogic.gdx.utils.JsonValue;
 import io.github.pltwgame.systems.*;
 import io.github.pltwgame.components.*;
 
@@ -17,14 +15,12 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 import org.mariuszgromada.math.mxparser.*;
+import com.badlogic.gdx.utils.JsonValue;
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class main extends ApplicationAdapter {
-    JsonReader json = new JsonReader();
-    JsonValue config = json.parse(Gdx.files.internal("../configs/gameConfig.json"));
-    // 1280x720px
-    final int SCREEN_WIDTH = 1280;
-    final int SCREEN_HEIGHT = Math.round((float) (9 * SCREEN_WIDTH) / 16);
+    int SCREEN_WIDTH = 1280;
+    int SCREEN_HEIGHT = 720;
 
     World world;
 
@@ -42,8 +38,15 @@ public class main extends ApplicationAdapter {
 
     @Override
     public void create() {
-        Gdx.app.setLogLevel(3);
         Gdx.app.log("Status", "Create Triggered");
+
+        JsonValue json = JsonLoader.getJson("gameConfig.json");
+
+        Gdx.app.setLogLevel(json.getInt("logLevel"));
+
+        JsonValue windowSize = json.get("windowSize");
+        SCREEN_WIDTH = windowSize.getInt("width");
+        SCREEN_HEIGHT = windowSize.getInt("height");
 
         License.iConfirmNonCommercialUse("Team 7");
 
@@ -58,7 +61,7 @@ public class main extends ApplicationAdapter {
         shapeDrawer = new ShapeDrawer(batch, textureRegion);
 
         WorldConfiguration config = new WorldConfigurationBuilder()
-            .with(new HealthSystem())
+            .with(new SpriteSystem())
             .build();
         world = new World(config);
 
@@ -101,9 +104,12 @@ public class main extends ApplicationAdapter {
 
             int entityId = world.create();
 
-            HealthComponent health = world.edit(entityId).create(HealthComponent.class);
+            SpriteComponent sprite = world.edit(entityId).create(SpriteComponent.class);
+            PositionComponent position = world.edit(entityId).create(PositionComponent.class);
 
-            health.health = 1000;
+            sprite.texture = new Texture("libgdx.png");
+            position.x = 640;
+            position.y = 360;
         }
 
         //fpsLogger.log();
