@@ -23,6 +23,10 @@ public class main extends ApplicationAdapter {
 
     Texture texture;
     SpriteBatch batch;
+
+    Texture bgImage;
+    SpriteBatch bgBatch;
+
     TextureRegion textureRegion;
     ShapeDrawer shapeDrawer;
 
@@ -30,7 +34,7 @@ public class main extends ApplicationAdapter {
 
     Grid grid;
     Taskbar taskbar;
-
+    TopUI topUI;
     @Override
     public void create() {
         Gdx.app.setLogLevel(3);
@@ -48,6 +52,9 @@ public class main extends ApplicationAdapter {
         textureRegion = new TextureRegion(texture, 0, 0, 1, 1);
         shapeDrawer = new ShapeDrawer(batch, textureRegion);
 
+        bgImage = new Texture(Gdx.files.internal("battlefieldbg.jpg"));
+        bgBatch = new SpriteBatch();
+
         fpsLogger = new FPSLogger();
 
         grid = new Grid(shapeDrawer, SCREEN_WIDTH, SCREEN_HEIGHT,64,2,1);
@@ -56,6 +63,7 @@ public class main extends ApplicationAdapter {
         grid.centerOriginY();
 
         taskbar = new Taskbar(shapeDrawer, taskbarUI);
+        topUI = new TopUI(shapeDrawer, taskbarUI);
 
         Gdx.app.debug("Status", "Create Finished");
     }
@@ -72,8 +80,6 @@ public class main extends ApplicationAdapter {
         ScreenUtils.clear(1,1,1,1);
 
         drawBoard();
-
-        grid.renderLines();
 
         taskbarUI.act(delta);
         taskbarUI.draw();
@@ -103,8 +109,13 @@ public class main extends ApplicationAdapter {
     }
 
     private void drawBoard() {
+        bgBatch.begin();
+        bgBatch.draw(bgImage, 0,0,1280, 720);
+        bgBatch.end();
         grid.renderGrid(true);
+        grid.renderLines();
         taskbar.draw();
+        topUI.draw();
     }
 
 }

@@ -4,23 +4,23 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TiledDrawable;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.math.Matrix4;
+
+import java.awt.*;
 
 public class Taskbar {
-    //ShapeDrawer shapeDrawer;
     float outline;
     Skin skin;
     TextureAtlas textureAtlas;
@@ -36,16 +36,21 @@ public class Taskbar {
     TextButton lessButton;
     TextButton absButton;
     TextButton showBar;
-    ImageButton imgButton;
+    ImageButton imgButton1;
+    ImageButton imgButton2;
+    ImageButton imgButton3;
+    ImageButton imgButton4;
     TextField function1;
-    TextField function2;
-    TextField function3;
-    TextField function4;
+    //TextField function2;
+    //TextField function3;
+    //TextField function4;
     //Button showBar;
     Label text1;
+    /*
     Label text2;
     Label text3;
     Label text4;
+    */
     //button
     TextButtonStyle textButtonStyle;
     BitmapFont font;
@@ -65,22 +70,25 @@ public class Taskbar {
     float offsetShapes;
     Texture texture;
     SpriteBatch batch;
+    Texture plankImg;
+    SpriteBatch plankBatch;
     TextureRegion textureRegion;
     ShapeDrawer shapeDrawer;
-    Matrix4 transform = new Matrix4();
+    //Matrix4 transform = new Matrix4();
     Boolean shown;
     public Taskbar(ShapeDrawer shapeDrawer, Stage stage) {
-        //this.shapeDrawer = shapeDrawer;
+        this.shapeDrawer = shapeDrawer;
         outline = 5;
-        textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
+        textureAtlas = new TextureAtlas(Gdx.files.internal("skin/rainbow-ui.atlas"));
 
-
-        texture = new Texture("pixel.png");
+        /*
+        //texture = new Texture("pixel.png");
         textureRegion = new TextureRegion(texture, 0, 0, 1, 1);
         batch = new SpriteBatch();
         this.shapeDrawer = new ShapeDrawer(batch, textureRegion);
+*/
+        skin = new Skin(Gdx.files.internal("skin/rainbow-ui.json"), textureAtlas);
 
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
         this.stage = stage;
         sinButton = new TextButton("sin(x)",skin);
         cosButton = new TextButton("cos(x)",skin);
@@ -93,15 +101,25 @@ public class Taskbar {
         lessButton = new TextButton("<",skin);
         absButton = new TextButton("|x|",skin);
         showBar = new TextButton("v", skin);
-        imgButton = new ImageButton(skin);
+        imgButton1 = new ImageButton(skin);
         function1 = new TextField("", skin);
+        //function1.setTextFieldFilter();
+        /*
         function2 = new TextField("", skin);
         function3 = new TextField("", skin);
         function4 = new TextField("", skin);
-        text1 = new Label("y1 = ", skin);
+        */
+
+        plankImg = new Texture(Gdx.files.internal("spruceplank.jpg"));
+        plankBatch = new SpriteBatch();
+
+        text1 = new Label("f(x) = ", skin);
+        /*
         text2 = new Label("y2 = ", skin);
         text3 = new Label("y3 = ", skin);
         text4 = new Label("y4 = ", skin);
+
+         */
         shown = true;
 
         offset = 0;
@@ -117,15 +135,21 @@ public class Taskbar {
         stage.addActor(greatButton);
         stage.addActor(lessButton);
         stage.addActor(absButton);
-        stage.addActor(imgButton);
+        stage.addActor(imgButton1);
         stage.addActor(function1);
+        /*
         stage.addActor(function2);
         stage.addActor(function3);
         stage.addActor(function4);
+        /*
+         */
         stage.addActor(text1);
+        /*
         stage.addActor(text2);
         stage.addActor(text3);
         stage.addActor(text4);
+
+         */
         stage.addActor(showBar);
 
 
@@ -191,16 +215,27 @@ public class Taskbar {
         Gdx.app.debug("Screen width: "+screenWidth , "Rect width: "+rectWidth);
 */
         shapeDrawer.filledRectangle(0,0-offsetShapes,1280, 160, new Color(1,1,1,1));
+        plankBatch.begin();
+        plankBatch.draw(plankImg, 0, 0-offsetShapes, 1280, 160);
+
+
         //shapeDrawer.filledRectangle(0,100, 640, 30);
-        shapeDrawer.rectangle(0,0-offsetShapes,1280, 160, new Color(0.5f,0.5f,0.5f,1), outline);
-        buttonsX = (14*screenWidth/20);
+        //shapeDrawer.rectangle(0,0-offsetShapes,1280, 160, new Color(0.5f,0.5f,0.5f,1), outline);
+
+        buttonsX = (15*screenWidth/25);
         //Gdx.app.debug(""+ screenWidth, ""+screenWidth);
-        buttonsY = (screenHeight/7)-offset;
+        buttonsY = (4*screenHeight/29)-offset;
        // Gdx.app.debug(""+ screenHeight, ""+screenHeight);
+        /*
         buttonsW = (screenWidth/25);
         buttonsH = (screenHeight/21);
         buttonsM = (screenWidth/45);
+        */
+        buttonsW = (120);
+        buttonsH = (50);
+        buttonsM = (screenWidth/40);
 
+        skin.getFont("button").getData().setScale(0.5f);
 
         /*
         textButtonStyle = new TextButtonStyle();
@@ -256,23 +291,23 @@ public class Taskbar {
         showBar.setPosition((float)(screenWidth/2)-15, (float)(screenHeight*0.2222)-offset);
 
 
-        imgButton.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("libgdx.png"))));
+        imgButton1.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("libgdx.png"))));
         //imgButton.getStyle().imageDown = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("switch_on.png"))));
-        imgButton.setSize(70, 90);
-        imgButton.setPosition(20, 30);
+        imgButton1.setSize(70, 90);
+        imgButton1.setPosition(20, 30);
 
-        float textX = (7*screenWidth/25);
+        float textX = (8*screenWidth/25);
         //Gdx.app.debug(""+ screenWidth, ""+screenWidth);
-        float textY = (screenHeight/8) - offset;
+        float textY = (3*screenHeight/32) - offset;
         // Gdx.app.debug(""+ screenHeight, ""+screenHeight);
-        float inputW = (screenWidth/7);
-        float inputH = (screenHeight/23);
+        float inputW = (2*screenWidth/8);
+        float inputH = (screenHeight/16);
         float inputM = (screenWidth/37);
         //float textM = (screenWidth/50);
         float textM = 20;
 
-        float textW = (screenWidth/47);
-        float textH = (screenHeight/48);
+        float textW = (2*screenWidth/47);
+        float textH = (2*screenHeight/48);
         /*
         space between label and input: 40px
         input width: 200
@@ -285,10 +320,13 @@ public class Taskbar {
         text1.setPosition(textX, textY);
         text1.setSize(textW, textH);
         text1.setColor(Color.BLACK);
+        text1.setFontScale(1.6f*(screenWidth/1280), 1.75f*(screenHeight/720));
         function1.setMessageText("Enter a function...");
+        function1.setScaleX(3f);
         function1.setPosition(textX+textW+textM, textY);
         function1.setSize(inputW, inputH);
 
+        /*
         text2.setPosition(textX, textY-textH-inputM);
         text2.setSize(textW, textH);
         text2.setColor(Color.BLACK);
@@ -310,6 +348,8 @@ public class Taskbar {
         function4.setPosition(textX+textW+inputW+inputM+textM+textM+textW, textY-textH-inputM);
         function4.setSize(inputW, inputH);
 
+         */
+
         /*
         sinButton.addListener(new InputListener(){
             @Override
@@ -330,12 +370,13 @@ public class Taskbar {
         charH = screenHeight/9;
         charM = screenWidth/17;
 
-        imgButton.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("libgdx.png"))));
+        imgButton1.getStyle().imageUp = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("libgdx.png"))));
         //imgButton.getStyle().imageDown = new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal("switch_on.png"))));
-        imgButton.setSize(charW, charH);
-        imgButton.setPosition(charX, charY);
+        imgButton1.setSize(charW, charH);
+        imgButton1.setPosition(charX, charY);
 
         shapeDrawer.getBatch().end();
+        plankBatch.end();
         //stage.clear();
     }
 }
