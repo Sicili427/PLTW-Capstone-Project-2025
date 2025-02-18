@@ -143,7 +143,7 @@ public class Grid {
     public void renderLines(){
         for (String i : lines.keySet()) {
             Line line = lines.get(i);
-            line.generateLine();
+            line.renderLine();
         }
     }
 
