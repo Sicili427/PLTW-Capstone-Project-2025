@@ -1,4 +1,4 @@
-package io.github.pltwgame;
+package io.github.pltwgame.loaders;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;

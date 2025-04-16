@@ -132,7 +132,7 @@ public class Grid {
             for (int i = 0; i <= numVertLines; i++) {
                 shapeDrawer.line(vertLines[i].x, offsetY, vertLines[i].x, gridHeight);
             }
-            for (int i = 0; i < numHorzLines; i++) {
+            for (int i = 0; i <= numHorzLines; i++) {
                 shapeDrawer.line(offsetX, horzLines[i].y, gridWidth, horzLines[i].y);
             }
             shapeDrawer.getBatch().end();
@@ -143,24 +143,22 @@ public class Grid {
     public void renderLines(){
         for (String i : lines.keySet()) {
             Line line = lines.get(i);
-            line.renderLine();
+            line.renderLine(4);
         }
     }
 
-    public void addLine(String expression) {
+    public Line addLine(String expression) {
         Function function = new Function("f", expression, "x");
         if(function.checkSyntax()) {
             Line temp = new Line(shapeDrawer, this,100, function);
             lines.put(temp.id, temp);
             Gdx.app.debug("AddLine", temp.toString());
+            return temp;
         }
+        return null;
     }
 
     public void removeLine (String id) {
         lines.remove(id);
-    }
-
-    public void throwLinesToAI(TestAI ai){
-        lines.get(ai.lineIndex).throwToAI(ai);
     }
 }
