@@ -2,6 +2,7 @@ package io.github.pltwgame;
 
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.pltwgame.loaders.JsonLoader;
 import io.github.pltwgame.systems.*;
 
@@ -27,58 +28,56 @@ public class main extends ApplicationAdapter {
     int SCREEN_HEIGHT = 720;
 
     World world;
-
-    Stage taskbarUI;
+    FitViewport worldViewport;
 
     Texture texture;
     SpriteBatch batch;
     Skin skin;
 
-    Texture bgImage;
-    SpriteBatch bgBatch;
-
-    TextureRegion textureRegion;
     ShapeDrawer shapeDrawer;
 
     FPSLogger fpsLogger;
 
     Grid grid;
     Taskbar taskbar;
-    TopUI topUI;
     ScreenUI screenUI;
 
     @Override
     public void create() {
-        Gdx.app.log("Status", "Create Triggered");
+        Gdx.app.setLogLevel(3);
 
-        JsonValue json = JsonLoader.getJson("gameConfig.json");
-
-        Gdx.app.setLogLevel(json.getInt("logLevel"));
-
-        JsonValue windowSize = json.get("windowSize");
-        SCREEN_WIDTH = windowSize.getInt("width");
-        SCREEN_HEIGHT = windowSize.getInt("height");
-
+        Gdx.app.debug("Status", "Create Triggered");
+        // signs agreement for mx-parser
         License.iConfirmNonCommercialUse("Team 7");
 
-        taskbarUI = new Stage(new ScreenViewport());
-
-        Gdx.input.setInputProcessor(taskbarUI);
-
-        texture = new Texture("pixel.png");
+        // creates shapeDrawer
         batch = new SpriteBatch();
-        textureRegion = new TextureRegion(texture, 0, 0, 1, 1);
+        texture = new Texture("pixel.png");
+        TextureRegion textureRegion = new TextureRegion(texture, 0, 0, 1, 1);
         shapeDrawer = new ShapeDrawer(batch, textureRegion);
 
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        // skin
+        skin = new Skin(Gdx.files.internal("testSkin/testSkin.json"));
 
-        //fpsLogger = new FPSLogger();
+        for(Texture texture : skin.getAtlas().getTextures()){
+            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        }
 
-        grid = new Grid(shapeDrawer, SCREEN_WIDTH, SCREEN_HEIGHT,64,2,1);
-        grid.setOffsetY((int)(SCREEN_HEIGHT*0.225));
+        // viewport
+        worldViewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+        // grid
+        grid = new Grid(shapeDrawer, SCREEN_WIDTH-32, SCREEN_HEIGHT,64,2,1);
+        grid.setOffsetY((int)(SCREEN_HEIGHT*0.30));
+        grid.setOffsetX(32);
         grid.generateGrid();
         grid.centerOriginY();
 
+        // taskbar + screenUI
+        taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport);
+        screenUI = new ScreenUI(shapeDrawer, batch, worldViewport);
+
+        // Artemis-ODB world configuration
         WorldConfiguration config = new WorldConfigurationBuilder()
             .with(new SpriteSystem(shapeDrawer))
             .with(new HealthSystem(grid))
@@ -86,16 +85,12 @@ public class main extends ApplicationAdapter {
             .build();
         world = new World(config);
 
-        taskbar = new Taskbar(shapeDrawer, taskbarUI);
-        topUI = new TopUI(shapeDrawer, taskbarUI);
-        screenUI = new ScreenUI(shapeDrawer, skin, SCREEN_WIDTH, SCREEN_HEIGHT);
-
         Gdx.app.debug("Status", "Create Finished");
     }
 
     @Override
     public void resize(int width, int height) {
-        taskbarUI.getViewport().update(width,height,true);
+        taskbar.resize(width, height);
         screenUI.resize(width, height);
     }
 
@@ -105,14 +100,15 @@ public class main extends ApplicationAdapter {
 
         ScreenUtils.clear(1,1,1,1);
 
-        drawBoard();
+        grid.renderGrid(true);
+        grid.renderLines();
 
         world.setDelta(delta);
         world.process();
 
-        taskbarUI.act(delta);
-        taskbarUI.draw();
-        taskbar.process(grid, world);
+        taskbar.update(delta);
+        taskbar.draw();
+
         screenUI.update(delta);
         screenUI.draw();
 
@@ -133,14 +129,7 @@ public class main extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         texture.dispose();
-        taskbarUI.dispose();
+        taskbar.dispose();
         screenUI.dispose();
     }
-
-    private void drawBoard() {;
-        grid.renderGrid(true);
-        taskbar.draw();
-        grid.renderLines();
-    }
-
 }

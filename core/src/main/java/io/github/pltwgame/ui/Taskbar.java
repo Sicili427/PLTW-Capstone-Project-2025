@@ -1,144 +1,79 @@
 package io.github.pltwgame.ui;
 
-import com.artemis.Entity;
-import com.artemis.World;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.utils.JsonValue;
-import io.github.pltwgame.EntityHandler;
-import io.github.pltwgame.Grid;
-import io.github.pltwgame.Line;
-import io.github.pltwgame.components.LineComponent;
-import io.github.pltwgame.components.PositionComponent;
-import io.github.pltwgame.loaders.EntityFactory;
-import io.github.pltwgame.loaders.JsonLoader;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
-import java.util.Arrays;
-
 public class Taskbar {
-    private final float outline = 5;
-    private final Stage stage;
-    private final Skin skin;
-    private final TextureAtlas textureAtlas;
-    private final ShapeDrawer shapeDrawer;
-    private final SpriteBatch plankBatch;
-    private final Texture plankImg;
-    private final TextButton showBar;
-    final TextField function1;
-    private final Label text1;
+    private ShapeDrawer shapeDrawer;
+    private SpriteBatch batch;
 
-    private boolean shown = true;
-    private float offset = 0, offsetShapes = 0;
+    private Stage stage;
 
-    JsonValue uiJson = JsonLoader.getJson("uiConfig.json");
+    TextureAtlas uiAtlas;
+    Skin skin;
 
-    JsonValue taskbarJson = uiJson.get("Taskbar");
-    private float taskbarHeight = taskbarJson.getFloat("taskbarHeight");
+    private HorizontalGroup barGroup;
 
-    public final TextButton[] buttons;
-    private final String[] buttonLabels = {"sin(x)", "cos(x)", "tan(x)", "/", "v--", "x^y", "log(x)", ">", "<", "|x|"};
+    private Image taskbarBg;
 
-    public Taskbar(ShapeDrawer shapeDrawer, Stage stage) {
+    private Table buttonTable;
+    private String[] labelArr = {"sin", "cos", "tan", "ln", "log", "|a|"};
+
+    public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport) {
+        this.skin = skin;
         this.shapeDrawer = shapeDrawer;
-        this.stage = stage;
-        this.textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
-        this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
+        this.batch = batch;
+        stage = new Stage(viewport);
 
-        buttons = new TextButton[buttonLabels.length];
-        for (int i = 0; i < buttonLabels.length; i++) {
-            buttons[i] = new TextButton(buttonLabels[i], skin);
-            stage.addActor(buttons[i]);
-        }
+        Gdx.input.setInputProcessor(stage);
 
-        showBar = new TextButton("v", skin);
-        showBar.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                toggleTaskbar();
-                return true;
+        uiAtlas = new TextureAtlas("uiSkin/uiSkin.atlas");
+
+        taskbarBg = new Image(uiAtlas.findRegion("taskbar_bg"));
+
+        taskbarBg.setOrigin(0,0);
+        taskbarBg.setPosition(0,0);
+        taskbarBg.setScale(2);
+
+        barGroup = Bars.createHorzWoodBar(uiAtlas, 80, 2, 0, stage.getHeight() * 0.3f, true);
+
+        buttonTable = new Table(skin);
+        buttonTable.setPosition(1050, 100);
+
+        for(int i = 0; i < labelArr.length; i++){
+            TextButton button = new TextButton("sin", skin);
+            button.setName("funcButton" + i);
+
+            if((int) (labelArr.length * 0.5) == i){
+                buttonTable.row();
             }
-        });
-        stage.addActor(showBar);
-
-        function1 = new TextField("", skin);
-        function1.setMessageText("Enter a function...");
-        stage.addActor(function1);
-
-        text1 = new Label("f(x) = ", skin);
-        text1.setColor(Color.BLACK);
-        stage.addActor(text1);
-
-        plankImg = new Texture(Gdx.files.internal("spruceplank.jpg"));
-        plankBatch = new SpriteBatch();
-    }
-
-    private void toggleTaskbar() {
-        float screenHeight = stage.getHeight();
-        if (shown) {
-            offset = taskbarHeight * screenHeight;
-            offsetShapes = 160;
-            showBar.setText("^");
-        } else {
-            offset = 0;
-            offsetShapes = 0;
-            showBar.setText("v");
-        }
-        shown = !shown;
-    }
-
-    public void draw() {
-        float screenWidth = stage.getWidth(), screenHeight = stage.getHeight();
-        shapeDrawer.getBatch().begin();
-        shapeDrawer.filledRectangle(0, 0 - offsetShapes, screenWidth, screenHeight * taskbarHeight, Color.WHITE);
-        plankBatch.begin();
-        //plankBatch.draw(plankImg, 0, 0 - offsetShapes, screenWidth, screenHeight * taskbarHeight);
-
-        float buttonsX = 15 * screenWidth / 25, buttonsY = (4 * screenHeight / 29) - offset;
-        float buttonsW = 120, buttonsH = 50, buttonsM = screenWidth / 40;
-
-        for (int i = 0; i < buttons.length; i++) {
-            buttons[i].setSize(buttonsW, buttonsH);
-            buttons[i].setPosition(buttonsX + (i % 5) * (buttonsW + buttonsM), buttonsY - (i / 5) * (buttonsH + buttonsM));
+            buttonTable.add(button).width(96).height(48).pad(10);
         }
 
-        showBar.setSize(30, 20);
-        showBar.setPosition(screenWidth / 2 - 15, screenHeight * 0.2222f - offset);
-
-        text1.setPosition(8 * screenWidth / 25, (3 * screenHeight / 32) - offset);
-        function1.setPosition(text1.getX() + 50, text1.getY());
-        function1.setSize(2 * screenWidth / 8, screenHeight / 16);
-
-        shapeDrawer.getBatch().end();
-        plankBatch.end();
+        stage.addActor(taskbarBg);
+        stage.addActor(barGroup);
+        stage.addActor(buttonTable);
     }
 
-    public void process(Grid grid, World world) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            Line line = grid.addLine(function1.getText());
-            function1.setText("");
+    public void resize(int width, int height){
+        stage.getViewport().update(width, height, true);
+    }
 
-            Entity test = EntityFactory.createEntityFromJson(world, "baseEntity.json");
+    public void draw(){
+        stage.draw();
+    }
 
-            PositionComponent pc = test.edit().create(PositionComponent.class);
+    public void update(float delta){
+        stage.act(delta);
+    }
 
-            pc.x = 0;
-            pc.y = 540;
-            pc.angle = 270;
-
-            if(line != null){
-                LineComponent lc = test.edit().create(LineComponent.class);
-                lc.lineId = line.id;
-                lc.path = line.realPoints;
-            }
-        }
+    public void dispose() {
+        stage.dispose();
     }
 }
