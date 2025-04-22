@@ -5,12 +5,15 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.pltwgame.Grid;
+import io.github.pltwgame.Line;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 import org.mariuszgromada.math.mxparser.Function;
 
@@ -33,6 +36,8 @@ public class Taskbar {
     private Table uiTable;
 
     private float errorDuration = 0;
+    private String lastValid = "";
+    private String lastIndex = "";
 
     public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport, Grid grid) {
         stage = new Stage(viewport);
@@ -59,8 +64,6 @@ public class Taskbar {
             }
             buttonTable.add(button).width(96).height(48).pad(10);
         }
-
-        equationTable = new Table();
 
         equationField = new TextField("", skin);
         equationField.addListener(new InputListener(){
@@ -91,11 +94,31 @@ public class Taskbar {
                return true;
            }
         });
+        equationField.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                String text = equationField.getText();
+                Function function = new Function("f", text, "x");
+                if(text.isBlank() && !lastIndex.isEmpty()){
+                    grid.removeLine(lastIndex);
+                }
+                if(function.checkSyntax() && !lastValid.equals(text)){
+                    lastValid = text;
+                    if(lastIndex != null){
+                        grid.removeLine(lastIndex);
+                    }
+                    Line line = grid.addLine(function);
+                    line.color.a = 0.3f;
+                    lastIndex = line.id;
+                }
+            }
+        });
 
         errorLabel = new Label("Please enter a valid equation.", skin);
         errorLabel.setColor(Color.RED);
         errorLabel.setVisible(false);
 
+        equationTable = new Table();
         equationTable.add(equationField).width(equationField.getWidth() * 3f).center();
         equationTable.row();
         equationTable.add(errorLabel).center().padTop(10);
