@@ -99,11 +99,11 @@ public class main extends ApplicationAdapter {
 
         ScreenUtils.clear(1,1,1,1);
 
-        grid.renderGrid(true);
-        grid.renderLines();
-
         world.setDelta(delta);
         world.process();
+
+        grid.renderGrid(true);
+        grid.renderLines();
 
         taskbar.update(delta);
         taskbar.draw();

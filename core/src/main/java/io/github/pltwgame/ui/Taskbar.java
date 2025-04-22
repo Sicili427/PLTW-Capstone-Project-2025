@@ -64,6 +64,7 @@ public class Taskbar {
                 public void clicked(InputEvent event, float x, float y){
                     String text = equationField.getText() + button.getText();
                     equationField.setText(text);
+                    equationField.setCursorPosition(text.length());
                 }
             });
             button.setName("funcButton" + i);
@@ -82,7 +83,7 @@ public class Taskbar {
                     String text = equationField.getText().trim();
                     lastValid = "";
 
-                    if(text.isEmpty()){
+                    if(text.isBlank()){
                         errorLabel.setText("Please enter an expression.");
                         errorLabel.setVisible(true);
                         errorDuration = 5;
