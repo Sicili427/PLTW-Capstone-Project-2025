@@ -1,9 +1,12 @@
 package io.github.pltwgame;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+=======
+>>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
 =======
 >>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
 import io.github.pltwgame.systems.*;
@@ -18,8 +21,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 <<<<<<< HEAD
+<<<<<<< HEAD
 import io.github.pltwgame.ui.ScreenUI;
 import io.github.pltwgame.ui.Taskbar;
+=======
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+>>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
 =======
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 >>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
@@ -45,7 +52,10 @@ public class main extends ApplicationAdapter {
     ShapeDrawer shapeDrawer;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
     //FPSLogger fpsLogger;
 
 >>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
@@ -114,9 +124,12 @@ public class main extends ApplicationAdapter {
         drawBoard();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         screenUI.update(delta);
         screenUI.draw();
 =======
+=======
+>>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
         taskbarUI.act(delta);
         taskbarUI.draw();
 

@@ -148,10 +148,13 @@ public class Grid {
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     public Line addLine(Function expression) {
         if(expression.checkSyntax()) {
             Line temp = new Line(shapeDrawer, this,100, expression);
 =======
+=======
+>>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
     public void addLine(String expression) {
         Function function = new Function("f", expression, "x");
         if(function.checkSyntax()) {
