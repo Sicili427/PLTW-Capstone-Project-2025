@@ -1,8 +1,7 @@
-
 {
   com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    VCR_OSD_MONO_1.001: {
-      file: VCR_OSD_MONO_1.001.fnt
+    PixelifySans-VariableFont_wght: {
+      file: PixelifySans-VariableFont_wght.fnt
       scaledSize: -1
       markupEnabled: false
       flip: false
@@ -37,13 +36,13 @@
   }
   com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
     default: {
-      font: VCR_OSD_MONO_1.001
+      font: PixelifySans-VariableFont_wght
       fontColor: White
     }
   }
   com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
     default: {
-      font: VCR_OSD_MONO_1.001
+      font: PixelifySans-VariableFont_wght
       fontColor: White
       downFontColor: Gray
       overFontColor: White
@@ -57,7 +56,7 @@
   }
   com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
     default: {
-      font: VCR_OSD_MONO_1.001
+      font: PixelifySans-VariableFont_wght
       fontColor: White
       background: textfield
       cursor: textcursor
