@@ -68,6 +68,11 @@ public class ScreenUI {
 
     public void draw() {
         stage.draw();
+
+        /* shapeDrawer.getBatch().begin();
+        shapeDrawer.line(0,108, 1280, 108, 4);
+        shapeDrawer.line(640, 0, 640, 720, 4);
+        shapeDrawer.getBatch().end(); */
     }
 
     public void update(float delta){

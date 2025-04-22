@@ -1,22 +1,22 @@
 package io.github.pltwgame.ui;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import io.github.pltwgame.Grid;
 import space.earlygrey.shapedrawer.ShapeDrawer;
+import org.mariuszgromada.math.mxparser.Function;
 
 public class Taskbar {
-    private ShapeDrawer shapeDrawer;
-    private SpriteBatch batch;
 
-    private Stage stage;
-
-    TextureAtlas uiAtlas;
-    Skin skin;
+    public Stage stage;
 
     private HorizontalGroup barGroup;
 
@@ -25,29 +25,33 @@ public class Taskbar {
     private Table buttonTable;
     private String[] labelArr = {"sin", "cos", "tan", "ln", "log", "|a|"};
 
-    public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport) {
-        this.skin = skin;
-        this.shapeDrawer = shapeDrawer;
-        this.batch = batch;
+    private Table equationTable;
+
+    private TextField equationField;
+    private Label errorLabel;
+
+    private Table uiTable;
+
+    private float errorDuration = 0;
+
+    public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport, Grid grid) {
         stage = new Stage(viewport);
 
         Gdx.input.setInputProcessor(stage);
 
-        uiAtlas = new TextureAtlas("uiSkin/uiSkin.atlas");
+        TextureAtlas uiAtlas = new TextureAtlas("uiSkin/uiSkin.atlas");
 
         taskbarBg = new Image(uiAtlas.findRegion("taskbar_bg"));
-
         taskbarBg.setOrigin(0,0);
         taskbarBg.setPosition(0,0);
         taskbarBg.setScale(2);
 
         barGroup = Bars.createHorzWoodBar(uiAtlas, 80, 2, 0, stage.getHeight() * 0.3f, true);
 
-        buttonTable = new Table(skin);
-        buttonTable.setPosition(1050, 100);
+        buttonTable = new Table();
 
         for(int i = 0; i < labelArr.length; i++){
-            TextButton button = new TextButton("sin", skin);
+            TextButton button = new TextButton(labelArr[i], skin);
             button.setName("funcButton" + i);
 
             if((int) (labelArr.length * 0.5) == i){
@@ -56,9 +60,54 @@ public class Taskbar {
             buttonTable.add(button).width(96).height(48).pad(10);
         }
 
+        equationTable = new Table();
+
+        equationField = new TextField("", skin);
+        equationField.addListener(new InputListener(){
+            @Override
+           public boolean keyDown(InputEvent event, int keycode){
+               if(keycode == Input.Keys.ENTER){
+                   String text = equationField.getText().trim();
+
+                   if(text.isEmpty()){
+                       errorLabel.setText("Please enter an expression.");
+                       errorLabel.setVisible(true);
+                       errorDuration = 5;
+                   } else {
+                       Function function = new Function("f", text, "x");
+                       equationField.setText("");
+
+                       if(function.checkSyntax()){
+                           grid.addLine(function);
+                           errorLabel.setVisible(false);
+                           errorDuration = 0;
+                       } else {
+                           errorLabel.setText("Please enter a valid expression.");
+                           errorLabel.setVisible(true);
+                           errorDuration = 5;
+                       }
+                   }
+               }
+               return true;
+           }
+        });
+
+        errorLabel = new Label("Please enter a valid equation.", skin);
+        errorLabel.setColor(Color.RED);
+        errorLabel.setVisible(false);
+
+        equationTable.add(equationField).width(equationField.getWidth() * 3f).center();
+        equationTable.row();
+        equationTable.add(errorLabel).center().padTop(10);
+
+        uiTable = new Table();
+        uiTable.add(equationTable).top().padTop(10).padRight(25);
+        uiTable.add(buttonTable);
+        uiTable.setPosition(800,108);
+
         stage.addActor(taskbarBg);
         stage.addActor(barGroup);
-        stage.addActor(buttonTable);
+        stage.addActor(uiTable);
     }
 
     public void resize(int width, int height){
@@ -71,6 +120,12 @@ public class Taskbar {
 
     public void update(float delta){
         stage.act(delta);
+
+        if (errorLabel.isVisible() && errorDuration > 0){
+            errorDuration -= delta;
+        } else {
+            errorLabel.setVisible(false);
+        }
     }
 
     public void dispose() {

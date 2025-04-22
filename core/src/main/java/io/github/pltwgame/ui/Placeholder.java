@@ -121,7 +121,7 @@ public class Placeholder {
         plankBatch.end();
     }
 
-    public void process(Grid grid, World world) {
+    /* public void process(Grid grid, World world) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
             Line line = grid.addLine(function1.getText());
             function1.setText("");
@@ -140,5 +140,5 @@ public class Placeholder {
                 lc.path = line.realPoints;
             }
         }
-    }
+    } */
 }

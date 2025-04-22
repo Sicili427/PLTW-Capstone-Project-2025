@@ -74,7 +74,7 @@ public class main extends ApplicationAdapter {
         grid.centerOriginY();
 
         // taskbar + screenUI
-        taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport);
+        taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport, grid);
         screenUI = new ScreenUI(shapeDrawer, batch, worldViewport);
 
         // Artemis-ODB world configuration
@@ -84,6 +84,8 @@ public class main extends ApplicationAdapter {
             .with(new MovementSystem())
             .build();
         world = new World(config);
+
+        Gdx.input.setInputProcessor(taskbar.stage);
 
         Gdx.app.debug("Status", "Create Finished");
     }

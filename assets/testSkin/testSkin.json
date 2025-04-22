@@ -34,6 +34,12 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 		over: button_hover
 	}
 }
+com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
+	default: {
+		font: PixelifySans-VariableFont_wght
+		fontColor: White
+	}
+}
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: {
 		font: PixelifySans-VariableFont_wght
@@ -43,8 +49,22 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		up: button_up
 		down: button_down
 		over: button_hover
+		pressedOffsetY: -2
 		unpressedOffsetY: 2
 		checkedOffsetY: 2
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
+	default: {
+		font: PixelifySans-VariableFont_wght
+		fontColor: White
+		background: textfield
+		cursor: textcursor
+	}
+}
+com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
+	default: {
+		label: default
 	}
 }
 }

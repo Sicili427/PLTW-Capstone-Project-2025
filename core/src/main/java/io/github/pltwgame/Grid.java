@@ -147,8 +147,7 @@ public class Grid {
         }
     }
 
-    public Line addLine(String expression) {
-        Function function = new Function("f", expression, "x");
+    public Line addLine(Function function) {
         if(function.checkSyntax()) {
             Line temp = new Line(shapeDrawer, this,100, function);
             lines.put(temp.id, temp);
