@@ -1,0 +1,12 @@
+{
+  "SpriteComponent": {
+    "texture": "placeholder.png",
+    "scale": 5
+  },
+  "VelocityComponent": {
+    "speed": 100
+  },
+  "HealthComponent": {
+    "maxHealth": 2000
+  }
+}

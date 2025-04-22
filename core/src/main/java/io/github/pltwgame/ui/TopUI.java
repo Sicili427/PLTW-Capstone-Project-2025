@@ -1,23 +1,12 @@
-package io.github.pltwgame;
+package io.github.pltwgame.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-
-import java.awt.*;
 
 public class TopUI {
     ShapeDrawer shapeDrawer;
@@ -36,8 +25,8 @@ public class TopUI {
     public TopUI(ShapeDrawer shapeDrawer, Stage stage) {
         this.shapeDrawer = shapeDrawer;
         this.stage = stage;
-        textureAtlas = new TextureAtlas(Gdx.files.internal("skin/rainbow-ui.atlas"));
-        skin = new Skin(Gdx.files.internal("skin/rainbow-ui.json"), textureAtlas);
+        textureAtlas = new TextureAtlas(Gdx.files.internal("skin/uiskin.atlas"));
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"), textureAtlas);
         fullHealth = 100;
         health = 100;
         enemyHealth = 100;
@@ -66,8 +55,8 @@ public class TopUI {
         healthLabel.setColor(Color.BLACK);
         healthLabel.setSize(screenWidth/25, screenHeight/18);
         //healthLabel.
-        healthLabel.setFontScale(1.25f*(screenWidth/1280), 1.5f);
-        healthLabel.setPosition(screenWidth/30, (screenHeight)*((float)670/720));
+        healthLabel.setFontScale(1.25f*(screenWidth/1920), 1.5f);
+        healthLabel.setPosition(screenWidth/30, (screenHeight)*((float)1005/1080));
 
         shapeDrawer.filledRectangle(x+80, y, 300, 40, Color.LIGHT_GRAY);
         shapeDrawer.filledRectangle(x+80, y, (300)*(health/fullHealth), 40f, Color.CYAN, Color.BLUE);
@@ -84,8 +73,8 @@ public class TopUI {
         enemyLabel.setColor(Color.BLACK);
         enemyLabel.setSize(screenWidth/25, screenHeight/18);
         //healthLabel.
-        enemyLabel.setFontScale(1.25f*(screenWidth/1280), 1.5f);
-        enemyLabel.setPosition(20*screenWidth/30, (screenHeight)*((float)670/720));
+        enemyLabel.setFontScale(1.25f*(screenWidth/1920), 1.5f);
+        enemyLabel.setPosition(20*screenWidth/30, (screenHeight)*((float)1005/1080));
 
         shapeDrawer.getBatch().end();
         //stage.clear();
