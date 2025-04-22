@@ -1,3 +1,4 @@
+
 package io.github.pltwgame;
 
 import com.badlogic.gdx.Gdx;
@@ -13,23 +14,23 @@ public class Line{
 
     public static int lineIndex = 0;
 
-    ShapeDrawer shapeDrawer;
+    public ShapeDrawer shapeDrawer;
 
-    Grid parentGrid;
+    public Grid parentGrid;
 
-    String id;
+    public String id;
 
-    Color color;
+    public Color color;
 
-    boolean isRendered = false;
-    boolean hidden = false;
+    public boolean isRendered = false;
+    public boolean hidden = false;
 
-    Function function;
+    public Function function;
 
-    Vector2[] virtualPoints;
-    Vector2[] realPoints;
+    public Vector2[] virtualPoints;
+    public Vector2[] realPoints;
 
-    ArrayList<Vector2[]> linePoints;
+    public ArrayList<Vector2[]> linePoints;
 
     public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, Function initFunction, boolean isHidden) {
         shapeDrawer = initRenderer;
@@ -44,13 +45,38 @@ public class Line{
         findLines();
     }
 
-    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, Function initFunction) {
+    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, Function initFunction ) {
         shapeDrawer = initRenderer;
         parentGrid = initGrid;
         id = "line" + lineIndex;
         lineIndex++;
         function = initFunction;
         color = new Color((float) (Math.random() * 0.5 + 0.25),(float) (Math.random() * 0.5 + 0.25),(float) (Math.random() * 0.5 + 0.25), 1);;
+        findVirtualPoints(resolution);
+        findRealPoints(resolution);
+        findLines();
+    }
+
+    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, boolean isHidden) {
+        shapeDrawer = initRenderer;
+        parentGrid = initGrid;
+        id = "line" + lineIndex;
+        lineIndex++;
+        function = new Function("f", "sin(x)", "x");
+        color = new Color((float) Math.random() * 255,(float) Math.random() * 255,(float) Math.random() * 255, 1);
+        hidden = isHidden;
+        findVirtualPoints(resolution);
+        findRealPoints(resolution);
+        findLines();
+    }
+
+    public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution) {
+        shapeDrawer = initRenderer;
+        parentGrid = initGrid;
+        id = "line" + lineIndex;
+        lineIndex++;
+        function = new Function("f", "sin(x)", "x");
+        color = new Color((float) Math.random() * 255,(float) Math.random() * 255,(float) Math.random() * 255, 1);
         findVirtualPoints(resolution);
         findRealPoints(resolution);
         findLines();
@@ -91,15 +117,15 @@ public class Line{
             int maxBound = (currentVector.y < 0) ? maxBoundNegative : maxBoundPositive;
 
             if(isPointInGrid(currentVector)) {
-                    realPoints[i] = virtualToReal(currentVector);
+                realPoints[i] = virtualToReal(currentVector);
             } else if (i > 0 && i < size-1){
                 Vector2 prevVector = virtualPoints[i-1];
                 Vector2 nextVector = virtualPoints[i+1];
 
                 realPoints[i] = calculateRealPointWhenOutOfBounds(currentVector, prevVector, nextVector, maxBound);
-            } /* else {
+            } else {
                 realPoints[i] = new Vector2(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
-            } */
+            }
         }
         Gdx.app.debug("realPoints", Arrays.toString(realPoints));
     }
@@ -142,6 +168,23 @@ public class Line{
         isRendered = true;
     }
 
+    public void renderLine(int scale) {
+        if (hidden) {
+            return;
+        }
+        // renders realPoints to a grid
+        shapeDrawer.getBatch().begin();
+        shapeDrawer.setColor(color);
+        for (int i = 0; i < linePoints.size(); i++) {
+            Vector2 point1 = linePoints.get(i)[0];
+            Vector2 point2 = linePoints.get(i)[1];
+
+            shapeDrawer.line(point1, point2, scale);
+        }
+        shapeDrawer.getBatch().end();
+        isRendered = true;
+    }
+
     private float derive(double x) {
         return (float) (function.calculate(x + 0.0001) - function.calculate(x))*10000;
     }
@@ -177,9 +220,5 @@ public class Line{
         // finds x for a given y (the height of the grid) and point with equation x = (y-b+ma)/m
         float tempX = (bound - nextVector.y + (slope * nextVector.x)) / slope;
         return virtualToReal(tempX, bound);
-    }
-
-    public void throwToAI(TestAI ai){
-        ai.addPoints(realPoints);
     }
 }
