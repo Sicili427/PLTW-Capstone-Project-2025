@@ -1,5 +1,5 @@
 
-package io.github.pltwgame;
+package io.github.pltwgame.gameCore;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -160,5 +160,9 @@ public class Grid {
 
     public void removeLine (String id) {
         lines.remove(id);
+    }
+
+    public Line getLine(String id){
+        return lines.get(id);
     }
 }

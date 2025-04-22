@@ -14,8 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import io.github.pltwgame.Grid;
-import io.github.pltwgame.Line;
+import io.github.pltwgame.gameCore.Grid;
+import io.github.pltwgame.gameCore.Line;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 import org.mariuszgromada.math.mxparser.Function;
 
@@ -82,7 +82,7 @@ public class Taskbar {
                     String text = equationField.getText().trim();
                     lastValid = "";
 
-                    if(text.isEmpty()){
+                    if(text.isBlank()){
                         errorLabel.setText("Please enter an expression.");
                         errorLabel.setVisible(true);
                         errorDuration = 5;
@@ -91,7 +91,10 @@ public class Taskbar {
                         equationField.setText("");
 
                         if(function.checkSyntax()){
-                            grid.addLine(function);
+                            Line line = grid.getLine(lastIndex);
+                            line.color.a = 1;
+
+                            lastIndex = "";
                             errorLabel.setVisible(false);
                             errorDuration = 0;
                         } else {
