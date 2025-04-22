@@ -6,45 +6,36 @@ filter: Linear, Linear
 repeat: none
 PixelifySans-VariableFont_wght
   rotate: false
-  xy: 1, 457
+  xy: 1, 454
   size: 506, 51
   orig: 506, 51
   offset: 0, 0
   index: -1
 button_down
   rotate: false
-  xy: 1, 389
+  xy: 1, 379
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
 button_hover
   rotate: false
-  xy: 291, 439
+  xy: 1, 361
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
 button_up
   rotate: false
-  xy: 1, 371
+  xy: 35, 379
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
-textcursor
+VCR_OSD_MONO_1.001
   rotate: false
-  xy: 509, 502
-  size: 1, 6
-  orig: 1, 6
-  offset: 0, 0
-  index: -1
-textfield
-  rotate: false
-  xy: 1, 407
-  size: 288, 48
-  split: 21, 21, 13, 13
-  pad: 16, 16, 13, 13
-  orig: 288, 48
+  xy: 1, 397
+  size: 506, 55
+  orig: 506, 55
   offset: 0, 0
   index: -1
