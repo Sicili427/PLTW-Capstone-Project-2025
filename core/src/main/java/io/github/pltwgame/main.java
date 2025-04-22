@@ -4,7 +4,7 @@ package io.github.pltwgame;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import io.github.pltwgame.loaders.JsonLoader;
+import io.github.pltwgame.gameCore.Grid;
 import io.github.pltwgame.systems.*;
 
 import com.artemis.*;

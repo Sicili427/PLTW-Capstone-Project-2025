@@ -5,7 +5,7 @@ import com.artemis.ComponentMapper;
 import com.artemis.annotations.All;
 import com.artemis.systems.IteratingSystem;
 import com.badlogic.gdx.Gdx;
-import io.github.pltwgame.Grid;
+import io.github.pltwgame.gameCore.Grid;
 import io.github.pltwgame.components.HealthComponent;
 import io.github.pltwgame.components.LineComponent;
 import io.github.pltwgame.components.PositionComponent;
