@@ -1,19 +1,28 @@
 package io.github.pltwgame;
 
+<<<<<<< HEAD
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+=======
+>>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
 import io.github.pltwgame.systems.*;
+import io.github.pltwgame.components.*;
 
 import com.artemis.*;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
+<<<<<<< HEAD
 import io.github.pltwgame.ui.ScreenUI;
 import io.github.pltwgame.ui.Taskbar;
+=======
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+>>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
 import space.earlygrey.shapedrawer.ShapeDrawer;
 import org.mariuszgromada.math.mxparser.*;
 
@@ -23,70 +32,74 @@ public class main extends ApplicationAdapter {
     int SCREEN_HEIGHT = 720;
 
     World world;
-    FitViewport worldViewport;
+
+    Stage taskbarUI;
 
     Texture texture;
     SpriteBatch batch;
-    Skin skin;
 
+    Texture bgImage;
+    SpriteBatch bgBatch;
+
+    TextureRegion textureRegion;
     ShapeDrawer shapeDrawer;
 
+<<<<<<< HEAD
+=======
+    //FPSLogger fpsLogger;
+
+>>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
     Grid grid;
     Taskbar taskbar;
-    ScreenUI screenUI;
-
+    TopUI topUI;
     @Override
     public void create() {
-        Gdx.app.setLogLevel(3);
+        Gdx.app.log("Status", "Create Triggered");
 
-        Gdx.app.debug("Status", "Create Triggered");
-        // signs agreement for mx-parser
+        JsonValue json = JsonLoader.getJson("gameConfig.json");
+
+        Gdx.app.setLogLevel(json.getInt("logLevel"));
+
+        JsonValue windowSize = json.get("windowSize");
+        SCREEN_WIDTH = windowSize.getInt("width");
+        SCREEN_HEIGHT = windowSize.getInt("height");
+
         License.iConfirmNonCommercialUse("Team 7");
 
-        // creates shapeDrawer
-        batch = new SpriteBatch();
+        ScreenViewport screenViewport = new ScreenViewport();
+        taskbarUI = new Stage(screenViewport);
+
+        Gdx.input.setInputProcessor(taskbarUI);
+
         texture = new Texture("pixel.png");
-        TextureRegion textureRegion = new TextureRegion(texture, 0, 0, 1, 1);
+        batch = new SpriteBatch();
+        textureRegion = new TextureRegion(texture, 0, 0, 1, 1);
         shapeDrawer = new ShapeDrawer(batch, textureRegion);
 
-        // skin
-        skin = new Skin(Gdx.files.internal("testSkin/testSkin.json"));
+        bgImage = new Texture(Gdx.files.internal("battlefieldbg.jpg"));
+        bgBatch = new SpriteBatch();
 
-        for(Texture texture : skin.getAtlas().getTextures()){
-            texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
-        }
-
-        // viewport
-        worldViewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT);
-
-        // grid
-        grid = new Grid(shapeDrawer, SCREEN_WIDTH-32, SCREEN_HEIGHT,64,2,1);
-        grid.setOffsetY((int)(SCREEN_HEIGHT*0.30));
-        grid.setOffsetX(32);
-        grid.generateGrid();
-        grid.centerOriginY();
-
-        // taskbar + screenUI
-        taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport, grid);
-        screenUI = new ScreenUI(shapeDrawer, batch, worldViewport);
-
-        // Artemis-ODB world configuration
+        fpsLogger = new FPSLogger();
+      
         WorldConfiguration config = new WorldConfigurationBuilder()
-            .with(new SpriteSystem(shapeDrawer))
-            .with(new HealthSystem(grid))
-            .with(new MovementSystem())
+            .with(new SpriteSystem())
             .build();
         world = new World(config);
 
-        Gdx.input.setInputProcessor(taskbar.stage);
+        grid = new Grid(shapeDrawer, SCREEN_WIDTH, SCREEN_HEIGHT,64,2,1);
+        grid.setOffsetY((int)(SCREEN_HEIGHT*0.225));
+        grid.generateGrid();
+        grid.centerOriginY();
+
+        taskbar = new Taskbar(shapeDrawer, taskbarUI);
+        topUI = new TopUI(shapeDrawer, taskbarUI);
 
         Gdx.app.debug("Status", "Create Finished");
     }
 
     @Override
     public void resize(int width, int height) {
-        taskbar.resize(width, height);
-        screenUI.resize(width, height);
+        taskbarUI.getViewport().update(width,height,true);
     }
 
     @Override
@@ -95,17 +108,34 @@ public class main extends ApplicationAdapter {
 
         ScreenUtils.clear(1,1,1,1);
 
-        grid.renderGrid(true);
-        grid.renderLines();
-
         world.setDelta(delta);
         world.process();
 
-        taskbar.update(delta);
-        taskbar.draw();
+        drawBoard();
 
+<<<<<<< HEAD
         screenUI.update(delta);
         screenUI.draw();
+=======
+        taskbarUI.act(delta);
+        taskbarUI.draw();
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+            grid.addLine(taskbar.function1.getText());
+            taskbar.function1.setText("");
+
+            int entityId = world.create();
+
+            SpriteComponent sprite = world.edit(entityId).create(SpriteComponent.class);
+            PositionComponent position = world.edit(entityId).create(PositionComponent.class);
+
+            sprite.texture = new Texture("libgdx.png");
+            position.x = 640;
+            position.y = 360;
+        }
+
+        //fpsLogger.log();
+>>>>>>> parent of 2143723 (Merge pull request #34 from Sicili427/Sicili)
     }
 
     @Override
@@ -122,7 +152,17 @@ public class main extends ApplicationAdapter {
     public void dispose() {
         batch.dispose();
         texture.dispose();
-        taskbar.dispose();
-        screenUI.dispose();
+        taskbarUI.dispose();
     }
+
+    private void drawBoard() {
+        bgBatch.begin();
+        bgBatch.draw(bgImage, 0,0,1280, 720);
+        bgBatch.end();
+        grid.renderGrid(true);
+        grid.renderLines();
+        taskbar.draw();
+        topUI.draw();
+    }
+
 }
