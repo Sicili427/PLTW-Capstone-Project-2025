@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.pltwgame.Grid;
 import io.github.pltwgame.Line;
@@ -27,7 +28,7 @@ public class Taskbar {
     private Image taskbarBg;
 
     private Table buttonTable;
-    private String[] labelArr = {"sin", "cos", "tan", "ln", "log", "|a|"};
+    private String[] labelArr = {"sin", "cos", "tan", "ln", "log", "| |"};
 
     private Table equationTable;
 
@@ -58,6 +59,13 @@ public class Taskbar {
 
         for(int i = 0; i < labelArr.length; i++){
             TextButton button = new TextButton(labelArr[i], skin);
+            button.addListener(new ClickListener(){
+                @Override
+                public void clicked(InputEvent event, float x, float y){
+                    String text = equationField.getText() + button.getText();
+                    equationField.setText(text);
+                }
+            });
             button.setName("funcButton" + i);
 
             if((int) (labelArr.length * 0.5) == i){
@@ -72,6 +80,7 @@ public class Taskbar {
             public boolean keyDown(InputEvent event, int keycode){
                 if(keycode == Input.Keys.ENTER){
                     String text = equationField.getText().trim();
+                    lastValid = "";
 
                     if(text.isEmpty()){
                         errorLabel.setText("Please enter an expression.");
