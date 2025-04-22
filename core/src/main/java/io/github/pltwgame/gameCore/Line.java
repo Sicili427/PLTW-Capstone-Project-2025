@@ -1,5 +1,5 @@
 
-package io.github.pltwgame;
+package io.github.pltwgame.gameCore;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

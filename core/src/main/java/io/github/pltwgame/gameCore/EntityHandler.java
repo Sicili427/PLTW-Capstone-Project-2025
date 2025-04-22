@@ -1,7 +1,5 @@
 
-package io.github.pltwgame;
-
-import com.badlogic.gdx.Gdx;
+package io.github.pltwgame.gameCore;
 
 import java.util.ArrayList;
 import java.util.Collections;
