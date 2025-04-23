@@ -1,18 +1,19 @@
 
 package io.github.pltwgame.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import io.github.pltwgame.gameCore.GameWorld;
 import io.github.pltwgame.gameCore.Grid;
 import io.github.pltwgame.gameCore.Line;
 import space.earlygrey.shapedrawer.ShapeDrawer;
@@ -21,7 +22,9 @@ import org.mariuszgromada.math.mxparser.Function;
 import java.util.ArrayList;
 
 public class Taskbar {
+    private TextureAtlas atlas;
     public Stage stage;
+    private GameWorld gameWorld;
 
     private HorizontalGroup barGroup;
 
@@ -36,7 +39,8 @@ public class Taskbar {
     private Label errorLabel;
 
     private Window box;
-    private Table cardTable;
+    private Table deckTable;
+    private SnapshotArray<Actor> cardActors;
 
     private Table uiTable;
 
@@ -44,8 +48,10 @@ public class Taskbar {
     private String lastValid = "";
     private String lastIndex = "";
 
-    public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport, Grid grid, ArrayList<String> deck) {
+    public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport, Grid grid, GameWorld gameWorld) {
+        atlas = new TextureAtlas("uiSkin/uiSkin.atlas");
         stage = new Stage(viewport);
+        this.gameWorld = gameWorld;
 
         TextureAtlas uiAtlas = new TextureAtlas("uiSkin/uiSkin.atlas");
 
@@ -64,12 +70,11 @@ public class Taskbar {
         uiTable.add(buttonTable);
         uiTable.setPosition(800,108);
 
-        createCarouselTable(skin, deck);
-
         box = new Window("", skin);
         box.setPosition(50,108 - box.getHeight() * 0.5f);
         box.setWidth(315);
-        box.add(cardTable).center();
+
+        createDeckTable(gameWorld.getDeck());
 
         stage.addActor(taskbarBg);
         stage.addActor(box);
@@ -86,13 +91,10 @@ public class Taskbar {
     }
 
     public void update(float delta){
-        stage.act(delta);
+        updateErrorLabel(delta);
+        updateDeckTable();
 
-        if (errorLabel.isVisible() && errorDuration > 0){
-            errorDuration -= delta;
-        } else {
-            errorLabel.setVisible(false);
-        }
+        stage.act(delta);
     }
 
     public void dispose() {
@@ -137,7 +139,7 @@ public class Taskbar {
                     } else {
                         Function function = new Function("f", text, "x");
                         equationField.setText("");
-
+                        // on valid input
                         if(function.checkSyntax()){
                             Line line = grid.getLine(lastIndex);
                             line.color.a = 1;
@@ -145,6 +147,9 @@ public class Taskbar {
                             lastIndex = "";
                             errorLabel.setVisible(false);
                             errorDuration = 0;
+
+                            gameWorld.getDeck().remove(gameWorld.getDeck().size()-1);
+                            updateDeckTable();
                         } else {
                             errorLabel.setText("Please enter a valid expression.");
                             errorLabel.setVisible(true);
@@ -185,16 +190,15 @@ public class Taskbar {
         equationTable.add(errorLabel).center().padTop(10);
     }
 
-    public void createCarouselTable(Skin skin, ArrayList<String> deck){
+    public void createDeckTable(ArrayList<String> deck){
         int cardCount = deck.size();
         float width = 63;
         float height = width * 1.333f;
 
-        cardTable = new Table();
-        cardTable.defaults();
+        deckTable = new Table();
 
         for(int i = 0; i < cardCount; i++){
-            Window card = new Window("", skin, "card");
+            Card card = new Card(atlas);
 
             float pad = -width * 0.5f;
             if(i == cardCount-1){
@@ -207,7 +211,32 @@ public class Taskbar {
 
             card.setZIndex(i);
             card.setName("card" + i);
-            cardTable.add(card).size(width,height).padRight(pad);
+            deckTable.add(card).size(width,height).padRight(pad);
+        }
+        box.add(deckTable).right().expandX();
+    }
+
+    public void updateDeckTable(){
+        cardActors = deckTable.getChildren();
+        if(cardActors.size > gameWorld.getDeck().size()){
+            cardActors.pop().remove();
+
+            deckTable.clearChildren();
+            deckTable.add();
+            for(Actor actor: cardActors){
+                deckTable.add(actor).padRight(31.5f);
+            }
+        } else if(cardActors.isEmpty()){
+            box.removeActor(deckTable);
+            createDeckTable(gameWorld.getDeck());
+        }
+    }
+
+    public void updateErrorLabel(float delta){
+        if (errorLabel.isVisible() && errorDuration > 0){
+            errorDuration -= delta;
+        } else {
+            errorLabel.setVisible(false);
         }
     }
 }

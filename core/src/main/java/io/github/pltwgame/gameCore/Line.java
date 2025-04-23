@@ -83,7 +83,7 @@ public class Line{
     }
 
     public String toString() {
-        return "id: " + id + " | parented to grid" + parentGrid.id + " | equation: f(x) = " + function.getFunctionExpressionString() + " | is rendered? " + isRendered;
+        return "id: " + id + " | parented to grid" + parentGrid.id + " | equation: f(x) = " + function.getFunctionExpressionString();
     }
 
     private void findVirtualPoints(int resolution) {
@@ -96,7 +96,6 @@ public class Line{
             float y = (float) function.calculate(input);
             virtualPoints[i] = new Vector2((float) input, y);
         }
-        Gdx.app.debug("virtualPoints", Arrays.toString(virtualPoints));
     }
 
     private void findRealPoints(int resolution) {
@@ -127,7 +126,6 @@ public class Line{
                 realPoints[i] = new Vector2(Float.POSITIVE_INFINITY, Float.POSITIVE_INFINITY);
             }
         }
-        Gdx.app.debug("realPoints", Arrays.toString(realPoints));
     }
 
     public void findLines() {

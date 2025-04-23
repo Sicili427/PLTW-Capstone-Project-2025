@@ -1,6 +1,7 @@
 package io.github.pltwgame.gameCore;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 
 import java.util.ArrayList;
 
@@ -19,7 +20,7 @@ public class GameWorld {
     }
 
     public void process(float delta){
-        if(deck == null || deck.size() == 0) {
+        if(deck == null || deck.isEmpty()) {
             deck = entityHandler.generateBucket(8);
             Gdx.app.debug("deck", deck.toString() + "");
         }

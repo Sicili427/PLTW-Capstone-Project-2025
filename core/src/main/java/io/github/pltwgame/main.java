@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import io.github.pltwgame.gameCore.GameWorld;
 import io.github.pltwgame.gameCore.Grid;
 import io.github.pltwgame.systems.*;
-
 import com.artemis.*;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
@@ -76,7 +75,7 @@ public class main extends ApplicationAdapter {
         gameWorld = new GameWorld(grid);
 
         // taskbar + screenUI
-        taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport, grid, gameWorld.getDeck());
+        taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport, grid, gameWorld);
         screenUI = new ScreenUI(shapeDrawer, batch, worldViewport);
 
         // Artemis-ODB world configuration
