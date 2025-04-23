@@ -4,6 +4,7 @@ package io.github.pltwgame;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.pltwgame.gameCore.GameWorld;
 import io.github.pltwgame.gameCore.Grid;
 import io.github.pltwgame.systems.*;
 
@@ -23,6 +24,8 @@ import org.mariuszgromada.math.mxparser.*;
 public class main extends ApplicationAdapter {
     int SCREEN_WIDTH = 1280;
     int SCREEN_HEIGHT = 720;
+
+    GameWorld gameWorld;
 
     World world;
     FitViewport worldViewport;
@@ -70,8 +73,10 @@ public class main extends ApplicationAdapter {
         grid.generateGrid();
         grid.centerOriginY();
 
+        gameWorld = new GameWorld(grid);
+
         // taskbar + screenUI
-        taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport, grid);
+        taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport, grid, gameWorld.getDeck());
         screenUI = new ScreenUI(shapeDrawer, batch, worldViewport);
 
         // Artemis-ODB world configuration
@@ -98,6 +103,8 @@ public class main extends ApplicationAdapter {
         float delta = Gdx.graphics.getDeltaTime();
 
         ScreenUtils.clear(1,1,1,1);
+
+        gameWorld.process(delta);
 
         world.setDelta(delta);
         world.process();

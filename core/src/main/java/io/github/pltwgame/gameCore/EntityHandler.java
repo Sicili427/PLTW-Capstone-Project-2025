@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class EntityHandler {
-    public String[] bucket = new String[8];
+    public ArrayList<String> bucket;
     public ArrayList<String> deck;
 
     public EntityHandler(String[] deck) {
@@ -15,11 +15,11 @@ public class EntityHandler {
     }
 
     // generates bucket of units with the first two slots in deck occuring twice
-    public String[] generateBucket(){
+    public ArrayList<String> generateBucket(int size){
         int count = 0;
-        List<String> temp = new ArrayList<>();
+        ArrayList<String> temp = new ArrayList<>();
 
-        for(int i = 0; i < bucket.length; i++){
+        for(int i = 0; i < size; i++){
             if(count == deck.size()){
                 count = 0;
             }
@@ -28,7 +28,7 @@ public class EntityHandler {
         }
 
         Collections.shuffle(temp);
-        bucket = temp.toArray(new String[bucket.length]);
+        bucket = temp;
 
         return bucket;
     }

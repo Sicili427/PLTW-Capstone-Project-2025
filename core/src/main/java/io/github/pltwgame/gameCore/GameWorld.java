@@ -1,16 +1,31 @@
 package io.github.pltwgame.gameCore;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.ArrayList;
 
 public class GameWorld {
     Grid grid;
+
+    EntityHandler entityHandler;
     ArrayList<String> deck;
 
     public GameWorld(Grid grid){
         this.grid = grid;
+
+        String[] cardDeck = {"foo", "bar", "foobar", "barfoo", "foofoo", "barbar"};
+        entityHandler = new EntityHandler(cardDeck);
+        deck = entityHandler.generateBucket(8);
     }
 
     public void process(float delta){
+        if(deck == null || deck.size() == 0) {
+            deck = entityHandler.generateBucket(8);
+            Gdx.app.debug("deck", deck.toString() + "");
+        }
+    }
 
+    public ArrayList<String> getDeck(){
+        return deck;
     }
 }

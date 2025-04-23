@@ -18,6 +18,8 @@ import io.github.pltwgame.gameCore.Line;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 import org.mariuszgromada.math.mxparser.Function;
 
+import java.util.ArrayList;
+
 public class Taskbar {
     public Stage stage;
 
@@ -42,7 +44,7 @@ public class Taskbar {
     private String lastValid = "";
     private String lastIndex = "";
 
-    public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport, Grid grid) {
+    public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport, Grid grid, ArrayList<String> deck) {
         stage = new Stage(viewport);
 
         TextureAtlas uiAtlas = new TextureAtlas("uiSkin/uiSkin.atlas");
@@ -62,7 +64,7 @@ public class Taskbar {
         uiTable.add(buttonTable);
         uiTable.setPosition(800,108);
 
-        createCarouselTable(skin);
+        createCarouselTable(skin, deck);
 
         box = new Window("", skin);
         box.setPosition(50,108 - box.getHeight() * 0.5f);
@@ -183,8 +185,8 @@ public class Taskbar {
         equationTable.add(errorLabel).center().padTop(10);
     }
 
-    public void createCarouselTable(Skin skin){
-        int cardCount = 8;
+    public void createCarouselTable(Skin skin, ArrayList<String> deck){
+        int cardCount = deck.size();
         float width = 63;
         float height = width * 1.333f;
 
