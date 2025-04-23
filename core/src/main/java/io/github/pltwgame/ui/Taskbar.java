@@ -39,7 +39,6 @@ public class Taskbar {
 
     private Window box;
     private Table deckTable;
-    private SnapshotArray<Actor> cardActors;
 
     private Table uiTable;
 
@@ -215,7 +214,7 @@ public class Taskbar {
     }
 
     public void updateDeckTable(){
-        cardActors = deckTable.getChildren();
+        SnapshotArray<Actor> cardActors = deckTable.getChildren();
         if(cardActors.size > gameWorld.getDeck().size()){
             cardActors.pop().remove();
 
