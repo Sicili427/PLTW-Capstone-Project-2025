@@ -20,7 +20,6 @@ import space.earlygrey.shapedrawer.ShapeDrawer;
 import org.mariuszgromada.math.mxparser.Function;
 
 public class Taskbar {
-
     public Stage stage;
 
     private HorizontalGroup barGroup;
@@ -35,6 +34,8 @@ public class Taskbar {
     private TextField equationField;
     private Label errorLabel;
 
+    private Window box;
+
     private Table uiTable;
 
     private float errorDuration = 0;
@@ -43,8 +44,6 @@ public class Taskbar {
 
     public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport, Grid grid) {
         stage = new Stage(viewport);
-
-        Gdx.input.setInputProcessor(stage);
 
         TextureAtlas uiAtlas = new TextureAtlas("uiSkin/uiSkin.atlas");
 
@@ -55,6 +54,47 @@ public class Taskbar {
 
         barGroup = Bars.createHorzWoodBar(uiAtlas, 80, 2, 0, stage.getHeight() * 0.3f, true);
 
+        createButtonTable(skin);
+        createEquationFieldTable(skin, grid);
+
+        uiTable = new Table();
+        uiTable.add(equationTable).top().padTop(10).padRight(20);
+        uiTable.add(buttonTable);
+        uiTable.setPosition(800,108);
+
+        box = new Window("", skin);
+        box.setPosition(50,108 - box.getHeight() * 0.5f);
+        box.setWidth(315);
+
+        stage.addActor(taskbarBg);
+        stage.addActor(box);
+        stage.addActor(barGroup);
+        stage.addActor(uiTable);
+    }
+
+    public void resize(int width, int height){
+        stage.getViewport().update(width, height, true);
+    }
+
+    public void draw(){
+        stage.draw();
+    }
+
+    public void update(float delta){
+        stage.act(delta);
+
+        if (errorLabel.isVisible() && errorDuration > 0){
+            errorDuration -= delta;
+        } else {
+            errorLabel.setVisible(false);
+        }
+    }
+
+    public void dispose() {
+        stage.dispose();
+    }
+
+    public void createButtonTable(Skin skin){
         buttonTable = new Table();
 
         for(int i = 0; i < labelArr.length; i++){
@@ -74,7 +114,9 @@ public class Taskbar {
             }
             buttonTable.add(button).width(96).height(48).pad(10);
         }
+    }
 
+    public void createEquationFieldTable(Skin skin, Grid grid){
         equationField = new TextField("", skin);
         equationField.addListener(new InputListener(){
             @Override
@@ -136,36 +178,9 @@ public class Taskbar {
         equationTable.add(equationField).width(equationField.getWidth() * 3f).center();
         equationTable.row();
         equationTable.add(errorLabel).center().padTop(10);
-
-        uiTable = new Table();
-        uiTable.add(equationTable).top().padTop(10).padRight(25);
-        uiTable.add(buttonTable);
-        uiTable.setPosition(800,108);
-
-        stage.addActor(taskbarBg);
-        stage.addActor(barGroup);
-        stage.addActor(uiTable);
     }
 
-    public void resize(int width, int height){
-        stage.getViewport().update(width, height, true);
-    }
+    public void createCarouselTable(){
 
-    public void draw(){
-        stage.draw();
-    }
-
-    public void update(float delta){
-        stage.act(delta);
-
-        if (errorLabel.isVisible() && errorDuration > 0){
-            errorDuration -= delta;
-        } else {
-            errorLabel.setVisible(false);
-        }
-    }
-
-    public void dispose() {
-        stage.dispose();
     }
 }

@@ -13,21 +13,21 @@ PixelifySans-VariableFont_wght
   index: -1
 button_down
   rotate: false
-  xy: 1, 389
+  xy: 291, 439
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
 button_hover
   rotate: false
-  xy: 291, 439
+  xy: 1, 323
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
 button_up
   rotate: false
-  xy: 1, 371
+  xy: 67, 389
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
@@ -43,8 +43,16 @@ textfield
   rotate: false
   xy: 1, 407
   size: 288, 48
-  split: 21, 21, 13, 13
-  pad: 16, 16, 13, 13
+  split: 18, 18, 15, 15
+  pad: 17, 17, 15, 15
   orig: 288, 48
+  offset: 0, 0
+  index: -1
+box
+  rotate: false
+  xy: 1, 341
+  size: 64, 64
+  split: 10, 10, 10, 10
+  orig: 64, 64
   offset: 0, 0
   index: -1

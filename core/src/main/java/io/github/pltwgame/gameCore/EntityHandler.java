@@ -2,15 +2,16 @@
 package io.github.pltwgame.gameCore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class EntityHandler {
     public String[] bucket = new String[8];
-    public String[] deck;
+    public ArrayList<String> deck;
 
     public EntityHandler(String[] deck) {
-        this.deck = deck;
+        this.deck = new ArrayList<>(Arrays.asList(deck));
     }
 
     // generates bucket of units with the first two slots in deck occuring twice
@@ -19,10 +20,10 @@ public class EntityHandler {
         List<String> temp = new ArrayList<>();
 
         for(int i = 0; i < bucket.length; i++){
-            if(count == deck.length){
+            if(count == deck.size()){
                 count = 0;
             }
-            temp.add(deck[count]);
+            temp.add(deck.get(count));
             count++;
         }
 
@@ -30,9 +31,5 @@ public class EntityHandler {
         bucket = temp.toArray(new String[bucket.length]);
 
         return bucket;
-    }
-
-    public void place(){
-
     }
 }
