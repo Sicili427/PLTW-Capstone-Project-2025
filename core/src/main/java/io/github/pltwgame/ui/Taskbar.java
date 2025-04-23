@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.*;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -149,7 +148,6 @@ public class Taskbar {
                             errorDuration = 0;
 
                             gameWorld.getDeck().remove(gameWorld.getDeck().size()-1);
-                            updateDeckTable();
                         } else {
                             errorLabel.setText("Please enter a valid expression.");
                             errorLabel.setVisible(true);
@@ -174,7 +172,7 @@ public class Taskbar {
                         grid.removeLine(lastIndex);
                     }
                     Line line = grid.addLine(function);
-                    line.color.a = 0.3f;
+                    line.color.a = 0.5f;
                     lastIndex = line.id;
                 }
             }
@@ -202,7 +200,7 @@ public class Taskbar {
 
             float pad = -width * 0.5f;
             if(i == cardCount-1){
-                pad = 0;
+                pad = 2.5f;
                 width = width * 1.1f;
                 height = height * 1.1f;
             } else {

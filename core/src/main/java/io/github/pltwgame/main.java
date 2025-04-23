@@ -103,11 +103,6 @@ public class main extends ApplicationAdapter {
 
         ScreenUtils.clear(1,1,1,1);
 
-        gameWorld.process(delta);
-
-        world.setDelta(delta);
-        world.process();
-
         grid.renderGrid(true);
         grid.renderLines();
 
@@ -116,6 +111,11 @@ public class main extends ApplicationAdapter {
 
         screenUI.update(delta);
         screenUI.draw();
+
+        gameWorld.process(delta);
+
+        world.setDelta(delta);
+        world.process();
 
         //fpsLogger.log();
     }
