@@ -1,7 +1,6 @@
 
 package io.github.pltwgame.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -27,7 +26,7 @@ public class Taskbar {
     private Image taskbarBg;
 
     private Table buttonTable;
-    private String[] labelArr = {"sin", "cos", "tan", "ln", "log", "| |"};
+    private String[] labelArr = {"sin()", "cos()", "tan()", "ln()", "log()", "abs()"};
 
     private Table equationTable;
 
@@ -35,6 +34,7 @@ public class Taskbar {
     private Label errorLabel;
 
     private Window box;
+    private Table cardTable;
 
     private Table uiTable;
 
@@ -62,9 +62,12 @@ public class Taskbar {
         uiTable.add(buttonTable);
         uiTable.setPosition(800,108);
 
+        createCarouselTable(skin);
+
         box = new Window("", skin);
         box.setPosition(50,108 - box.getHeight() * 0.5f);
         box.setWidth(315);
+        box.add(cardTable).center();
 
         stage.addActor(taskbarBg);
         stage.addActor(box);
@@ -104,7 +107,7 @@ public class Taskbar {
                 public void clicked(InputEvent event, float x, float y){
                     String text = equationField.getText() + button.getText();
                     equationField.setText(text);
-                    equationField.setCursorPosition(text.length());
+                    equationField.setCursorPosition(text.length()-1);
                 }
             });
             button.setName("funcButton" + i);
@@ -180,7 +183,28 @@ public class Taskbar {
         equationTable.add(errorLabel).center().padTop(10);
     }
 
-    public void createCarouselTable(){
+    public void createCarouselTable(Skin skin){
+        float width = 78;
+        float height = 104;
 
+        cardTable = new Table();
+        cardTable.defaults();
+
+        for(int i = 0; i < 6; i++){
+            Window card = new Window("", skin, "card");
+
+            float pad = -width * 0.5f;
+            if(i == 5){
+                pad = 0;
+                width = width * 1.05f;
+                height = height * 1.05f;
+            } else {
+                card.setColor(0.75f, 0.75f, 0.75f, 1);
+            }
+
+            card.setZIndex(i);
+            card.setName("card" + i);
+            cardTable.add(card).size(width,height).padRight(pad);
+        }
     }
 }

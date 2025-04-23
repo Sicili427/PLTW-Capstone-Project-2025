@@ -72,5 +72,9 @@ com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 		background: box
 		titleFont: PixelifySans-VariableFont_wght
 	}
+	card: {
+		background: Card
+		titleFont: PixelifySans-VariableFont_wght
+	}
 }
 }
