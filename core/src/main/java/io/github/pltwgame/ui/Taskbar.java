@@ -184,20 +184,21 @@ public class Taskbar {
     }
 
     public void createCarouselTable(Skin skin){
-        float width = 78;
-        float height = 104;
+        int cardCount = 8;
+        float width = 63;
+        float height = width * 1.333f;
 
         cardTable = new Table();
         cardTable.defaults();
 
-        for(int i = 0; i < 6; i++){
+        for(int i = 0; i < cardCount; i++){
             Window card = new Window("", skin, "card");
 
             float pad = -width * 0.5f;
-            if(i == 5){
+            if(i == cardCount-1){
                 pad = 0;
-                width = width * 1.05f;
-                height = height * 1.05f;
+                width = width * 1.1f;
+                height = height * 1.1f;
             } else {
                 card.setColor(0.75f, 0.75f, 0.75f, 1);
             }
