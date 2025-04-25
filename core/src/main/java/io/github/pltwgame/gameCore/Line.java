@@ -1,14 +1,12 @@
 
 package io.github.pltwgame.gameCore;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 import org.mariuszgromada.math.mxparser.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Line{
 
@@ -203,10 +201,17 @@ public class Line{
     }
 
     private Vector2 virtualToReal(Vector2 inputVector) {
-        float x = parentGrid.vertLines[(int) inputVector.x + parentGrid.originOffsetX].x + (inputVector.x - (int) inputVector.x) * parentGrid.CellX;
-        float y = parentGrid.horzLines[(int) inputVector.y + parentGrid.originOffsetY].y + (inputVector.y - (int) inputVector.y) * parentGrid.CellY;
+        float x = parentGrid.vertLines[parentGrid.originOffsetX].x + inputVector.x * parentGrid.CellX;
+        float y = parentGrid.horzLines[parentGrid.originOffsetY].y + inputVector.y * parentGrid.CellY;
 
         return new Vector2(x,y);
+    }
+
+    public Vector2 realToVirtual(Vector2 inputVector){
+        float x = (inputVector.x - parentGrid.vertLines[parentGrid.originOffsetX].x);
+        float y = (inputVector.y - parentGrid.horzLines[parentGrid.originOffsetY].y);
+
+        return new Vector2(x, y);
     }
 
     private Vector2 calculateRealPointWhenOutOfBounds(Vector2 currentVector, Vector2 prevVector, Vector2 nextVector, int bound){

@@ -1,7 +1,6 @@
 
 package io.github.pltwgame.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,6 +14,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.pltwgame.gameCore.GameWorld;
 import io.github.pltwgame.gameCore.Grid;
 import io.github.pltwgame.gameCore.Line;
+import io.github.pltwgame.listeners.EquationChangeListener;
+import io.github.pltwgame.listeners.KeyListener;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 import org.mariuszgromada.math.mxparser.Function;
 
@@ -34,17 +35,17 @@ public class Taskbar {
 
     private Table equationTable;
 
-    private TextField equationField;
-    private Label errorLabel;
+    public TextField equationField;
+    public Label errorLabel;
 
     private Window box;
     private Table deckTable;
 
     private Table uiTable;
 
-    private float errorDuration = 0;
-    private String lastValid = "";
-    private String lastIndex = "";
+    public float errorDuration = 0;
+    public String lastValid = "";
+    public String lastIndex = "";
 
     public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport, Grid grid, GameWorld gameWorld) {
         atlas = new TextureAtlas("uiSkin/uiSkin.atlas");
@@ -123,59 +124,8 @@ public class Taskbar {
 
     public void createEquationFieldTable(Skin skin, Grid grid){
         equationField = new TextField("", skin);
-        equationField.addListener(new InputListener(){
-            @Override
-            public boolean keyDown(InputEvent event, int keycode){
-                if(keycode == Input.Keys.ENTER){
-                    String text = equationField.getText().trim();
-                    lastValid = "";
-
-                    if(text.isBlank()){
-                        errorLabel.setText("Please enter an expression.");
-                        errorLabel.setVisible(true);
-                        errorDuration = 5;
-                    } else {
-                        Function function = new Function("f", text, "x");
-                        equationField.setText("");
-                        // on valid input
-                        if(function.checkSyntax()){
-                            Line line = grid.getLine(lastIndex);
-                            line.color.a = 1;
-
-                            lastIndex = "";
-                            errorLabel.setVisible(false);
-                            errorDuration = 0;
-
-                            gameWorld.getDeck().remove(gameWorld.getDeck().size()-1);
-                        } else {
-                            errorLabel.setText("Please enter a valid expression.");
-                            errorLabel.setVisible(true);
-                            errorDuration = 5;
-                        }
-                    }
-                }
-                return true;
-            }
-        });
-        equationField.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                String text = equationField.getText();
-                Function function = new Function("f", text, "x");
-                if(text.isBlank() && !lastIndex.isEmpty()){
-                    grid.removeLine(lastIndex);
-                }
-                if(function.checkSyntax() && !lastValid.equals(text)){
-                    lastValid = text;
-                    if(lastIndex != null){
-                        grid.removeLine(lastIndex);
-                    }
-                    Line line = grid.addLine(function);
-                    line.color.a = 0.5f;
-                    lastIndex = line.id;
-                }
-            }
-        });
+        equationField.addListener(new KeyListener(gameWorld, this, grid));
+        equationField.addListener(new EquationChangeListener(gameWorld, this, grid));
 
         errorLabel = new Label("Please enter a valid equation.", skin);
         errorLabel.setColor(Color.RED);

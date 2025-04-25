@@ -1,7 +1,6 @@
 package io.github.pltwgame.gameCore;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 
 import java.util.ArrayList;
 
@@ -14,7 +13,7 @@ public class GameWorld {
     public GameWorld(Grid grid){
         this.grid = grid;
 
-        String[] cardDeck = {"foo", "bar", "foobar", "barfoo", "foofoo", "barbar"};
+        String[] cardDeck = {"foo", "bar", "foobar"};
         entityHandler = new EntityHandler(cardDeck);
         deck = entityHandler.generateBucket(8);
     }

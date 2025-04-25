@@ -1,6 +1,7 @@
 
 package io.github.pltwgame;
 
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -86,7 +87,10 @@ public class main extends ApplicationAdapter {
             .build();
         world = new World(config);
 
-        Gdx.input.setInputProcessor(taskbar.stage);
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(taskbar.stage);
+
+        Gdx.input.setInputProcessor(multiplexer);
 
         Gdx.app.debug("Status", "Create Finished");
     }
