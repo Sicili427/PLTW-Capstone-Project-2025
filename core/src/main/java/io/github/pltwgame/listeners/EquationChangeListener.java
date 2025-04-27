@@ -2,7 +2,6 @@ package io.github.pltwgame.listeners;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -47,21 +46,23 @@ public class EquationChangeListener extends ChangeListener {
             line.color.a = 0.5f;
             taskbar.lastIndex = line.id;
 
-            Vector2 firstPoint = line.linePoints.get(0)[0];
-            Vector2 secondPoint = line.linePoints.get(0)[1];
+            if(!line.linePoints.isEmpty()) {
+                Vector2 firstPoint = line.linePoints.get(0)[0];
+                Vector2 secondPoint = line.linePoints.get(0)[1];
 
-            float angle = (float) Math.atan((secondPoint.y-firstPoint.y) / (secondPoint.x - firstPoint.x));
+                float angle = (float) Math.atan((secondPoint.y - firstPoint.y) / (secondPoint.x - firstPoint.x));
 
-            image = new Image(texture);
-            image.setOrigin(1);
-            image.setPosition(firstPoint.x - image.getWidth() * 0.5f,firstPoint.y - image.getHeight() * 0.5f);
-            image.setRotation(57.295f * angle - 90);
-            image.setColor(1f,1f,1f,.5f);
-            image.setName("equationImage");
+                image = new Image(texture);
+                image.setOrigin(1);
+                image.setPosition(firstPoint.x - image.getWidth() * 0.5f, firstPoint.y - image.getHeight() * 0.5f);
+                image.setRotation(57.295f * angle - 90);
+                image.setColor(1f, 1f, 1f, .5f);
+                image.setName("equationImage");
 
-            Gdx.app.debug("Angle", 6.28f * angle + " " + firstPoint.toString() + " " + secondPoint.toString());
-
-            taskbar.stage.addActor(image);
+                taskbar.stage.addActor(image);
+            } else if (image != null){
+                image.remove();
+            }
         }
     }
 }

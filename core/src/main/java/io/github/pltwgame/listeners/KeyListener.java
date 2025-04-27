@@ -44,6 +44,7 @@ public class KeyListener extends InputListener {
                     taskbar.stage.getRoot().findActor("equationImage").remove();
 
                     gameWorld.getDeck().remove(gameWorld.getDeck().size()-1);
+                    taskbar.updateDeckTable();
                 } else {
                     taskbar.errorLabel.setText("Please enter a valid expression.");
                     taskbar.errorLabel.setVisible(true);

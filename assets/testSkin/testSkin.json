@@ -1,7 +1,7 @@
 {
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-	PixelifySans-VariableFont_wght: {
-		file: PixelifySans-VariableFont_wght.fnt
+	DepartureMono-Regular: {
+		file: DepartureMono-Regular.fnt
 		scaledSize: -1
 		markupEnabled: false
 		flip: false
@@ -36,13 +36,13 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	default: {
-		font: PixelifySans-VariableFont_wght
+		font: DepartureMono-Regular
 		fontColor: White
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 	default: {
-		font: PixelifySans-VariableFont_wght
+		font: DepartureMono-Regular
 		fontColor: White
 		downFontColor: Gray
 		overFontColor: White
@@ -56,7 +56,7 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
 	default: {
-		font: PixelifySans-VariableFont_wght
+		font: DepartureMono-Regular
 		fontColor: White
 		background: textfield
 		cursor: textcursor
@@ -70,11 +70,7 @@ com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle: {
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
 	default: {
 		background: box
-		titleFont: PixelifySans-VariableFont_wght
-	}
-	card: {
-		background: Card
-		titleFont: PixelifySans-VariableFont_wght
+		titleFont: DepartureMono-Regular
 	}
 }
 }

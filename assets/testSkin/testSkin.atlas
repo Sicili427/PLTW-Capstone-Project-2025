@@ -4,6 +4,14 @@ size: 512, 512
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
+Card
+  rotate: false
+  xy: 1, 220
+  size: 24, 32
+  split: 5, 5, 5, 5
+  orig: 24, 32
+  offset: 0, 0
+  index: -1
 PixelifySans-VariableFont_wght
   rotate: false
   xy: 1, 457
@@ -13,7 +21,7 @@ PixelifySans-VariableFont_wght
   index: -1
 box
   rotate: false
-  xy: 1, 341
+  xy: 1, 272
   size: 64, 64
   split: 10, 10, 10, 10
   orig: 64, 64
@@ -21,21 +29,21 @@ box
   index: -1
 button_down
   rotate: false
-  xy: 291, 439
+  xy: 291, 370
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
 button_hover
   rotate: false
-  xy: 1, 323
+  xy: 1, 254
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
 button_up
   rotate: false
-  xy: 67, 389
+  xy: 67, 320
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
@@ -49,18 +57,17 @@ textcursor
   index: -1
 textfield
   rotate: false
-  xy: 1, 407
+  xy: 1, 338
   size: 288, 48
   split: 18, 18, 15, 15
   pad: 17, 17, 15, 15
   orig: 288, 48
   offset: 0, 0
   index: -1
-Card
+DepartureMono-Regular
   rotate: false
-  xy: 1, 289
-  size: 24, 32
-  split: 5, 5, 5, 5
-  orig: 24, 32
+  xy: 1, 388
+  size: 506, 67
+  orig: 506, 67
   offset: 0, 0
   index: -1

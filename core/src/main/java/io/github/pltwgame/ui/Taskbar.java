@@ -1,23 +1,18 @@
-
 package io.github.pltwgame.ui;
 
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.pltwgame.gameCore.GameWorld;
 import io.github.pltwgame.gameCore.Grid;
-import io.github.pltwgame.gameCore.Line;
 import io.github.pltwgame.listeners.EquationChangeListener;
 import io.github.pltwgame.listeners.KeyListener;
 import space.earlygrey.shapedrawer.ShapeDrawer;
-import org.mariuszgromada.math.mxparser.Function;
 
 import java.util.ArrayList;
 
@@ -139,22 +134,24 @@ public class Taskbar {
 
     public void createDeckTable(ArrayList<String> deck){
         int cardCount = deck.size();
-        float width = 63;
+        float width = 81;
         float height = width * 1.333f;
+        Color color = new Color(0.75f, 0.75f, 0.75f, 1);
 
         deckTable = new Table();
 
         for(int i = 0; i < cardCount; i++){
-            Card card = new Card(atlas);
+            Card card = new Card(atlas, deck.get(i));
 
-            float pad = -width * 0.5f;
+            float pad = -width * 0.65f;
             if(i == cardCount-1){
                 pad = 2.5f;
                 width = width * 1.1f;
                 height = height * 1.1f;
-            } else {
-                card.setColor(0.75f, 0.75f, 0.75f, 1);
+                color.set(1,1,1,1);
             }
+
+            card.createCard(width, height, color);
 
             card.setZIndex(i);
             card.setName("card" + i);
