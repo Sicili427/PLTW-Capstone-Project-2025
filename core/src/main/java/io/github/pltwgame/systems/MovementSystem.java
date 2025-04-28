@@ -4,6 +4,7 @@ package io.github.pltwgame.systems;
 import com.artemis.ComponentMapper;
 import com.artemis.annotations.*;
 import com.artemis.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import io.github.pltwgame.components.LineComponent;
 import io.github.pltwgame.components.PositionComponent;
@@ -42,9 +43,16 @@ public class MovementSystem extends IteratingSystem {
 
         if (distance < movement.speed * deltaTime) {
             // Move directly to the target instead of overshooting
-            position.x = target.x;
-            position.y = target.y;
-            line.currentIndex++;
+            //position.x = target.x;
+            //position.y = target.y;
+            //line.currentIndex++;
+
+            //move to next point if it overshoots
+            if(line.currentIndex != line.path.length - 1) {
+                line.currentIndex++;
+                followLine(position, movement, line, deltaTime);
+                end();
+            }
 
             if (line.currentIndex >= line.path.length) {
                 line.currentIndex = line.path.length - 1;

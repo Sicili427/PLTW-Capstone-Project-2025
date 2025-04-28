@@ -27,7 +27,9 @@ public class Line{
 
     public Function function;
 
+    //For calculations
     public Vector2[] virtualPoints;
+    //Scaled up for the screen size
     public Vector2[] realPoints;
 
     public ArrayList<Vector2[]> linePoints;

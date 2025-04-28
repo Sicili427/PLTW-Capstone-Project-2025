@@ -1,11 +1,17 @@
 
 package io.github.pltwgame;
 
+import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.FPSLogger;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import io.github.pltwgame.components.*;
 import io.github.pltwgame.gameCore.GameWorld;
 import io.github.pltwgame.gameCore.Grid;
+import io.github.pltwgame.gameCore.Line;
 import io.github.pltwgame.systems.*;
 import com.artemis.*;
 import com.badlogic.gdx.ApplicationAdapter;
@@ -40,6 +46,10 @@ public class main extends ApplicationAdapter {
     Grid grid;
     Taskbar taskbar;
     ScreenUI screenUI;
+
+    Entity testEntity;
+    float prevX = 200;
+    float activeX;
 
     @Override
     public void create() {
@@ -86,6 +96,42 @@ public class main extends ApplicationAdapter {
             .build();
         world = new World(config);
 
+        Function function = new Function("f", "x", "x");
+        Line testLine = grid.addLine(function);
+
+        testEntity  = world.createEntity();
+        HealthComponent healthComponent = testEntity.edit().create(HealthComponent.class);
+        LineComponent lineComponent = testEntity.edit().create(LineComponent.class);
+        PositionComponent positionComponent = testEntity.edit().create(PositionComponent.class);
+        SpriteComponent spriteComponent = testEntity.edit().create(SpriteComponent.class);
+        VelocityComponent velocityComponent = testEntity.edit().create(VelocityComponent.class);
+        WanderComponent wanderComponent = testEntity.edit().create(WanderComponent.class);
+
+        FileHandle file = new FileHandle("pixel.png");
+        Texture texture = new Texture(file);
+        Sprite sprite = new Sprite(texture, texture.getWidth(), texture.getHeight());
+        sprite.setColor(Color.RED);
+        spriteComponent.sprite = sprite;
+        spriteComponent.scale = 100;
+
+
+        healthComponent.maxHealth = 100;
+        healthComponent.health = healthComponent.maxHealth;
+        healthComponent.shield = 0;
+        healthComponent.armor = 5;
+        healthComponent.invincible = true;
+
+        positionComponent.x = 200;
+        positionComponent.y = 550;
+        positionComponent.angle = 0;
+
+        lineComponent.lineId = testLine.id;
+        lineComponent.currentIndex = 0;
+        lineComponent.path = testLine.realPoints;
+
+        velocityComponent.speed = 100;
+
+
         Gdx.input.setInputProcessor(taskbar.stage);
 
         Gdx.app.debug("Status", "Create Finished");
@@ -116,6 +162,13 @@ public class main extends ApplicationAdapter {
 
         world.setDelta(delta);
         world.process();
+
+        float difInX = activeX - prevX;
+        Gdx.app.debug("Dist", "" + difInX);
+        //Gdx.app.debug("Delt", "" + delta);
+        prevX = activeX;
+        activeX = testEntity.getComponent(PositionComponent.class).x;
+
 
         //fpsLogger.log();
     }
