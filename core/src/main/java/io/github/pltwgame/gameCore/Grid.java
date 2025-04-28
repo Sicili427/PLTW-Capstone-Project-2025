@@ -26,8 +26,8 @@ public class Grid {
     int offsetX = 0;
     int offsetY = 0;
 
-    int originOffsetX = 0;
-    int originOffsetY = 0;
+    public int originOffsetX = 0;
+    public int originOffsetY = 0;
 
     int gridXMin = 0;
     int gridXMax = 0;
@@ -39,8 +39,8 @@ public class Grid {
 
     ShapeDrawer shapeDrawer;
 
-    Vector2[] vertLines;
-    Vector2[] horzLines;
+    public Vector2[] vertLines;
+    public Vector2[] horzLines;
 
     HashMap<String, Line> lines = new HashMap<>();
 

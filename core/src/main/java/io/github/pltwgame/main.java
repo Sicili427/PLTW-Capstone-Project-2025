@@ -3,6 +3,7 @@ package io.github.pltwgame;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -96,6 +97,10 @@ public class main extends ApplicationAdapter {
             .build();
         world = new World(config);
 
+        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer.addProcessor(taskbar.stage);
+
+        Gdx.input.setInputProcessor(multiplexer);
         Function function = new Function("f", "x", "x");
         Line testLine = grid.addLine(function);
 
