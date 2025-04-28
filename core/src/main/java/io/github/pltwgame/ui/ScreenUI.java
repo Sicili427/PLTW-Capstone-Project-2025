@@ -43,11 +43,13 @@ public class ScreenUI {
         inkBarBG = new Image(uiAtlas.findRegion("ink_bar_bg"));
         inkBar = new Image(uiAtlas.findRegion("ink_bar"));
 
+        uiAtlas.findRegion("health_bar").setRegion(1,1,6, 16);
+
         healthBarBG.setPosition(75,650);
         healthBarBG.scaleBy(2);
 
         healthBar.setPosition(75,650);
-        healthBar.scaleBy(2);
+        healthBar.scaleBy(2, 2);
 
         inkBarBG.setPosition(1017,652.5f);
         inkBarBG.scaleBy(2);

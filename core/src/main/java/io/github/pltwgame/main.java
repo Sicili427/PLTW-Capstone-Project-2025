@@ -112,12 +112,12 @@ public class main extends ApplicationAdapter {
         VelocityComponent velocityComponent = testEntity.edit().create(VelocityComponent.class);
         WanderComponent wanderComponent = testEntity.edit().create(WanderComponent.class);
 
-        FileHandle file = new FileHandle("pixel.png");
+        FileHandle file = new FileHandle("placeHolder.png");
         Texture texture = new Texture(file);
         Sprite sprite = new Sprite(texture, texture.getWidth(), texture.getHeight());
-        sprite.setColor(Color.RED);
+        //sprite.setColor(Color.RED);
         spriteComponent.sprite = sprite;
-        spriteComponent.scale = 100;
+        spriteComponent.scale = 1;
 
 
         healthComponent.maxHealth = 100;
@@ -169,7 +169,7 @@ public class main extends ApplicationAdapter {
         world.process();
 
         float difInX = activeX - prevX;
-        Gdx.app.debug("Dist", "" + difInX);
+        //Gdx.app.debug("Dist", "" + difInX);
         //Gdx.app.debug("Delt", "" + delta);
         prevX = activeX;
         activeX = testEntity.getComponent(PositionComponent.class).x;
