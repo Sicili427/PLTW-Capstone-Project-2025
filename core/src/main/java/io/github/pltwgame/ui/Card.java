@@ -43,10 +43,12 @@ public class Card extends Group {
         spritePortrait.setColor(color);
 
         Label inkLabel = new Label(ink + "", skin, "small");
-        inkLabel.setPosition(width * 8.75f/81 - 0.5f * inkLabel.getWidth(), height - 5.25f - inkLabel.getHeight());
+        inkLabel.setPosition(width * 8.75f/81 - 0.5f * inkLabel.getWidth(), height * 98.75f/108 - 0.5f * inkLabel.getHeight());
+        inkLabel.setColor(color);
 
         Label healthLabel = new Label(health + "", skin, "small");
-        healthLabel.setPosition(width - healthLabel.getWidth(), height - healthLabel.getHeight());
+        healthLabel.setPosition(width * 72.5f/81 - 0.5f * healthLabel.getWidth(), height * 99f/108 - 0.5f * healthLabel.getHeight());
+        healthLabel.setColor(color);
 
         addActor(cardBg);
         addActor(spritePortrait);
