@@ -1,0 +1,7 @@
+entities.png
+size:128,64
+repeat:none
+square
+bounds:1,1,32,32
+triangle
+bounds:35,1,32,32
