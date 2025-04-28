@@ -1,0 +1,22 @@
+{
+  "Components": {
+    "SpriteComponent": {
+      "texture": "triangle",
+      "scale": 5
+    },
+    "VelocityComponent": {
+      "speed": 100
+    },
+    "HealthComponent": {
+      "maxHealth": 5
+    },
+    "InkComponent": {
+      "inkCost": 5
+    },
+    "DamageComponent": {
+      "entityDamage": 1,
+      "baseDamage": 5,
+      "damageType": "normal"
+    }
+  }
+}

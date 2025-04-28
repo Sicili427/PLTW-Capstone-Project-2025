@@ -18,6 +18,7 @@ import java.util.ArrayList;
 
 public class Taskbar {
     private TextureAtlas atlas;
+    private Skin skin;
     public Stage stage;
     private GameWorld gameWorld;
 
@@ -45,6 +46,7 @@ public class Taskbar {
     public Taskbar(Skin skin, ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport, Grid grid, GameWorld gameWorld) {
         atlas = new TextureAtlas("uiSkin/uiSkin.atlas");
         stage = new Stage(viewport);
+        this.skin = skin;
         this.gameWorld = gameWorld;
 
         TextureAtlas uiAtlas = new TextureAtlas("uiSkin/uiSkin.atlas");
@@ -56,8 +58,8 @@ public class Taskbar {
 
         barGroup = Bars.createHorzWoodBar(uiAtlas, 80, 2, 0, stage.getHeight() * 0.3f, true);
 
-        createButtonTable(skin);
-        createEquationFieldTable(skin, grid);
+        createButtonTable();
+        createEquationFieldTable(grid);
 
         uiTable = new Table();
         uiTable.add(equationTable).top().padTop(10).padRight(20);
@@ -95,7 +97,7 @@ public class Taskbar {
         stage.dispose();
     }
 
-    public void createButtonTable(Skin skin){
+    public void createButtonTable(){
         buttonTable = new Table();
 
         for(int i = 0; i < labelArr.length; i++){
@@ -117,7 +119,7 @@ public class Taskbar {
         }
     }
 
-    public void createEquationFieldTable(Skin skin, Grid grid){
+    public void createEquationFieldTable(Grid grid){
         equationField = new TextField("", skin);
         equationField.addListener(new KeyListener(gameWorld, this, grid));
         equationField.addListener(new EquationChangeListener(gameWorld, this, grid));
@@ -141,7 +143,7 @@ public class Taskbar {
         deckTable = new Table();
 
         for(int i = 0; i < cardCount; i++){
-            Card card = new Card(atlas, deck.get(i));
+            Card card = new Card(atlas, skin, deck.get(i));
 
             float pad = -width * 0.65f;
             if(i == cardCount-1){
