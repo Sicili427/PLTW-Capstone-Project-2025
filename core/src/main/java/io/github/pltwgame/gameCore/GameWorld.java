@@ -13,7 +13,7 @@ public class GameWorld {
     public GameWorld(Grid grid){
         this.grid = grid;
 
-        String[] cardDeck = {"square"};
+        String[] cardDeck = {"square", "triangle"};
         entityHandler = new EntityHandler(cardDeck);
         deck = entityHandler.generateBucket(8);
     }

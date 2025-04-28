@@ -6,22 +6,29 @@ filter: Linear, Linear
 repeat: none
 Card
   rotate: false
-  xy: 1, 220
+  xy: 1, 82
   size: 24, 32
   split: 5, 5, 5, 5
   orig: 24, 32
   offset: 0, 0
   index: -1
+DepartureMono-Regular
+  rotate: false
+  xy: 1, 441
+  size: 506, 67
+  orig: 506, 67
+  offset: 0, 0
+  index: -1
 PixelifySans-VariableFont_wght
   rotate: false
-  xy: 1, 457
+  xy: 1, 351
   size: 506, 51
   orig: 506, 51
   offset: 0, 0
   index: -1
 box
   rotate: false
-  xy: 1, 272
+  xy: 1, 134
   size: 64, 64
   split: 10, 10, 10, 10
   orig: 64, 64
@@ -29,21 +36,21 @@ box
   index: -1
 button_down
   rotate: false
-  xy: 291, 370
+  xy: 291, 232
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
 button_hover
   rotate: false
-  xy: 1, 254
+  xy: 1, 116
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
   index: -1
 button_up
   rotate: false
-  xy: 67, 320
+  xy: 67, 182
   size: 32, 16
   orig: 32, 16
   offset: 0, 0
@@ -57,17 +64,24 @@ textcursor
   index: -1
 textfield
   rotate: false
-  xy: 1, 338
+  xy: 1, 200
   size: 288, 48
   split: 18, 18, 15, 15
   pad: 17, 17, 15, 15
   orig: 288, 48
   offset: 0, 0
   index: -1
-DepartureMono-Regular
+font
   rotate: false
-  xy: 1, 388
-  size: 506, 67
-  orig: 506, 67
+  xy: 1, 250
+  size: 503, 99
+  orig: 503, 99
+  offset: 0, 0
+  index: -1
+font_small
+  rotate: false
+  xy: 1, 404
+  size: 506, 35
+  orig: 506, 35
   offset: 0, 0
   index: -1

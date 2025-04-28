@@ -1,12 +1,22 @@
 {
-  "SpriteComponent": {
-    "texture": "placeholder.png",
-    "scale": 5
-  },
-  "VelocityComponent": {
-    "speed": 100
-  },
-  "HealthComponent": {
-    "maxHealth": 2000
+  "Components": {
+    "SpriteComponent": {
+      "texture": "square",
+      "scale": 5
+    },
+    "VelocityComponent": {
+      "speed": 100
+    },
+    "HealthComponent": {
+      "maxHealth": 10
+    },
+    "InkComponent": {
+      "inkCost": 20
+    },
+    "DamageComponent": {
+      "entityDamage": 1,
+      "baseDamage": 5,
+      "damageType": "normal"
+    }
   }
 }
