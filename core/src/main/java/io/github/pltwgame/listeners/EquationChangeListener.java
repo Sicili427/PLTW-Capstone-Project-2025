@@ -1,30 +1,35 @@
 package io.github.pltwgame.listeners;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonValue;
 import io.github.pltwgame.gameCore.GameWorld;
 import io.github.pltwgame.gameCore.Grid;
 import io.github.pltwgame.gameCore.Line;
+import io.github.pltwgame.loaders.JsonLoader;
 import io.github.pltwgame.ui.Taskbar;
 import org.mariuszgromada.math.mxparser.Function;
 
 public class EquationChangeListener extends ChangeListener {
     private GameWorld gameWorld;
+    private TextureAtlas atlas;
     private Taskbar taskbar;
     private Grid grid;
 
-    private Texture texture;
+    private TextureRegion texture;
     private Image image;
 
     public EquationChangeListener(GameWorld gameWorld, Taskbar taskbar, Grid grid){
         this.gameWorld = gameWorld;
         this.taskbar = taskbar;
         this.grid = grid;
-        texture = new Texture("placeholder.png");
+        this.atlas = new TextureAtlas("entities/entities.atlas");
     }
 
     @Override
@@ -38,6 +43,11 @@ public class EquationChangeListener extends ChangeListener {
         }
         if(function.checkSyntax() && !taskbar.lastValid.equals(text)){
             taskbar.lastValid = text;
+
+            JsonValue json = JsonLoader.getJson("/entities/" + gameWorld.getDeck().get(gameWorld.getDeck().size()-1) + ".json").get("Components");
+            String spriteString = json.get("SpriteComponent").getString("texture", "placeholder.png");
+            texture = new TextureRegion(atlas.findRegion(spriteString));
+
             if(taskbar.lastIndex != null && image != null){
                 grid.removeLine(taskbar.lastIndex);
                 image.remove();

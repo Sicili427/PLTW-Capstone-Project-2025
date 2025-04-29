@@ -60,8 +60,8 @@ public class Card extends Group {
         spriteString = json.get("SpriteComponent").getString("texture", "placeholder.png");
         health = json.get("HealthComponent").getInt("maxHealth", 5);
         ink = json.get("InkComponent").getInt("inkCost", 1);
-        entityDamage = json.get("DamageComponent").getInt("entityDamage", 1);
-        baseDamage = json.get("DamageComponent").getInt("baseDamage", 5);
-        damageType = json.get("DamageComponent").getString("damageType", "normal");
+        entityDamage = json.get("CombatComponent").getInt("entityDamage", 1);
+        baseDamage = json.get("CombatComponent").getInt("baseDamage", 5);
+        damageType = json.get("CombatComponent").getString("damageType", "normal");
     }
 }

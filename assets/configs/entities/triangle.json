@@ -2,7 +2,7 @@
   "Components": {
     "SpriteComponent": {
       "texture": "triangle",
-      "scale": 5
+      "scale": 1
     },
     "VelocityComponent": {
       "speed": 100
@@ -13,9 +13,11 @@
     "InkComponent": {
       "inkCost": 5
     },
-    "DamageComponent": {
+    "CombatComponent": {
       "entityDamage": 1,
       "baseDamage": 5,
+      "attackSpeed": 1,
+      "detectionRange": 100,
       "damageType": "normal"
     }
   }

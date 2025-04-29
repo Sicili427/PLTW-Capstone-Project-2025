@@ -21,10 +21,12 @@ public class EntityFactory {
         componentConstructors.put("SpriteComponent", SpriteComponent::fromJson);
         componentConstructors.put("VelocityComponent", VelocityComponent::fromJson);
         componentConstructors.put("HealthComponent", HealthComponent::fromJson);
+        componentConstructors.put("InkComponent", InkComponent::fromJson);
+        componentConstructors.put("CombatComponent", CombatComponent::fromJson);
     }
 
     public static Entity createEntityFromJson(World world, String jsonString) {
-        JsonValue root = JsonLoader.getJson("/entities/" + jsonString);
+        JsonValue root = JsonLoader.getJson("/entities/" + jsonString).get("Components");
 
         Entity entity = world.createEntity();
 

@@ -16,6 +16,7 @@ public class HealthSystem extends IteratingSystem {
     private ComponentMapper<LineComponent> lm;
     private ComponentMapper<PositionComponent> pm;
     private Grid grid;
+    float cooldown = 5;
 
     public HealthSystem() {
     }
@@ -27,9 +28,19 @@ public class HealthSystem extends IteratingSystem {
     @Override
     protected void process(int entityId) {
         HealthComponent health = hm.get(entityId);
+        PositionComponent position = pm.get(entityId);
+
+        if(position.y > 1280 || position.y < 216){
+            health.health = 0;
+        }
 
         if (!health.invincible) {
-            health.health -= 1;
+            if(cooldown > 0){
+                cooldown -= world.delta;
+            } else {
+                health.health -= 0;
+                cooldown = 5;
+            }
         }
 
         if (health.health <= 0) {

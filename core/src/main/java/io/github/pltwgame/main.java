@@ -83,19 +83,20 @@ public class main extends ApplicationAdapter {
         grid.generateGrid();
         grid.centerOriginY();
 
-        gameWorld = new GameWorld(grid);
-
-        // taskbar + screenUI
-        taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport, grid, gameWorld);
-        screenUI = new ScreenUI(shapeDrawer, batch, worldViewport);
-
         // Artemis-ODB world configuration
         WorldConfiguration config = new WorldConfigurationBuilder()
             .with(new SpriteSystem(shapeDrawer))
             .with(new HealthSystem(grid))
             .with(new MovementSystem())
+            .with(new CombatSystem())
             .build();
         world = new World(config);
+
+        gameWorld = new GameWorld(grid, world);
+
+        // taskbar + screenUI
+        taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport, grid, gameWorld);
+        screenUI = new ScreenUI(gameWorld, batch, worldViewport);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(taskbar.stage);
@@ -156,6 +157,9 @@ public class main extends ApplicationAdapter {
 
         grid.renderGrid(true);
         grid.renderLines();
+
+        world.setDelta(delta);
+        world.process();
 
         taskbar.update(delta);
         taskbar.draw();
