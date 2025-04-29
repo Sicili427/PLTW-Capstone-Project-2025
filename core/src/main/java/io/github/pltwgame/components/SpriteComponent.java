@@ -2,9 +2,9 @@
 package io.github.pltwgame.components;
 
 import com.artemis.Component;
-import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.JsonValue;
 
 public class SpriteComponent extends Component{
@@ -13,15 +13,12 @@ public class SpriteComponent extends Component{
 
     public static SpriteComponent fromJson(JsonValue json) {
         SpriteComponent sc = new SpriteComponent();
+        TextureAtlas atlas = new TextureAtlas("entities/entities.atlas");
 
-        FileHandle file = new FileHandle(json.getString("texture", "placeholder.png"));
+        String spriteName = json.getString("texture", "placeholder");
 
-        if(!file.exists()){
-            file = new FileHandle("placeholder.png");
-        }
-
-        Texture texture = new Texture(file);
-        sc.sprite = new Sprite(texture, texture.getWidth(), texture.getHeight());
+        TextureRegion texture = new TextureRegion(atlas.findRegion(spriteName));
+        sc.sprite = new Sprite(texture);
         sc.scale = json.getInt("scale", 1);
         return sc;
     }

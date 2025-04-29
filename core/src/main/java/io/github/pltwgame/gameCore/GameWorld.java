@@ -1,20 +1,29 @@
 package io.github.pltwgame.gameCore;
 
+import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 
 import java.util.ArrayList;
 
 public class GameWorld {
     Grid grid;
+    public World world;
 
-    EntityHandler entityHandler;
+    int maxBaseHealth = 100;
+    int currentBaseHealth = maxBaseHealth;
+
+    int maxInk = 100;
+    int currentInk = maxInk;
+
+    public EntityHandler entityHandler;
     ArrayList<String> deck;
 
-    public GameWorld(Grid grid){
+    public GameWorld(Grid grid, World world){
         this.grid = grid;
+        this.world = world;
 
         String[] cardDeck = {"square", "triangle"};
-        entityHandler = new EntityHandler(cardDeck);
+        entityHandler = new EntityHandler(world, grid, cardDeck);
         deck = entityHandler.generateBucket(8);
     }
 

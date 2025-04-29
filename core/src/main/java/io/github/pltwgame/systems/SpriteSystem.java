@@ -6,6 +6,7 @@ import com.artemis.annotations.All;
 import com.artemis.systems.IteratingSystem;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import io.github.pltwgame.components.CombatComponent;
 import io.github.pltwgame.components.HealthComponent;
 import io.github.pltwgame.components.PositionComponent;
 import io.github.pltwgame.components.SpriteComponent;
@@ -16,6 +17,8 @@ public class SpriteSystem extends IteratingSystem {
     private ComponentMapper<PositionComponent> pm;
     private ComponentMapper<SpriteComponent> sm;
     private ComponentMapper<HealthComponent> hm;
+    private ComponentMapper<CombatComponent> cm;
+
     private final SpriteBatch batch;
     private final ShapeDrawer shapeDrawer;
 
@@ -26,8 +29,8 @@ public class SpriteSystem extends IteratingSystem {
 
     @Override
     protected void begin() {
-        batch.begin();
         shapeDrawer.getBatch().begin();
+        batch.begin();
     }
 
     @Override
@@ -35,19 +38,29 @@ public class SpriteSystem extends IteratingSystem {
         PositionComponent position = pm.get(entityId);
         SpriteComponent sprite = sm.get(entityId);
 
-        sprite.sprite.draw(batch);
+        if(cm.has(entityId)){
+            CombatComponent combat = cm.get(entityId);
+            Color color = new Color(0.5f,0.5f,0.5f,0.5f);
+
+            shapeDrawer.filledCircle(position.x, position.y, combat.detectionRange, color);
+        }
+
+        sprite.sprite.setColor(Color.WHITE);
         sprite.sprite.setScale(sprite.scale);
-        sprite.sprite.setPosition(position.x, position.y);
+        sprite.sprite.setPosition(position.x - 0.5f * sprite.sprite.getWidth(), position.y - 0.5f * sprite.sprite.getHeight());
         sprite.sprite.setRotation(position.angle);
+        sprite.sprite.draw(batch);
 
         if(hm.has(entityId)){
             HealthComponent health = hm.get(entityId);
+            float width = 50;
+            float height = 7.5f;
             if(health.health < health.maxHealth){
-                shapeDrawer.filledRectangle((float) (position.x - (health.maxHealth * 0.1)), position.y - sprite.sprite.getHeight() - 10, (float) (health.maxHealth * 0.2), 30, Color.GRAY);
+                shapeDrawer.filledRectangle(position.x - .5f * width, position.y - sprite.sprite.getHeight(), width, height, Color.GRAY);
                 if(health.invincible){
-                    shapeDrawer.filledRectangle((float) (position.x - (health.maxHealth * 0.1)), position.y - sprite.sprite.getHeight() - 10, (float) (health.health * 0.2), 30, Color.YELLOW);
+                    shapeDrawer.filledRectangle(position.x - .5f * width, position.y - sprite.sprite.getHeight(), width * health.health/health.maxHealth, height, Color.YELLOW);
                 } else{
-                    shapeDrawer.filledRectangle((float) (position.x - (health.maxHealth * 0.1)), position.y - sprite.sprite.getHeight() - 10, (float) (health.health * 0.2), 30, Color.GREEN);
+                    shapeDrawer.filledRectangle(position.x - .5f * width, position.y - sprite.sprite.getHeight(), width * health.health/health.maxHealth, height, Color.GREEN);
                 }
             }
         }
@@ -55,8 +68,8 @@ public class SpriteSystem extends IteratingSystem {
 
     @Override
     protected void end() {
-        batch.end();
         shapeDrawer.getBatch().end();
+        batch.end();
     }
 
     @Override

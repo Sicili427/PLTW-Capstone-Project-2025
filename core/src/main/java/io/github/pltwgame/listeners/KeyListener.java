@@ -1,13 +1,22 @@
 package io.github.pltwgame.listeners;
 
+import com.artemis.Entity;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import io.github.pltwgame.components.LineComponent;
+import io.github.pltwgame.components.PositionComponent;
+import io.github.pltwgame.components.TeamComponent;
 import io.github.pltwgame.gameCore.GameWorld;
 import io.github.pltwgame.gameCore.Grid;
 import io.github.pltwgame.gameCore.Line;
+import io.github.pltwgame.loaders.EntityFactory;
 import io.github.pltwgame.ui.Taskbar;
 import org.mariuszgromada.math.mxparser.Function;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 public class KeyListener extends InputListener {
     private GameWorld gameWorld;
@@ -43,8 +52,12 @@ public class KeyListener extends InputListener {
                     taskbar.errorDuration = 0;
                     taskbar.stage.getRoot().findActor("equationImage").remove();
 
+                    gameWorld.entityHandler.place(gameWorld.getDeck().get(gameWorld.getDeck().size()-1), line);
+
                     gameWorld.getDeck().remove(gameWorld.getDeck().size()-1);
                     taskbar.updateDeckTable();
+
+                    createEnemy();
                 } else {
                     taskbar.errorLabel.setText("Please enter a valid expression.");
                     taskbar.errorLabel.setVisible(true);
@@ -54,5 +67,25 @@ public class KeyListener extends InputListener {
             return true;
         }
         return false;
+    }
+
+    private void createEnemy(){
+        Function function2 = new Function("f", "sin(x)", "x");
+        Line line2 = grid.addLine(function2);
+
+        Entity entity = EntityFactory.createEntityFromJson(gameWorld.world, "square.json");
+
+        LineComponent lc = entity.edit().create(LineComponent.class);
+        lc.lineId = line2.id;
+        Vector2[] pathArray = line2.realPoints;
+        Collections.reverse(Arrays.asList(pathArray));
+        lc.path = pathArray;
+
+        PositionComponent pc = entity.edit().create(PositionComponent.class);
+        pc.x = pathArray[0].x;
+        pc.y = pathArray[0].y;
+
+        TeamComponent tc = entity.edit().create(TeamComponent.class);
+        tc.team = "red";
     }
 }

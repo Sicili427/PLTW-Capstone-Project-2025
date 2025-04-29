@@ -29,6 +29,7 @@ public class Line{
     public Vector2[] realPoints;
 
     public ArrayList<Vector2[]> linePoints;
+    public ArrayList<Vector2>  trimmedRealPoints;
 
     public Line(ShapeDrawer initRenderer, Grid initGrid, int resolution, Function initFunction, boolean isHidden) {
         shapeDrawer = initRenderer;
@@ -128,6 +129,7 @@ public class Line{
 
     public void findLines() {
         linePoints = new ArrayList<>();
+        trimmedRealPoints = new ArrayList<>();
 
         // finds and stores pairs of points to draw line
         for(int i = 0; i < realPoints.length-1; i++) {
@@ -142,6 +144,8 @@ public class Line{
 
             if(difference < 75) {
                 Vector2[] line = {realPoints[i], realPoints[i+1]};
+                trimmedRealPoints.add(realPoints[i]);
+                trimmedRealPoints.add(realPoints[i+1]);
                 linePoints.add(line);
             }
         }

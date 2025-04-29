@@ -4,58 +4,113 @@ package io.github.pltwgame.systems;
 import com.artemis.ComponentMapper;
 import com.artemis.annotations.*;
 import com.artemis.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import io.github.pltwgame.components.LineComponent;
-import io.github.pltwgame.components.PositionComponent;
-import io.github.pltwgame.components.VelocityComponent;
+import io.github.pltwgame.components.*;
 
 @All({VelocityComponent.class, PositionComponent.class})
 public class MovementSystem extends IteratingSystem {
     private ComponentMapper<PositionComponent> pm;
     private ComponentMapper<VelocityComponent> vm;
-    private ComponentMapper<LineComponent> fm;
+    private ComponentMapper<LineComponent> lm;
+    private ComponentMapper<FollowComponent> fm;
+    private ComponentMapper<SpriteComponent> sm;
 
     public MovementSystem() {
     }
 
     @Override
     protected void process(int entityId) {
-        PositionComponent pos = pm.get(entityId);
-        VelocityComponent vel = vm.get(entityId);
-        LineComponent line = fm.get(entityId);
+        LineComponent line = lm.get(entityId);
 
-        followLine(pos, vel, line, world.getDelta());
+        if(fm.has(entityId)){
+            FollowComponent follow = fm.get(entityId);
+            SpriteComponent sprite = sm.get(entityId);
+
+            PositionComponent targPos = pm.get(follow.target);
+
+            follow.targX = targPos.x;
+            follow.targY = targPos.y;
+            moveToTarget(entityId,follow.targX, follow.targY, 0, getWorld().delta);
+        } else{
+            followLine(entityId, world.getDelta());
+        }
     }
 
     private void wander() {
 
     }
 
-    private void followLine(PositionComponent position, VelocityComponent movement, LineComponent line, float deltaTime) {
+    private void followLine(int entityId, float delta) {
+        LineComponent line = lm.get(entityId);
+        PositionComponent position = pm.get(entityId);
+        VelocityComponent velocity = vm.get(entityId);
+
         if (line == null || line.path == null || line.path.length == 0) return;
 
-        Vector2 currentPosition = new Vector2(position.x, position.y);
-        Vector2 target = line.path[line.currentIndex];
+        float targetX = line.path[line.currentIndex].x;
+        float targetY = line.path[line.currentIndex].y;
 
-        movement.direction = new Vector2(target).sub(currentPosition);
-        float distance = movement.direction.len();
+        Vector2 difference = getDifference(position.x, position.y, targetX, targetY);
+        float distance = difference.len();
 
-        if (distance < movement.speed * deltaTime) {
-            // Move directly to the target instead of overshooting
-            position.x = target.x;
-            position.y = target.y;
-            line.currentIndex++;
+        position.angle = difference.angleDeg() - 90;
 
-            if (line.currentIndex >= line.path.length) {
-                line.currentIndex = line.path.length - 1;
+        if(distance < velocity.speed * delta){
+            while(distance < velocity.speed * delta){
+                line.currentIndex++;
+                targetX = line.path[line.currentIndex].x;
+                targetY = line.path[line.currentIndex].y;
+
+                difference = getDifference(position.x, position.y, targetX, targetY);
+                distance = difference.len();
+
+                position.angle = difference.angleDeg() - 90;
             }
-        } else {
-            // Move normally
-            movement.direction.nor();
-            position.x += movement.direction.x * movement.speed * deltaTime;
-            position.y += movement.direction.y * movement.speed * deltaTime;
+
+            position.x = targetX;
+            position.y = targetY;
+        } else if (distance < 0.001f) {
+            position.x = targetX;
+            position.y = targetY;
+        }else{
+            difference.nor();
+            position.x += difference.x * velocity.speed * delta;
+            position.y += difference.y * velocity.speed * delta;
+        }
+    }
+
+    private boolean moveToTarget(int entityId, float x, float y, float stopRadius, float delta){
+        PositionComponent position = pm.get(entityId);
+        VelocityComponent velocity = vm.get(entityId);
+        SpriteComponent sprite = sm.get(entityId);
+
+        float radius = stopRadius;
+
+        if(radius < sprite.sprite.getWidth() * sprite.sprite.getScaleX()){
+            radius = sprite.sprite.getWidth() * sprite.sprite.getScaleX();
         }
 
-        position.angle = movement.direction.angleDeg() - 90;
+        Vector2 difference = getDifference(position.x, position.y, x, y);
+        float distance = difference.len();
+
+        position.angle = difference.angleDeg() - 90;
+
+        if(distance < velocity.speed * delta || distance < radius){
+            return true;
+        } else{
+            difference.nor();
+            position.x += difference.x * velocity.speed * delta;
+            position.y += difference.y * velocity.speed * delta;
+        }
+
+        return false;
+    }
+
+    private Vector2 getDifference(float startX, float startY, float endX, float endY){
+        Vector2 currentPosition = new Vector2(startX, startY);
+        Vector2 targetPosition = new Vector2(endX,endY);
+
+        return targetPosition.sub(currentPosition);
     }
 }
