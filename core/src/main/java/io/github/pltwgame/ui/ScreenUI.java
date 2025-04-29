@@ -19,7 +19,6 @@ public class ScreenUI {
     private Image healthBarBorder;
     private Image healthBarBG;
     private Image healthBar;
-    private Image healthBarBorder;
     private Image inkBarBG;
     private Image inkBar;
 
@@ -33,7 +32,7 @@ public class ScreenUI {
 
     int width = 10;
 
-    public ScreenUI(ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport){
+
     public ScreenUI(GameWorld gameWorld, SpriteBatch batch, Viewport viewport){
         stage = new Stage(viewport, batch);
         this.gameworld = gameWorld;
@@ -50,11 +49,7 @@ public class ScreenUI {
         uiAtlas.findRegion("health_bar").setRegion(726,123,width,4);
 
         healthBarBG.setPosition(90,668);
-        healthBarBG.setPosition(90,668);
         healthBarBG.scaleBy(2);
-
-        healthBar.setPosition(90,668);
-        healthBar.scaleBy((54/18f)-1, 2);
 
         healthBarBorder.setPosition(75, 650);
         healthBarBorder.scaleBy(2);
@@ -63,14 +58,13 @@ public class ScreenUI {
 
         updateHealth(75);
 
-        healthBarBorder.setPosition(75, 650);
-        healthBarBorder.scaleBy(2);
-
         inkBarBG.setPosition(1017,652.5f);
         inkBarBG.scaleBy(2);
 
-        inkBar.setPosition(1017,652.5f);
+        inkBar.setPosition(1062,670.75f);
         inkBar.scaleBy(2);
+
+        updateInk(50);
 
         stage.addActor(healthBarBorder);
         stage.addActor(healthBarBG);
@@ -117,14 +111,13 @@ public class ScreenUI {
         healthBar.setScale((percentWidth/18f), 3);
     }
 
-    public void updateHealth(int percentHealth){
-        int percentWidth = 54*percentHealth/100;
+    public void updateInk(int percentInk){
+        int percentWidth = 44*percentInk/100;
         //Changes the bounds of the sprite it is taking
-        uiAtlas.findRegion("health_bar").setRegion(726,123,percentWidth,4);
+        uiAtlas.findRegion("ink_bar").setRegion(726,117,percentWidth,4);
         //Changes the scaling to be correct
-        healthBar.setScale((percentWidth/18f), 3);
+        inkBar.setScale((3*percentWidth/44f), 3);
     }
-}
 
 
 }
