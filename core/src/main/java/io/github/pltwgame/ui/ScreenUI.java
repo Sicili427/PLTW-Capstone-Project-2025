@@ -1,23 +1,22 @@
 
 package io.github.pltwgame.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import io.github.pltwgame.gameCore.GameWorld;
 import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class ScreenUI {
-    private Viewport viewport;
-    private ShapeDrawer shapeDrawer;
-
+    private GameWorld gameworld;
     private Stage stage;
 
     private TextureAtlas uiAtlas;
 
+    private Image healthBarBorder;
     private Image healthBarBG;
     private Image healthBar;
     private Image inkBarBG;
@@ -31,23 +30,27 @@ public class ScreenUI {
     private VerticalGroup leftGroup;
     private VerticalGroup rightGroup;
 
-    public ScreenUI(ShapeDrawer shapeDrawer, SpriteBatch batch, Viewport viewport){
+    public ScreenUI(GameWorld gameWorld, SpriteBatch batch, Viewport viewport){
         stage = new Stage(viewport, batch);
-        this.shapeDrawer = shapeDrawer;
+        this.gameworld = gameWorld;
 
         uiAtlas = new TextureAtlas("uiSkin/uiSkin.atlas");
 
         // Load Images
         healthBarBG = new Image(uiAtlas.findRegion("health_bar_bg"));
         healthBar = new Image(uiAtlas.findRegion("health_bar"));
+        healthBarBorder = new Image(uiAtlas.findRegion("health_bar_border"));
         inkBarBG = new Image(uiAtlas.findRegion("ink_bar_bg"));
         inkBar = new Image(uiAtlas.findRegion("ink_bar"));
 
-        healthBarBG.setPosition(75,650);
+        healthBarBG.setPosition(90,668);
         healthBarBG.scaleBy(2);
 
-        healthBar.setPosition(75,650);
-        healthBar.scaleBy(2);
+        healthBar.setPosition(90,668);
+        healthBar.scaleBy((54/18f)-1, 2);
+
+        healthBarBorder.setPosition(75, 650);
+        healthBarBorder.scaleBy(2);
 
         inkBarBG.setPosition(1017,652.5f);
         inkBarBG.scaleBy(2);
@@ -55,6 +58,7 @@ public class ScreenUI {
         inkBar.setPosition(1017,652.5f);
         inkBar.scaleBy(2);
 
+        stage.addActor(healthBarBorder);
         stage.addActor(healthBarBG);
         stage.addActor(healthBar);
         stage.addActor(inkBarBG);
@@ -78,6 +82,7 @@ public class ScreenUI {
 
     public void update(float delta){
         stage.act(delta);
+        updateHealth(gameworld.currentBaseHealth);
     }
 
     public void dispose(){
@@ -87,5 +92,13 @@ public class ScreenUI {
 
     public void resize(int width, int height){
         stage.getViewport().update(width, height, true);
+    }
+
+    public void updateHealth(int percentHealth){
+        int percentWidth = 54*percentHealth/100;
+        //Changes the bounds of the sprite it is taking
+        uiAtlas.findRegion("health_bar").setRegion(726,123,percentWidth,4);
+        //Changes the scaling to be correct
+        healthBar.setScale((percentWidth/18f), 3);
     }
 }

@@ -10,10 +10,12 @@ public class GameWorld {
     public World world;
 
     int maxBaseHealth = 100;
-    int currentBaseHealth = maxBaseHealth;
+    public int currentBaseHealth = maxBaseHealth;
 
     int maxInk = 100;
     int currentInk = maxInk;
+
+    float coolDown = 5;
 
     public EntityHandler entityHandler;
     ArrayList<String> deck;

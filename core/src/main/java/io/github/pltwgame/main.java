@@ -86,7 +86,7 @@ public class main extends ApplicationAdapter {
 
         // taskbar + screenUI
         taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport, grid, gameWorld);
-        screenUI = new ScreenUI(shapeDrawer, batch, worldViewport);
+        screenUI = new ScreenUI(gameWorld, batch, worldViewport);
 
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(taskbar.stage);
