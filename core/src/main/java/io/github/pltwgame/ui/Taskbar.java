@@ -35,7 +35,7 @@ public class Taskbar {
     public Label errorLabel;
 
     private Window box;
-    private Table deckTable;
+    public Table deckTable;
 
     private Table uiTable;
 

@@ -1,6 +1,7 @@
 package io.github.pltwgame.listeners;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -12,9 +13,11 @@ import io.github.pltwgame.gameCore.GameWorld;
 import io.github.pltwgame.gameCore.Grid;
 import io.github.pltwgame.gameCore.Line;
 import io.github.pltwgame.loaders.EntityFactory;
+import io.github.pltwgame.loaders.JsonLoader;
 import io.github.pltwgame.ui.Taskbar;
 import org.mariuszgromada.math.mxparser.Function;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -45,19 +48,21 @@ public class KeyListener extends InputListener {
                 // on valid input
                 if(function.checkSyntax()){
                     Line line = grid.getLine(taskbar.lastIndex);
-                    line.color.a = 1;
+                    line.color.a = 0.6f;
+
+                    if(taskbar.stage.getRoot().findActor("equationImage") != null){
+                        taskbar.stage.getRoot().findActor("equationImage").remove();
+                    }
+
+                    if(!line.linePoints.isEmpty() && line.linePoints.get(0)[0].x < 33){
+                        createEntity(line);
+                    } else {
+                        grid.removeLine(taskbar.lastIndex);
+                    }
 
                     taskbar.lastIndex = "";
                     taskbar.errorLabel.setVisible(false);
                     taskbar.errorDuration = 0;
-                    taskbar.stage.getRoot().findActor("equationImage").remove();
-
-                    gameWorld.entityHandler.place(gameWorld.getDeck().get(gameWorld.getDeck().size()-1), line);
-
-                    gameWorld.getDeck().remove(gameWorld.getDeck().size()-1);
-                    taskbar.updateDeckTable();
-
-                    createEnemy();
                 } else {
                     taskbar.errorLabel.setText("Please enter a valid expression.");
                     taskbar.errorLabel.setVisible(true);
@@ -69,23 +74,19 @@ public class KeyListener extends InputListener {
         return false;
     }
 
-    private void createEnemy(){
-        Function function2 = new Function("f", "sin(x)", "x");
-        Line line2 = grid.addLine(function2);
+    private void createEntity(Line line){
+        String card = gameWorld.getDeck().get(gameWorld.getDeck().size()-1);
+        int inkCost = JsonLoader.getJson("/entities/" + card + ".json").get("Components").get("InkComponent").getInt("inkCost", 1);
 
-        Entity entity = EntityFactory.createEntityFromJson(gameWorld.world, "square.json");
+        if(gameWorld.currentInk >= inkCost){
+            gameWorld.entityHandler.place(card, line);
+            gameWorld.currentInk -= inkCost;
 
-        LineComponent lc = entity.edit().create(LineComponent.class);
-        lc.lineId = line2.id;
-        Vector2[] pathArray = line2.realPoints;
-        Collections.reverse(Arrays.asList(pathArray));
-        lc.path = pathArray;
+            gameWorld.getDeck().remove(gameWorld.getDeck().size()-1);
+            taskbar.updateDeckTable();
+        } else {
+            grid.removeLine(taskbar.lastIndex);
+        }
 
-        PositionComponent pc = entity.edit().create(PositionComponent.class);
-        pc.x = pathArray[0].x;
-        pc.y = pathArray[0].y;
-
-        TeamComponent tc = entity.edit().create(TeamComponent.class);
-        tc.team = "red";
     }
 }

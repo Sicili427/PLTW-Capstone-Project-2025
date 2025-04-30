@@ -22,11 +22,6 @@ public class ScreenUI {
     private Image inkBarBG;
     private Image inkBar;
 
-    private float maxHealth = 100f;
-    private float currentHealth = 100f;
-    private float maxInk = 100f;
-    private float currentInk = 100f;
-
     private VerticalGroup leftGroup;
     private VerticalGroup rightGroup;
 
@@ -55,7 +50,7 @@ public class ScreenUI {
         inkBarBG.setPosition(1017,652.5f);
         inkBarBG.scaleBy(2);
 
-        inkBar.setPosition(1017,652.5f);
+        inkBar.setPosition(1062,670.75f);
         inkBar.scaleBy(2);
 
         stage.addActor(healthBarBorder);
@@ -83,6 +78,7 @@ public class ScreenUI {
     public void update(float delta){
         stage.act(delta);
         updateHealth(gameworld.currentBaseHealth);
+        updateInk(gameworld.currentInk);
     }
 
     public void dispose(){
@@ -100,5 +96,13 @@ public class ScreenUI {
         uiAtlas.findRegion("health_bar").setRegion(726,123,percentWidth,4);
         //Changes the scaling to be correct
         healthBar.setScale((percentWidth/18f), 3);
+    }
+
+    public void updateInk(float percentInk){
+        int percentWidth = (int) (44*percentInk/100);
+        //Changes the bounds of the sprite it is taking
+        uiAtlas.findRegion("ink_bar").setRegion(726,117,percentWidth,4);
+        //Changes the scaling to be correct
+        inkBar.setScale((3*percentWidth/44f), 3);
     }
 }

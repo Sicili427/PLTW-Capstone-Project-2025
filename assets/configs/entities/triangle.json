@@ -5,19 +5,20 @@
       "scale": 1
     },
     "VelocityComponent": {
-      "speed": 100
+      "speed": 150
     },
     "HealthComponent": {
       "maxHealth": 5
     },
     "InkComponent": {
-      "inkCost": 5
+      "inkCost": 30
     },
     "CombatComponent": {
       "entityDamage": 1,
       "baseDamage": 5,
-      "attackSpeed": 1,
+      "attackSpeed": 0.5,
       "detectionRange": 100,
+      "range": 75,
       "damageType": "normal"
     }
   }

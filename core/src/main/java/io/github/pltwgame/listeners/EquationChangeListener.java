@@ -52,6 +52,7 @@ public class EquationChangeListener extends ChangeListener {
                 grid.removeLine(taskbar.lastIndex);
                 image.remove();
             }
+
             Line line = grid.addLine(function);
             line.color.a = 0.5f;
             taskbar.lastIndex = line.id;

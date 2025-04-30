@@ -43,6 +43,7 @@ public class SpriteSystem extends IteratingSystem {
             Color color = new Color(0.5f,0.5f,0.5f,0.5f);
 
             shapeDrawer.filledCircle(position.x, position.y, combat.detectionRange, color);
+            shapeDrawer.filledCircle(position.x, position.y, combat.range, color);
         }
 
         sprite.sprite.setColor(Color.WHITE);

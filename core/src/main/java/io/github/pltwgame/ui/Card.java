@@ -17,7 +17,7 @@ public class Card extends Group {
 
     String spriteString;
     int health;
-    int ink;
+    public int ink;
     int entityDamage;
     int baseDamage;
     String damageType;

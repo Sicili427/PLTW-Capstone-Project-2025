@@ -73,16 +73,18 @@ public class main extends ApplicationAdapter {
         grid.generateGrid();
         grid.centerOriginY();
 
+        gameWorld = new GameWorld(grid);
+
         // Artemis-ODB world configuration
         WorldConfiguration config = new WorldConfigurationBuilder()
             .with(new SpriteSystem(shapeDrawer))
             .with(new HealthSystem(grid))
-            .with(new MovementSystem())
             .with(new CombatSystem())
+            .with(new MovementSystem(gameWorld))
             .build();
         world = new World(config);
 
-        gameWorld = new GameWorld(grid, world);
+        gameWorld.setWorld(world);
 
         // taskbar + screenUI
         taskbar = new Taskbar(skin, shapeDrawer, batch, worldViewport, grid, gameWorld);

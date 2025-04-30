@@ -15,9 +15,9 @@
     },
     "CombatComponent": {
       "entityDamage": 1,
-      "baseDamage": 5,
+      "baseDamage": 10,
       "attackSpeed": 1,
-      "detectionRange": 75,
+      "detectionRange": 60,
       "damageType": "normal"
     }
   }

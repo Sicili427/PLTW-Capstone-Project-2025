@@ -6,17 +6,15 @@ import com.artemis.systems.IteratingSystem;
 import com.artemis.utils.IntBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import io.github.pltwgame.components.CombatComponent;
-import io.github.pltwgame.components.PositionComponent;
-import io.github.pltwgame.components.TeamComponent;
-import io.github.pltwgame.components.FollowComponent;
+import io.github.pltwgame.components.*;
 
-@All({CombatComponent.class, PositionComponent.class, TeamComponent.class})
+@All({CombatComponent.class, PositionComponent.class, TeamComponent.class, HealthComponent.class})
 public class CombatSystem extends IteratingSystem {
     private ComponentMapper<PositionComponent> pm;
     private ComponentMapper<CombatComponent> cm;
     private ComponentMapper<TeamComponent> tm;
     private ComponentMapper<FollowComponent> fm;
+    private ComponentMapper<HealthComponent> hm;
 
     public CombatSystem(){
 
@@ -27,18 +25,19 @@ public class CombatSystem extends IteratingSystem {
         PositionComponent atkPos = pm.get(entityId);
         CombatComponent atkCombat = cm.get(entityId);
 
-        CombatComponent targCombat;
-
         if(atkCombat.target == -1) {
             findTarget(entityId, atkCombat, atkPos);
         }
 
         if(atkCombat.target != -1 && isInRange(atkCombat.detectionRange, entityId, atkCombat.target)) {
-            targCombat = cm.get(atkCombat.target);
-
             if(!fm.has(entityId)){
                 FollowComponent follow = world.getEntity(entityId).edit().create(FollowComponent.class);
                 follow.target = atkCombat.target;
+                follow.stopRadius = atkCombat.range;
+            }
+
+            if(isInRange(atkCombat.range, entityId, atkCombat.target)){
+                attack(entityId, atkCombat.target);
             }
         } else {
             atkCombat.target = -1;
@@ -46,7 +45,6 @@ public class CombatSystem extends IteratingSystem {
                 fm.remove(entityId);
             }
         }
-
     }
 
     private void findTarget(int entityId, CombatComponent atkCombat, PositionComponent atkPos){
@@ -58,11 +56,12 @@ public class CombatSystem extends IteratingSystem {
         for (int i = 0, s = ids.length; i < s; i++) {
             int id = ids[i];
 
+            if (id == entityId) continue;
+
             TeamComponent targTeam = tm.get(id);
-
-            if (entityId == id || atkTeam.team.equals(targTeam.team)) continue;
-
             PositionComponent targPos = pm.get(id);
+
+            if (targTeam == null || targPos == null || atkTeam.team.equals(targTeam.team)) continue;
 
             if (atkCombat.target == -1) {
                 if (isInRange(atkCombat.detectionRange, entityId, id)) {
@@ -77,11 +76,28 @@ public class CombatSystem extends IteratingSystem {
         PositionComponent atkPos = pm.get(attacker);
         PositionComponent targPos = pm.get(target);
 
+        if(targPos == null) return false;
+
         Vector2 atkVector = new Vector2(atkPos.x,atkPos.y);
         Vector2 targVector = new Vector2(targPos.x,targPos.y);
 
         return atkVector.sub(targVector).len() <= radius;
     }
 
+    private void attack(int entityId, int targetId){
+        CombatComponent atkCombat = cm.get(entityId);
 
+        HealthComponent targHealth = hm.get(targetId);
+
+        if (atkCombat.attackCooldown > 0){
+            atkCombat.attackCooldown -= getWorld().delta;
+        } else {
+            atkCombat.attackCooldown = atkCombat.attackSpeed;
+            targHealth.health -= atkCombat.entityDamage;
+        }
+
+        if(targHealth.health <= 0){
+            atkCombat.target = -1;
+        }
+    }
 }

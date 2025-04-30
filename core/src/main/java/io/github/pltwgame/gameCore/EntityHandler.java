@@ -3,7 +3,6 @@ package io.github.pltwgame.gameCore;
 
 import com.artemis.Entity;
 import com.artemis.World;
-import com.badlogic.gdx.Gdx;
 import io.github.pltwgame.components.LineComponent;
 import io.github.pltwgame.components.PositionComponent;
 import io.github.pltwgame.components.TeamComponent;
@@ -54,7 +53,7 @@ public class EntityHandler {
 
         LineComponent lc = entity.edit().create(LineComponent.class);
         lc.lineId = line.id;
-        lc.path = line.realPoints;
+        lc.path = line.trimmedRealPoints;
 
         TeamComponent tc = entity.edit().create(TeamComponent.class);
         tc.team = "blue";
