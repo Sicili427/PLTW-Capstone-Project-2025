@@ -4,6 +4,7 @@ package io.github.pltwgame.systems;
 import com.artemis.ComponentMapper;
 import com.artemis.annotations.*;
 import com.artemis.systems.IteratingSystem;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import io.github.pltwgame.components.*;
 import io.github.pltwgame.gameCore.GameWorld;
@@ -126,11 +127,18 @@ public class MovementSystem extends IteratingSystem {
 
         if(line.currentIndex == line.path.size() - 1){
             if(team.team.equals("red") && position.x < 33){
-                int damage = (combat.baseDamage * health.health/health.maxHealth);
+                int damage = combat.baseDamage * health.health/health.maxHealth;
                 if(gameWorld.currentBaseHealth - damage < 0){
                     gameWorld.currentBaseHealth = 0;
                 } else {
                     gameWorld.currentBaseHealth -= damage;
+                }
+            } else if (team.team.equals("blue") && position.x  > 1247){
+                int damage = combat.baseDamage * health.health/health.maxHealth;
+                if(gameWorld.currentEnemyHealth - damage < 0){
+                    gameWorld.currentEnemyHealth = 0;
+                } else {
+                    gameWorld.currentEnemyHealth -= damage;
                 }
             }
             health.health = 0;

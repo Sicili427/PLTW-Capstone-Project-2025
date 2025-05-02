@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import io.github.pltwgame.gameCore.GameWorld;
-import space.earlygrey.shapedrawer.ShapeDrawer;
 
 public class ScreenUI {
     private GameWorld gameworld;
@@ -19,6 +18,11 @@ public class ScreenUI {
     private Image healthBarBorder;
     private Image healthBarBG;
     private Image healthBar;
+
+    private Image enemyHealthBarBorder;
+    private Image enemyHealthBarBG;
+    private Image enemyHealthBar;
+
     private Image inkBarBG;
     private Image inkBar;
 
@@ -32,11 +36,17 @@ public class ScreenUI {
         uiAtlas = new TextureAtlas("uiSkin/uiSkin.atlas");
 
         // Load Images
+        healthBarBorder = new Image(uiAtlas.findRegion("health_bar_border"));
         healthBarBG = new Image(uiAtlas.findRegion("health_bar_bg"));
         healthBar = new Image(uiAtlas.findRegion("health_bar"));
-        healthBarBorder = new Image(uiAtlas.findRegion("health_bar_border"));
+        enemyHealthBarBorder = new Image(uiAtlas.findRegion("health_bar_border"));
+        enemyHealthBarBG = new Image(uiAtlas.findRegion("health_bar_bg"));
+        enemyHealthBar = new Image(uiAtlas.findRegion("enemy_health_bar"));
         inkBarBG = new Image(uiAtlas.findRegion("ink_bar_bg"));
         inkBar = new Image(uiAtlas.findRegion("ink_bar"));
+
+        healthBarBorder.setPosition(75, 650);
+        healthBarBorder.scaleBy(2);
 
         healthBarBG.setPosition(90,668);
         healthBarBG.scaleBy(2);
@@ -44,8 +54,14 @@ public class ScreenUI {
         healthBar.setPosition(90,668);
         healthBar.scaleBy((54/18f)-1, 2);
 
-        healthBarBorder.setPosition(75, 650);
-        healthBarBorder.scaleBy(2);
+        enemyHealthBarBorder.setPosition(1017,650);
+        enemyHealthBarBorder.scaleBy(2);
+
+        enemyHealthBarBG.setPosition(1032,668);
+        enemyHealthBarBG.scaleBy(2);
+
+        enemyHealthBar.setPosition(1032,668);
+        enemyHealthBar.scaleBy((54/18f)-1, 2);
 
         inkBarBG.setPosition(1017,652.5f);
         inkBarBG.scaleBy(2);
@@ -56,8 +72,9 @@ public class ScreenUI {
         stage.addActor(healthBarBorder);
         stage.addActor(healthBarBG);
         stage.addActor(healthBar);
-        stage.addActor(inkBarBG);
-        stage.addActor(inkBar);
+        stage.addActor(enemyHealthBarBorder);
+        stage.addActor(enemyHealthBarBG);
+        stage.addActor(enemyHealthBar);
 
         leftGroup = Bars.createVertWoodBar(uiAtlas, 23, 2, 0, 0, false);
         rightGroup = Bars.createVertWoodBar(uiAtlas, 23, 2, stage.getWidth(), 0, true);
@@ -78,7 +95,7 @@ public class ScreenUI {
     public void update(float delta){
         stage.act(delta);
         updateHealth(gameworld.currentBaseHealth);
-        updateInk(gameworld.currentInk);
+        updateEnemyHealth(gameworld.currentEnemyHealth);
     }
 
     public void dispose(){
@@ -90,19 +107,19 @@ public class ScreenUI {
         stage.getViewport().update(width, height, true);
     }
 
-    public void updateHealth(int percentHealth){
-        int percentWidth = 54*percentHealth/100;
+    public void updateHealth(int currHealth){
+        int percentWidth = 54*currHealth/100;
         //Changes the bounds of the sprite it is taking
-        uiAtlas.findRegion("health_bar").setRegion(726,123,percentWidth,4);
+        uiAtlas.findRegion("health_bar").setRegionWidth(percentWidth);
         //Changes the scaling to be correct
         healthBar.setScale((percentWidth/18f), 3);
     }
 
-    public void updateInk(float percentInk){
-        int percentWidth = (int) (44*percentInk/100);
+    public void updateEnemyHealth(int currHealth){
+        int percentWidth = 54*currHealth/100;
         //Changes the bounds of the sprite it is taking
-        uiAtlas.findRegion("ink_bar").setRegion(726,117,percentWidth,4);
+        uiAtlas.findRegion("enemy_health_bar").setRegionWidth(percentWidth);
         //Changes the scaling to be correct
-        inkBar.setScale((3*percentWidth/44f), 3);
+        enemyHealthBar.setScale((percentWidth/18f), 3);
     }
 }

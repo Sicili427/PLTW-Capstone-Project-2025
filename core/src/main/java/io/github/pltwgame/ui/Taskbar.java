@@ -34,6 +34,10 @@ public class Taskbar {
     public TextField equationField;
     public Label errorLabel;
 
+    private Image inkBarBG;
+    private Image inkBar;
+    private Label inkLabel;
+
     private Window box;
     public Table deckTable;
 
@@ -72,10 +76,15 @@ public class Taskbar {
 
         createDeckTable(gameWorld.getDeck());
 
+        createInkBar();
+
         stage.addActor(taskbarBg);
         stage.addActor(box);
         stage.addActor(barGroup);
         stage.addActor(uiTable);
+        stage.addActor(inkBarBG);
+        stage.addActor(inkBar);
+        stage.addActor(inkLabel);
     }
 
     public void resize(int width, int height){
@@ -89,6 +98,7 @@ public class Taskbar {
     public void update(float delta){
         updateErrorLabel(delta);
         updateDeckTable();
+        updateInk(gameWorld.currentInk);
 
         stage.act(delta);
     }
@@ -129,9 +139,9 @@ public class Taskbar {
         errorLabel.setVisible(false);
 
         equationTable = new Table();
-        equationTable.add(equationField).width(equationField.getWidth() * 3f).center();
+        equationTable.add(errorLabel).center().padTop(-25);
         equationTable.row();
-        equationTable.add(errorLabel).center().padTop(10);
+        equationTable.add(equationField).width(equationField.getWidth() * 3f).center();
     }
 
     public void createDeckTable(ArrayList<String> deck){
@@ -162,6 +172,22 @@ public class Taskbar {
         box.add(deckTable).right().expandX();
     }
 
+    public void createInkBar(){
+        inkBarBG = new Image(atlas.findRegion("ink_bar_bg"));
+        inkBar = new Image(atlas.findRegion("ink_bar"));
+        inkLabel = new Label("100 / 100",skin);
+
+        inkBarBG.setOrigin(1);
+        inkBarBG.scaleBy(2);
+        inkBarBG.setPosition(545, 60);
+
+        inkBar.scaleBy(2,2);
+        inkBar.setPosition(445.25f,62);
+
+        inkLabel.setColor(0,0,0,1);
+        inkLabel.setPosition(620 - 0.5f * inkLabel.getWidth(), 30);
+    }
+
     public void updateDeckTable(){
         SnapshotArray<Actor> cardActors = deckTable.getChildren();
         if(cardActors.size > gameWorld.getDeck().size()){
@@ -184,5 +210,15 @@ public class Taskbar {
         } else {
             errorLabel.setVisible(false);
         }
+    }
+
+    public void updateInk(float percentInk){
+        int percentWidth = (int) (127*percentInk/100);
+        //Changes the bounds of the sprite it is taking
+        atlas.findRegion("ink_bar").setRegionWidth(percentWidth);
+        //Changes the scaling to be correct
+        inkBar.setScale(3 * percentWidth/127f, 3);
+
+        inkLabel.setText((int) gameWorld.currentInk + " / " + gameWorld.maxInk);
     }
 }

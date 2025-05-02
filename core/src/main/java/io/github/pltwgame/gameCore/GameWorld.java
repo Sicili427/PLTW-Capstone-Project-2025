@@ -11,7 +11,6 @@ import io.github.pltwgame.loaders.EntityFactory;
 import org.mariuszgromada.math.mxparser.Function;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 
 public class GameWorld {
@@ -21,7 +20,10 @@ public class GameWorld {
     int maxBaseHealth = 100;
     public int currentBaseHealth = maxBaseHealth;
 
-    int maxInk = 100;
+    int maxEnemyHealth = 100;
+    public int currentEnemyHealth = maxEnemyHealth;
+
+    public int maxInk = 100;
     public float currentInk = maxInk;
     int inkPerSecond = 5;
 
@@ -29,6 +31,7 @@ public class GameWorld {
     ArrayList<String> deck;
 
     float enemyCooldown = 5;
+    String[] enemies = {"square", "square", "triangle"};
     String[] enemyEquations = {"sin(x)", "cos(x)", "(x-64)", "(x-64)", "(x-64)", "(x-64)", "(x-64)", "ln(-(x-64))"};
 
     public GameWorld(Grid grid){
@@ -56,7 +59,7 @@ public class GameWorld {
             enemyCooldown -= delta;
         } else{
             spawnEnemy();
-            enemyCooldown = (int) (Math.random() * 5) + 5;
+            enemyCooldown = (int) (Math.random() * 10) + 5;
         }
     }
 
@@ -73,11 +76,18 @@ public class GameWorld {
     }
 
     private void spawnEnemy(){
+        if(currentEnemyHealth <= 0){
+            return;
+        }
+
+        int index = (int) (Math.random() * enemies.length);
+        String enemy = enemies[index] + ".json";
+
         Function function2 = new Function("f", randomEquation(), "x");
         Line line2 = grid.addLine(function2);
         line2.color.a = 0.6f;
 
-        Entity entity = EntityFactory.createEntityFromJson(world, "square.json");
+        Entity entity = EntityFactory.createEntityFromJson(world, enemy);
 
         LineComponent lc = entity.edit().create(LineComponent.class);
         lc.lineId = line2.id;
@@ -96,7 +106,7 @@ public class GameWorld {
     private String randomEquation(){
         String result;
 
-        int index = (int) (Math.random() * (enemyEquations.length-1)) + 1;
+        int index = (int) (Math.random() * enemyEquations.length-1) + 1;
         result = enemyEquations[index];
 
         if(!result.equals("ln(-(x-64))")){
